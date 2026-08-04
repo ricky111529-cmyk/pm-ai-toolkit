@@ -1,0 +1,29 @@
+[project]
+name = "band-jam-feedback"
+version = "0.1.0"
+description = "Local tempo-drift analysis for band rehearsal recordings"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "demucs>=4.1.0",
+  "librosa>=0.10.2,<0.12",
+  "numpy>=1.26,<2",
+  "soundfile>=0.12,<0.14",
+]
+
+[project.scripts]
+band-jam-analyze = "band_jam_feedback.cli:main"
+band-jam-part-timing = "band_jam_feedback.part_timing_cli:main"
+band-jam-feedback-request = "band_jam_feedback.feedback_cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0,<9",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

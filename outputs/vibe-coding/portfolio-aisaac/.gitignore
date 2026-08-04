@@ -1,0 +1,10 @@
+# 로컬 전용 (공개 repo 제외)
+DESIGN.md
+
+# 시스템
+.DS_Store
+Thumbs.db
+
+# 로컬 서버·임시
+*.log
+.vercel

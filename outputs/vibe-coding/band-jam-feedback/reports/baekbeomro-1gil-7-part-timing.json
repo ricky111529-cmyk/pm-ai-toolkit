@@ -1,0 +1,132 @@
+{
+  "analysis_type": "stem_onset_correlation_candidate",
+  "reference_part": "drums",
+  "max_offset_ms": 200,
+  "warning": "Offsets are stem-based candidates. Separation bleed and recording quality can reduce reliability.",
+  "segments": [
+    {
+      "start_seconds": 48.0,
+      "end_seconds": 66.0,
+      "reference_part": "drums",
+      "parts": {
+        "vocals": {
+          "offset_ms": 186,
+          "direction": "later",
+          "peak_correlation": 0.118,
+          "confidence": "low",
+          "confidence_score": 0.118,
+          "at_offset_limit": false
+        },
+        "guitar": {
+          "offset_ms": -197,
+          "direction": "earlier",
+          "peak_correlation": 0.413,
+          "confidence": "low",
+          "confidence_score": 0.413,
+          "at_offset_limit": true
+        },
+        "bass": {
+          "offset_ms": -197,
+          "direction": "earlier",
+          "peak_correlation": 0.13,
+          "confidence": "low",
+          "confidence_score": 0.13,
+          "at_offset_limit": true
+        }
+      }
+    },
+    {
+      "start_seconds": 120.0,
+      "end_seconds": 144.0,
+      "reference_part": "drums",
+      "parts": {
+        "vocals": {
+          "offset_ms": -12,
+          "direction": "aligned",
+          "peak_correlation": 0.239,
+          "confidence": "low",
+          "confidence_score": 0.239,
+          "at_offset_limit": false
+        },
+        "guitar": {
+          "offset_ms": 174,
+          "direction": "later",
+          "peak_correlation": 0.299,
+          "confidence": "low",
+          "confidence_score": 0.299,
+          "at_offset_limit": false
+        },
+        "bass": {
+          "offset_ms": 12,
+          "direction": "aligned",
+          "peak_correlation": 0.258,
+          "confidence": "low",
+          "confidence_score": 0.258,
+          "at_offset_limit": false
+        }
+      }
+    },
+    {
+      "start_seconds": 162.0,
+      "end_seconds": 192.0,
+      "reference_part": "drums",
+      "parts": {
+        "vocals": {
+          "offset_ms": 0,
+          "direction": "aligned",
+          "peak_correlation": 0.269,
+          "confidence": "low",
+          "confidence_score": 0.269,
+          "at_offset_limit": false
+        },
+        "guitar": {
+          "offset_ms": -197,
+          "direction": "earlier",
+          "peak_correlation": 0.313,
+          "confidence": "low",
+          "confidence_score": 0.313,
+          "at_offset_limit": true
+        },
+        "bass": {
+          "offset_ms": 0,
+          "direction": "aligned",
+          "peak_correlation": 0.189,
+          "confidence": "low",
+          "confidence_score": 0.189,
+          "at_offset_limit": false
+        }
+      }
+    },
+    {
+      "start_seconds": 222.0,
+      "end_seconds": 252.0,
+      "reference_part": "drums",
+      "parts": {
+        "vocals": {
+          "offset_ms": 0,
+          "direction": "aligned",
+          "peak_correlation": 0.053,
+          "confidence": "low",
+          "confidence_score": 0.049,
+          "at_offset_limit": false
+        },
+        "guitar": {
+          "offset_ms": -46,
+          "direction": "earlier",
+          "peak_correlation": 0.347,
+          "confidence": "medium",
+          "confidence_score": 0.347,
+          "at_offset_limit": false
+        },
+        "bass": {
+          "offset_ms": 12,
+          "direction": "aligned",
+          "peak_correlation": 0.125,
+          "confidence": "low",
+          "confidence_score": 0.099,
+          "at_offset_limit": false
+        }
+      }
+    }
+  ]
+}

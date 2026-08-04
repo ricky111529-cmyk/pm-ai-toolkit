@@ -1,0 +1,410 @@
+{
+  "source_file": "백범로1길 7.m4a",
+  "duration_seconds": 318.55,
+  "baseline_bpm": 161.5,
+  "baseline_type": "recording_median",
+  "analysis": {
+    "window_seconds": 12.0,
+    "hop_seconds": 6.0,
+    "drift_threshold_bpm": 4.0
+  },
+  "windows": [
+    {
+      "start_seconds": 0.0,
+      "end_seconds": 12.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 6.0,
+      "end_seconds": 18.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 12.0,
+      "end_seconds": 24.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 18.0,
+      "end_seconds": 30.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 24.0,
+      "end_seconds": 36.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 30.0,
+      "end_seconds": 42.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 36.0,
+      "end_seconds": 48.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 42.0,
+      "end_seconds": 54.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 48.0,
+      "end_seconds": 60.0,
+      "bpm": 156.75,
+      "drift_bpm": -4.75,
+      "drift_percent": -2.94
+    },
+    {
+      "start_seconds": 54.0,
+      "end_seconds": 66.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 60.0,
+      "end_seconds": 72.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 66.0,
+      "end_seconds": 78.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 72.0,
+      "end_seconds": 84.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 78.0,
+      "end_seconds": 90.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 84.0,
+      "end_seconds": 96.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 90.0,
+      "end_seconds": 102.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 96.0,
+      "end_seconds": 108.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 102.0,
+      "end_seconds": 114.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 108.0,
+      "end_seconds": 120.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 114.0,
+      "end_seconds": 126.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 120.0,
+      "end_seconds": 132.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 126.0,
+      "end_seconds": 138.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 132.0,
+      "end_seconds": 144.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 138.0,
+      "end_seconds": 150.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 144.0,
+      "end_seconds": 156.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 150.0,
+      "end_seconds": 162.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 156.0,
+      "end_seconds": 168.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 162.0,
+      "end_seconds": 174.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 168.0,
+      "end_seconds": 180.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 174.0,
+      "end_seconds": 186.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 180.0,
+      "end_seconds": 192.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 186.0,
+      "end_seconds": 198.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 192.0,
+      "end_seconds": 204.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 198.0,
+      "end_seconds": 210.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 204.0,
+      "end_seconds": 216.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 210.0,
+      "end_seconds": 222.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 216.0,
+      "end_seconds": 228.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 222.0,
+      "end_seconds": 234.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 228.0,
+      "end_seconds": 240.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 234.0,
+      "end_seconds": 246.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 240.0,
+      "end_seconds": 252.0,
+      "bpm": 152.0,
+      "drift_bpm": -9.5,
+      "drift_percent": -5.88
+    },
+    {
+      "start_seconds": 246.0,
+      "end_seconds": 258.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 252.0,
+      "end_seconds": 264.0,
+      "bpm": 161.5,
+      "drift_bpm": -0.0,
+      "drift_percent": -0.0
+    },
+    {
+      "start_seconds": 258.0,
+      "end_seconds": 270.0,
+      "bpm": 161.5,
+      "drift_bpm": -0.0,
+      "drift_percent": -0.0
+    },
+    {
+      "start_seconds": 264.0,
+      "end_seconds": 276.0,
+      "bpm": 161.5,
+      "drift_bpm": -0.0,
+      "drift_percent": -0.0
+    },
+    {
+      "start_seconds": 270.0,
+      "end_seconds": 282.0,
+      "bpm": 161.5,
+      "drift_bpm": -0.0,
+      "drift_percent": -0.0
+    },
+    {
+      "start_seconds": 276.0,
+      "end_seconds": 288.0,
+      "bpm": 161.5,
+      "drift_bpm": -0.0,
+      "drift_percent": -0.0
+    },
+    {
+      "start_seconds": 282.0,
+      "end_seconds": 294.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 288.0,
+      "end_seconds": 300.0,
+      "bpm": 172.27,
+      "drift_bpm": 10.77,
+      "drift_percent": 6.67
+    },
+    {
+      "start_seconds": 294.0,
+      "end_seconds": 306.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 300.0,
+      "end_seconds": 312.0,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    },
+    {
+      "start_seconds": 306.0,
+      "end_seconds": 318.0,
+      "bpm": 161.5,
+      "drift_bpm": -0.0,
+      "drift_percent": -0.0
+    },
+    {
+      "start_seconds": 312.0,
+      "end_seconds": 318.55,
+      "bpm": 161.5,
+      "drift_bpm": 0.0,
+      "drift_percent": 0.0
+    }
+  ],
+  "highlights": [
+    {
+      "start_seconds": 48.0,
+      "end_seconds": 66.0,
+      "direction": "slower",
+      "peak_drift_bpm": -9.5
+    },
+    {
+      "start_seconds": 120.0,
+      "end_seconds": 144.0,
+      "direction": "slower",
+      "peak_drift_bpm": -9.5
+    },
+    {
+      "start_seconds": 162.0,
+      "end_seconds": 192.0,
+      "direction": "slower",
+      "peak_drift_bpm": -9.5
+    },
+    {
+      "start_seconds": 222.0,
+      "end_seconds": 252.0,
+      "direction": "slower",
+      "peak_drift_bpm": -9.5
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# R
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Data (수업 자료)
+*.csv
+*.xlsx
+
+# OS
+.DS_Store
+Thumbs.db

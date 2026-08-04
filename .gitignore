@@ -1,0 +1,33 @@
+# 환경변수·자격증명
+.env
+.env.local
+.env.*.local
+
+# 시스템
+.DS_Store
+Thumbs.db
+
+# 빌드/의존성
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+build/
+.next/
+
+# IDE
+.vscode/
+.idea/
+
+# 임시
+*.tmp
+*.log
+
+# 대용량 입력자료 (원본 별도 보관)
+*.csv
+*.mp4
+*.mov
+*.wav
+*.mp3

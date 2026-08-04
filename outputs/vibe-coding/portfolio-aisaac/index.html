@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KIM MINSUP — Product / UX Research</title>
+<meta name="description" content="ユーザーの「なぜ」を掘り下げ、仮説検証でプロダクトを良くする。日韓バイリンガル・AIネイティブなプロダクト志向のAssistant PdM。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F3F3; --surface:#FFFFFF; --ink:#191D25; --muted:#909399;
+    --border:#DDDDDD; --accent:#F03737; --dark:#191D25; --on-dark:#F3F3F3;
+    --maxw:1080px;
+    --lat:"Outfit","Noto Sans JP",-apple-system,BlinkMacSystemFont,sans-serif;
+    --jp:"Noto Sans JP","Outfit",-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--jp);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .label{font-family:var(--lat);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px}
+  .label::before{content:"";width:26px;height:2px;background:var(--accent)}
+
+  /* NAV — floating pill */
+  nav{position:sticky;top:18px;z-index:60;padding:0 20px}
+  .nav-in{max-width:var(--maxw);margin:0 auto;display:flex;justify-content:space-between;align-items:center;
+    background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border:1px solid var(--border);
+    border-radius:100px;padding:12px 14px 12px 24px}
+  .logo{font-family:var(--lat);font-weight:800;font-size:19px;letter-spacing:-.01em;display:flex;align-items:center;gap:2px}
+  .logo .dot{color:var(--accent)}
+  .nav-mid{display:flex;gap:26px}
+  .nav-mid a{font-family:var(--lat);font-size:14.5px;font-weight:500;color:var(--ink);opacity:.7;transition:opacity .2s}
+  .nav-mid a:hover{opacity:1}
+  .nav-cta{font-family:var(--lat);font-weight:600;font-size:14.5px;background:var(--dark);color:var(--on-dark);
+    padding:11px 20px;border-radius:100px;display:flex;align-items:center;gap:8px;transition:transform .15s}
+  .nav-cta:hover{transform:translateY(-1px)}
+  .nav-cta .arw{color:var(--accent)}
+  @media(max-width:720px){.nav-mid{display:none}}
+
+  /* HERO */
+  header.hero{padding:70px 0 60px;position:relative;overflow:hidden}
+  .hero-eyebrow{font-family:var(--lat);font-weight:600;letter-spacing:.1em;font-size:14px;color:var(--muted);margin-bottom:26px}
+  .hero-eyebrow b{color:var(--ink);font-weight:700}
+  h1.hero-h{font-family:var(--jp);font-weight:900;font-size:clamp(46px,10vw,116px);line-height:1.04;letter-spacing:-.02em;max-width:14ch}
+  h1.hero-h .red{color:var(--accent)}
+  .hero-sub{margin-top:34px;font-size:clamp(17px,2.2vw,21px);max-width:560px;color:#3a3d45}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+  .pill{font-family:var(--lat);font-size:13.5px;font-weight:500;background:var(--surface);border:1px solid var(--border);
+    color:#4a4d54;padding:9px 16px;border-radius:100px}
+  .hero-cta{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap}
+  .btn{font-family:var(--lat);font-weight:600;font-size:15px;padding:14px 26px;border-radius:100px;display:inline-flex;align-items:center;gap:9px;transition:transform .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-dark{background:var(--dark);color:var(--on-dark)} .btn-dark .arw{color:var(--accent)}
+  .btn-line{background:transparent;border:1px solid var(--ink)}
+  /* geometric accent shape */
+  .geo{position:absolute;top:80px;right:-40px;width:340px;height:400px;background:var(--dark);
+    clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);opacity:.06;pointer-events:none}
+  .geo2{position:absolute;top:210px;right:150px;width:120px;height:150px;background:var(--accent);
+    clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.08;pointer-events:none}
+  @media(max-width:820px){.geo,.geo2{display:none}}
+
+  /* SECTION */
+  section{padding:84px 0;position:relative}
+  .sec-head{margin-bottom:44px}
+  h2{font-family:var(--jp);font-weight:900;font-size:clamp(30px,5vw,54px);line-height:1.1;letter-spacing:-.02em;margin-top:14px}
+
+  /* ABOUT */
+  .about .lead{font-size:clamp(19px,2.4vw,24px);font-weight:500;line-height:1.55;max-width:760px;margin-bottom:22px}
+  .about p{max-width:720px;color:#3a3d45;margin-bottom:16px}
+  .strengths{margin-top:44px;display:grid;gap:0;border-top:1px solid var(--border)}
+  .st{display:grid;grid-template-columns:auto 1fr;gap:24px;padding:24px 4px;border-bottom:1px solid var(--border);align-items:baseline}
+  .st .num{font-family:var(--lat);font-weight:800;font-size:clamp(28px,4vw,44px);color:var(--accent);line-height:1}
+  .st h3{font-size:18px;margin-bottom:4px}
+  .st p{color:var(--muted);font-size:15px;max-width:none}
+  .note{font-size:14px;color:var(--muted);margin-top:26px;max-width:720px}
+
+  /* WORKS — editorial, giant index */
+  .case{display:grid;grid-template-columns:minmax(90px,140px) 1fr;gap:28px;padding:56px 0;border-top:1px solid var(--border)}
+  .case:first-of-type{border-top:2px solid var(--ink)}
+  .case-index{font-family:var(--lat);font-weight:800;font-size:clamp(52px,8vw,104px);line-height:.82;color:transparent;
+    -webkit-text-stroke:1.5px var(--muted);letter-spacing:-.03em}
+  .case-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .case-tags span{font-family:var(--lat);font-size:12px;font-weight:500;letter-spacing:.02em;color:var(--muted);
+    border:1px solid var(--border);padding:4px 11px;border-radius:100px}
+  .case h3{font-family:var(--jp);font-weight:700;font-size:clamp(21px,3vw,30px);line-height:1.35;letter-spacing:-.01em;margin-bottom:22px}
+  .metric{display:inline-flex;align-items:baseline;gap:12px;border-left:3px solid var(--accent);padding:6px 0 6px 16px;margin-bottom:26px}
+  .metric b{font-family:var(--lat);font-size:clamp(26px,4vw,38px);font-weight:800;color:var(--accent);letter-spacing:-.01em}
+  .metric small{color:var(--muted);font-size:13px;max-width:280px;line-height:1.4}
+  .figure{margin:4px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 20px 14px}
+  .figure svg{width:100%;height:auto;display:block}
+  .figure figcaption{font-family:var(--lat);font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.5}
+  .figure figcaption .fc-red{color:var(--accent);font-weight:600}
+  .blocks{display:grid;gap:16px;max-width:760px}
+  .blk .k{font-family:var(--lat);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .blk .v{font-size:15.5px;line-height:1.65}
+  .blk .v .hl{color:var(--ink);font-weight:700;border-bottom:2px solid var(--accent)}
+  .case.soon{grid-template-columns:minmax(90px,140px) 1fr}
+  .case.soon .case-index{color:transparent;-webkit-text-stroke:1.5px var(--border)}
+  .case.soon .sbody{color:var(--muted)}
+  .case.soon .sbody h3{color:var(--muted);border:1px dashed var(--border);border-radius:14px;padding:22px;font-size:19px;font-weight:600}
+  @media(max-width:640px){
+    .case{grid-template-columns:1fr;gap:10px}
+    .case-index{font-size:56px}
+  }
+
+  /* BUILD */
+  .grid{display:grid;gap:16px}
+  @media(min-width:640px){.grid.two{grid-template-columns:1fr 1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;transition:transform .15s,border-color .2s}
+  .card:hover{transform:translateY(-3px);border-color:var(--ink)}
+  .card h4{font-family:var(--lat);font-weight:700;font-size:16.5px;margin-bottom:7px}
+  .card p{font-size:13.5px;color:var(--muted);line-height:1.6}
+  .card .link{font-family:var(--lat);color:var(--accent);font-size:13px;font-weight:600;margin-top:12px;display:inline-flex;gap:6px}
+  .card .priv{font-family:var(--lat);color:var(--muted);font-size:12px;margin-top:12px;display:inline-block}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:9px 16px;font-size:14px}
+  .chip b{font-family:var(--lat);color:var(--accent);font-weight:600;font-size:12.5px;letter-spacing:.04em;margin-right:6px}
+
+  /* CONTACT — inverted */
+  .invert{background:var(--dark);color:var(--on-dark);border-radius:28px;margin:40px 0;padding:64px 40px;position:relative;overflow:hidden}
+  .invert .label{color:#8a8d95}.invert .label::before{background:var(--accent)}
+  .invert h2{color:var(--on-dark)}
+  .invert .sec-sub{color:#b9bcc2;margin-top:14px;max-width:560px}
+  .invert .clinks{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+  .invert .btn-dark{background:var(--on-dark);color:var(--ink)}.invert .btn-dark .arw{color:var(--accent)}
+  .invert .btn-line{border-color:#4a4d54;color:var(--on-dark)}
+  .invert .cnote{color:#8a8d95;font-size:13.5px;margin-top:28px}
+  .invert .igeo{position:absolute;right:-60px;bottom:-80px;width:280px;height:320px;background:var(--accent);
+    clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);opacity:.14}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--muted);font-family:var(--lat);font-size:13px}
+
+  /* ── PRINT (PDF) ── */
+  @media print{
+    @page{ margin:12mm; }
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    nav{ position:static; }
+    .nav-in{ border-color:var(--border); }
+    .nav-cta, .hero-cta{ display:none; }
+    .geo, .geo2, .igeo{ display:none; }
+    body{ font-size:13px; }
+    header.hero{ padding:8px 0 20px; }
+    h1.hero-h{ font-size:44px; }
+    section{ padding:24px 0; }
+    .sec-head{ margin-bottom:22px; }
+    .case{ padding:26px 0; }
+    .case, .strengths, .invert, figure, .card, .about .lead{ page-break-inside:avoid; }
+    .invert{ margin:20px 0; }
+    a{ text-decoration:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo">MINSUP<span class="dot">.</span></div>
+    <div class="nav-mid">
+      <a href="#about">About</a>
+      <a href="#works">Works</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="nav-cta">Contact <span class="arw">→</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="geo"></div><div class="geo2"></div>
+  <div class="wrap">
+    <div class="hero-eyebrow">PRODUCT / UX RESEARCH　—　<b>KIM MINSUP・김민섭</b></div>
+    <h1 class="hero-h"><span class="red">「なぜ」</span>を掘り、<br>プロダクトを<br>良くする。</h1>
+    <p class="hero-sub">ユーザーの「なぜ」を掘り下げ、仮説を立て、データで検証しながらプロダクトを前に進めます。</p>
+    <div class="hero-tags">
+      <span class="pill">日韓バイリンガル / JLPT N1</span>
+      <span class="pill">AIネイティブなプロダクト志向</span>
+      <span class="pill">Assistant PdM @ MIRIDIH</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#works" class="btn btn-dark">Works を見る <span class="arw">→</span></a>
+      <a href="#contact" class="btn btn-line">Contact</a>
+    </div>
+  </div>
+</header>
+
+<section id="about" class="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label">About</div>
+      <h2>ユーザーを理解し、届ける。</h2>
+    </div>
+    <p class="lead">私が一番やりがいを感じるのは、自分で“なぜ？”と感じた仮説を、データで掘り下げて検証し、プロダクトを良くしていくことです。</p>
+    <p>韓国のデザインSaaS企業ミリディで、日本市場向けAIプロダクトの企画（Assistant PdM）をしています。ユーザーの声やデータから課題を見つけ、仮説を立て、エンジニアや企画メンバーを巻き込んで改善につなげてきました。最近は「良い企画の前提はユーザー理解だ」と考え、自らチームに提案してUXリサーチを立ち上げています。</p>
+    <div class="strengths">
+      <div class="st"><div class="num">01</div><div><h3>仮説と検証</h3><p>“何が・なぜ”を突き止め、データで確かめる。</p></div></div>
+      <div class="st"><div class="num">02</div><div><h3>オーナーシップ</h3><p>指示を待たず、自分で課題を定義して動く。</p></div></div>
+      <div class="st"><div class="num">03</div><div><h3>AIネイティブ</h3><p>企画だけでなく、AIで検証ツールを自分で作る。</p></div></div>
+    </div>
+    <p class="note">日本語（JLPT N1）と、日韓どちらも理解する視点を強みに、言語や市場をまたいでユーザーに届ける仕事に貢献したいと考えています。</p>
+  </div>
+</section>
+
+<section id="works">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label">Works</div>
+      <h2>ケーススタディ</h2>
+    </div>
+
+    <article class="case">
+      <div class="case-index">01</div>
+      <div>
+        <div class="case-tags"><span>ユーザー分析</span><span>仮説検証</span><span>データ分析</span></div>
+        <h3>AIスライド生成の初回失敗を 13.4% → 5.1% に。仮説から検証まで自分で回した改善。</h3>
+        <div class="metric"><b>13.4% → 5.1%</b><small>初回生成failure率（改善後 約20h・14,000+セッションで検証）</small></div>
+        <figure class="figure">
+          <svg viewBox="0 0 720 252" role="img" aria-label="改善前後の失敗率（route別）">
+            <g stroke="#e6e6e6" stroke-width="1">
+              <line x1="175" y1="46" x2="175" y2="232"/>
+              <line x1="359" y1="46" x2="359" y2="232"/>
+              <line x1="543" y1="46" x2="543" y2="232"/>
+            </g>
+            <g font-family="Outfit,sans-serif" font-size="10" fill="#909399" text-anchor="middle">
+              <text x="175" y="246">0%</text><text x="359" y="246">5%</text><text x="543" y="246">10%</text>
+            </g>
+            <g font-family="Outfit,sans-serif" font-size="11">
+              <circle cx="455" cy="22" r="5" fill="#c4c4c8"/><text x="467" y="26" fill="#909399">Before</text>
+              <circle cx="545" cy="22" r="5" fill="#F03737"/><text x="557" y="26" fill="#191D25">After</text>
+            </g>
+            <g font-family="'Noto Sans JP',Outfit,sans-serif">
+              <!-- 初回失敗 全体 -->
+              <text x="8" y="76" font-size="12.5" fill="#191D25" font-weight="700">初回失敗 全体</text>
+              <line x1="363" y1="72" x2="668" y2="72" stroke="#dcdcdc" stroke-width="3"/>
+              <circle cx="668" cy="72" r="6" fill="#c4c4c8"/><text x="681" y="76" font-size="11" fill="#909399">13.4%</text>
+              <circle cx="363" cy="72" r="6.5" fill="#F03737"/><text x="351" y="76" font-size="12.5" fill="#F03737" font-weight="700" text-anchor="end">5.1%</text>
+              <!-- 聞き返し -->
+              <text x="8" y="126" font-size="12" fill="#4a4d54">聞き返し</text>
+              <line x1="319" y1="122" x2="480" y2="122" stroke="#dcdcdc" stroke-width="3"/>
+              <circle cx="480" cy="122" r="6" fill="#c4c4c8"/><text x="493" y="126" font-size="11" fill="#909399">8.3%</text>
+              <circle cx="319" cy="122" r="6" fill="#F03737"/><text x="307" y="126" font-size="11.5" fill="#F03737" font-weight="700" text-anchor="end">3.9%</text>
+              <!-- 不適切な拒否 -->
+              <text x="8" y="176" font-size="12" fill="#4a4d54">不適切な拒否</text>
+              <line x1="193" y1="172" x2="278" y2="172" stroke="#dcdcdc" stroke-width="3"/>
+              <circle cx="278" cy="172" r="6" fill="#c4c4c8"/><text x="291" y="176" font-size="11" fill="#909399">2.8%</text>
+              <circle cx="193" cy="172" r="6" fill="#F03737"/><text x="181" y="176" font-size="11.5" fill="#F03737" font-weight="700" text-anchor="end">0.5%</text>
+              <!-- 空応答 -->
+              <text x="8" y="226" font-size="12" fill="#4a4d54">空応答・エラー</text>
+              <line x1="197" y1="222" x2="260" y2="222" stroke="#dcdcdc" stroke-width="3"/>
+              <circle cx="260" cy="222" r="6" fill="#c4c4c8"/><text x="273" y="226" font-size="11" fill="#909399">2.3%</text>
+              <circle cx="197" cy="222" r="6" fill="#F03737"/><text x="185" y="226" font-size="11.5" fill="#F03737" font-weight="700" text-anchor="end">0.6%</text>
+            </g>
+          </svg>
+          <figcaption>初回入力の生成失敗率（route別）。<span class="fc-red">すべてのrouteで低下</span>を確認（約20時間・14,000+セッション）。</figcaption>
+        </figure>
+        <div class="blocks">
+          <div class="blk"><div class="k">Background / 背景</div><div class="v">ユーザーの声(VoC)を追う中で、「AIスライド生成の最初の入力でAIが応答を生成できず、そのまま離脱する」ユーザーが一定数いることを確認。初回体験が定着に直結していた。</div></div>
+          <div class="blk"><div class="k">Hypothesis / 仮説</div><div class="v"><span class="hl">失敗率を下げれば → 満足度が上がり → retentionが向上する</span>はずだ。</div></div>
+          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">約3万件を分析し、失敗原因を3つのroute（聞き返し／不適切な拒否／空応答）に分類。優先度を共有し、緊急バグはエンジニアへ、残りは企画メンバーと議論。<span class="hl">分析基盤はAIで自作。</span></div></div>
+          <div class="blk"><div class="k">Result / 結果</div><div class="v">初回失敗を 13.4% → 5.1%（route別すべて改善）。定性的にも失敗入力の大半が正常処理へ。retention改善の土台をつくった（満足度・retentionへの影響は継続trackingが次の対象）。</div></div>
+          <div class="blk"><div class="k">Learning / 学び</div><div class="v">「発見→仮説→改善→検証」を一人で閉じた経験。</div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="case-index">02</div>
+      <div>
+        <div class="case-tags"><span>課題定義</span><span>オーナーシップ</span><span>UXリサーチ</span><span>進行中</span></div>
+        <h3>「なぜ企画が通らないのか」を突き止め、UXリサーチを自ら立ち上げた。</h3>
+        <div class="blocks">
+          <div class="blk"><div class="k">Background / 背景</div><div class="v">PMとして企画を出しても通らないことがあり、理由を掘るとデータ・明確なユーザー仮説・説得力が足りていなかった。根本は「チームがユーザーを深く理解できていない」こと。</div></div>
+          <div class="blk"><div class="k">Hypothesis / 仮説</div><div class="v"><span class="hl">良い企画の前提は“正確なユーザー理解”。体系的に理解する仕組みをつくれば、企画の精度も説得力も上がる。</span></div></div>
+          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">1on1で課題を提起 → チームも共感し、データの多い韓国ユーザーをまず見る方向に整列。4つの問い（誰を／課題は何か／解決できているか／どう解決すべきか）を軸に、インタビュー設計・定性分析のフレームワークを整備。</div></div>
+          <div class="blk"><div class="k">Result / 結果</div><div class="v">現在進行中。これは<span class="hl">指示ではなく、自分が必要だと感じて立ち上げた</span>取り組みで、問題定義からチームを動かすところまでを自分で行った。</div></div>
+          <div class="blk"><div class="k">Learning / 学び</div><div class="v">課題は与えられるものではなく、自分で定義してチームを動かせるものだと実感した。</div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="case-index">03</div>
+      <div>
+        <div class="case-tags"><span>AIネイティブ</span><span>自動化</span><span>Python</span><span>LLM評価</span></div>
+        <h3>LLM品質評価のQAパイプラインをAIで自作。そして「LLMでLLMを評価する」難しさに向き合った。</h3>
+        <figure class="figure">
+          <svg viewBox="0 0 720 100" role="img" aria-label="QAパイプラインの構成">
+            <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#F03737"/></marker></defs>
+            <g font-family="'Noto Sans JP',Outfit,sans-serif" font-size="12.5" fill="#191D25" text-anchor="middle">
+              <rect x="6" y="20" width="150" height="56" rx="12" fill="#fff" stroke="#191D25" stroke-width="1.4"/><text x="81" y="52">API呼び出し</text>
+              <rect x="192" y="20" width="150" height="56" rx="12" fill="#fff" stroke="#191D25" stroke-width="1.4"/><text x="267" y="52">生成物JSON収集</text>
+              <rect x="378" y="20" width="150" height="56" rx="12" fill="#fff" stroke="#191D25" stroke-width="1.4"/><text x="453" y="52">マルチターン修正</text>
+              <rect x="564" y="20" width="150" height="56" rx="12" fill="#191D25" stroke="#191D25"/><text x="639" y="52" fill="#F3F3F3">外部LLM判定</text>
+            </g>
+            <g stroke="#F03737" stroke-width="2" marker-end="url(#ar)">
+              <line x1="160" y1="48" x2="186" y2="48"/>
+              <line x1="346" y1="48" x2="372" y2="48"/>
+              <line x1="532" y1="48" x2="558" y2="48"/>
+            </g>
+          </svg>
+          <figcaption>自社のAI機能をAPI経由で自動実行し、生成物を外部LLMが <span class="fc-red">PASS / FAIL</span> 判定。評価は2層（Rule-based：構造・数値 ／ LLM-based：幻覚・言語混在・応答適切性）。※実運用は判定精度の壁により見送り。</figcaption>
+        </figure>
+        <div class="blocks">
+          <div class="blk"><div class="k">Background / 背景</div><div class="v">LLMプロダクトは出力が確率的なため、毎回結果が変わる。手動QAでは、幻覚や文脈忘れの再現率把握・優先度づけに限界があった。</div></div>
+          <div class="blk"><div class="k">Hypothesis / 仮説</div><div class="v"><span class="hl">API経由の自動化 + LLM評価を入れれば、間欠的な問題を“再現確率(%)”として数値化し、検証を大量・反復で回せる。</span></div></div>
+          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">Pythonで自社プロダクトのAPIを直接呼び出してスライドを自動生成し（必要に応じて「25枚に修正」などのマルチターン要求も自動化）、生成物(JSON)を外部LLMに渡してPASS/FAILを判定。判定は2層で設計——構造・数値はルールで（Rule-based）、幻覚・言語混在などの中身はLLMが読んで（LLM-based）チェックする。<span class="hl">これらをすべてAIで自作した。</span></div></div>
+          <div class="blk"><div class="k">Result / 結果</div><div class="v">パイプラインは構築できたが、<span class="hl">実運用までは至らなかった</span>。理由は「LLMでLLMを評価する」判定精度を十分に担保できなかったこと。判定のブレが自動QAの信頼性の壁になった。</div></div>
+          <div class="blk"><div class="k">Learning / 学び</div><div class="v">①企画者でもAIで検証ツールを自作できる実行力を得た。②「自動化・LLM評価は万能ではなく、どこまで信頼できるかを見極めることが重要」だと身をもって学んだ。この“LLM-as-judgeの限界”の実感は、AIプロダクトに関わる上で大きな財産。</div></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section id="other">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label">Other Work</div>
+      <h2>その他の取り組み</h2>
+    </div>
+    <div class="chips">
+      <span class="chip"><b>USER RESEARCH</b>VoC月次分析 / ユーザーチャットログ分析</span>
+      <span class="chip"><b>RESEARCH</b>製品の市場動向 / 競合5製品・価格政策の分析</span>
+      <span class="chip"><b>PLANNING</b>プロダクト改善・新機能を多数企画</span>
+      <span class="chip"><b>QA</b>テストケース設計 / 品質評価</span>
+      <span class="chip"><b>COLLAB</b>製品ウェビナー支援 / 製品利用ガイドライン提供</span>
+    </div>
+  </div>
+</section>
+
+<section id="contact" style="padding-top:20px">
+  <div class="wrap">
+    <div class="invert">
+      <div class="igeo"></div>
+      <div class="label">Contact</div>
+      <h2>お気軽に、ご連絡ください。</h2>
+      <p class="sec-sub">ユーザーを深く理解し、プロダクトを届ける仕事に挑戦したいです。</p>
+      <div class="clinks">
+        <a class="btn btn-dark" href="mailto:ricky111529@gmail.com">✉ ricky111529@gmail.com <span class="arw">→</span></a>
+      </div>
+      <p class="cnote">KIM MINSUP（김민섭）／ 漢陽大学 経営学科 卒業見込 2026.8 ／ JLPT N1・TOEIC 820 ／ Assistant PdM @ MIRIDIH</p>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 KIM MINSUP — Built with curiosity &amp; AI.</footer>
+
+<script>
+  document.querySelectorAll('[data-demo]').forEach(a=>{
+    a.addEventListener('click',e=>{if(a.getAttribute('href')==='#'){e.preventDefault();alert('デプロイ後にリンクを差し込みます');}});
+  });
+</script>
+</body>
+</html>

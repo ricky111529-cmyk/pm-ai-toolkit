@@ -1,0 +1,167 @@
+{
+  "system_instruction": "당신은 초보 밴드를 위한 합주 복기 코치입니다. 반드시 제공된 분석 근거만 사용해 한국어로 답하세요.\n\n규칙:\n1. 구간별 피드백을 먼저 제시하고, 마지막에 총평 하나만 작성합니다.\n2. 각 구간은 데이터 관찰 → 그 구간을 다시 들어볼 이유 → 다음 합주에서 해볼 행동 1개 순서로 씁니다.\n3. confidence가 low이거나 at_offset_limit이 true인 악기별 후보는 수치·원인을 단정하지 마세요. \"추정\", \"확인 후보\", \"원본과 스템을 함께 들어보세요\"로 표현합니다.\n4. confidence가 medium 이상인 후보만 수치(ms)를 언급할 수 있습니다. 그래도 멤버 개인의 실수·원인·주법을 단정하지 마세요.\n5. 세션 구성에 없는 악기를 언급하지 마세요. 기타가 두 명이어도 분석 단위가 guitar이면 \"기타 파트\"라고만 표현하세요.\n6. \"누가 틀렸다\", \"문제의 원인은\" 같은 비난·인과 표현을 쓰지 마세요.\n7. feedback은 2문장 이내, practice_action은 실제 다음 합주에서 할 수 있는 한 문장으로 씁니다.\n8. overall_feedback은 2~3문장으로, 반복된 패턴과 다음 합주의 한 가지 우선 목표만 정리합니다.",
+  "response_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "segment_feedback",
+      "overall_feedback"
+    ],
+    "properties": {
+      "segment_feedback": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_seconds",
+            "end_seconds",
+            "headline",
+            "feedback",
+            "practice_action"
+          ],
+          "properties": {
+            "start_seconds": {
+              "type": "number"
+            },
+            "end_seconds": {
+              "type": "number"
+            },
+            "headline": {
+              "type": "string"
+            },
+            "feedback": {
+              "type": "string"
+            },
+            "practice_action": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "overall_feedback": {
+        "type": "string"
+      }
+    }
+  },
+  "input": {
+    "session_parts": [
+      "drums",
+      "bass",
+      "vocals",
+      "guitar"
+    ],
+    "tempo_baseline_bpm": 161.5,
+    "segments": [
+      {
+        "time_range": "0:48–1:06",
+        "start_seconds": 48.0,
+        "end_seconds": 66.0,
+        "tempo_observation": {
+          "direction": "slower",
+          "peak_drift_bpm": -9.5,
+          "baseline_bpm": 161.5
+        },
+        "part_timing_candidates": {
+          "vocals": {
+            "offset_ms": 186,
+            "direction": "later",
+            "peak_correlation": 0.118,
+            "confidence": "low",
+            "confidence_score": 0.118,
+            "at_offset_limit": false
+          },
+          "guitar": {
+            "offset_ms": -197,
+            "direction": "earlier",
+            "peak_correlation": 0.413,
+            "confidence": "low",
+            "confidence_score": 0.413,
+            "at_offset_limit": true
+          },
+          "bass": {
+            "offset_ms": -197,
+            "direction": "earlier",
+            "peak_correlation": 0.13,
+            "confidence": "low",
+            "confidence_score": 0.13,
+            "at_offset_limit": true
+          }
+        }
+      },
+      {
+        "time_range": "2:00–2:24",
+        "start_seconds": 120.0,
+        "end_seconds": 144.0,
+        "tempo_observation": {
+          "direction": "slower",
+          "peak_drift_bpm": -9.5,
+          "baseline_bpm": 161.5
+        },
+        "part_timing_candidates": {
+          "vocals": {
+            "offset_ms": -12,
+            "direction": "aligned",
+            "peak_correlation": 0.239,
+            "confidence": "low",
+            "confidence_score": 0.239,
+            "at_offset_limit": false
+          },
+          "guitar": {
+            "offset_ms": 174,
+            "direction": "later",
+            "peak_correlation": 0.299,
+            "confidence": "low",
+            "confidence_score": 0.299,
+            "at_offset_limit": false
+          },
+          "bass": {
+            "offset_ms": 12,
+            "direction": "aligned",
+            "peak_correlation": 0.258,
+            "confidence": "low",
+            "confidence_score": 0.258,
+            "at_offset_limit": false
+          }
+        }
+      },
+      {
+        "time_range": "3:42–4:12",
+        "start_seconds": 222.0,
+        "end_seconds": 252.0,
+        "tempo_observation": {
+          "direction": "slower",
+          "peak_drift_bpm": -9.5,
+          "baseline_bpm": 161.5
+        },
+        "part_timing_candidates": {
+          "vocals": {
+            "offset_ms": 0,
+            "direction": "aligned",
+            "peak_correlation": 0.053,
+            "confidence": "low",
+            "confidence_score": 0.049,
+            "at_offset_limit": false
+          },
+          "guitar": {
+            "offset_ms": -46,
+            "direction": "earlier",
+            "peak_correlation": 0.347,
+            "confidence": "medium",
+            "confidence_score": 0.347,
+            "at_offset_limit": false
+          },
+          "bass": {
+            "offset_ms": 12,
+            "direction": "aligned",
+            "peak_correlation": 0.125,
+            "confidence": "low",
+            "confidence_score": 0.099,
+            "at_offset_limit": false
+          }
+        }
+      }
+    ]
+  },
+  "user_message": "아래 분석 근거를 바탕으로 합주 리포트를 생성하세요. JSON 스키마를 정확히 따르세요.\n\n{\"session_parts\": [\"drums\", \"bass\", \"vocals\", \"guitar\"], \"segments\": [{\"time_range\": \"0:48–1:06\", \"start_seconds\": 48.0, \"end_seconds\": 66.0, \"tempo_observation\": {\"direction\": \"slower\", \"peak_drift_bpm\": -9.5, \"baseline_bpm\": 161.5}, \"part_timing_candidates\": {\"vocals\": {\"offset_ms\": 186, \"direction\": \"later\", \"peak_correlation\": 0.118, \"confidence\": \"low\", \"confidence_score\": 0.118, \"at_offset_limit\": false}, \"guitar\": {\"offset_ms\": -197, \"direction\": \"earlier\", \"peak_correlation\": 0.413, \"confidence\": \"low\", \"confidence_score\": 0.413, \"at_offset_limit\": true}, \"bass\": {\"offset_ms\": -197, \"direction\": \"earlier\", \"peak_correlation\": 0.13, \"confidence\": \"low\", \"confidence_score\": 0.13, \"at_offset_limit\": true}}}, {\"time_range\": \"2:00–2:24\", \"start_seconds\": 120.0, \"end_seconds\": 144.0, \"tempo_observation\": {\"direction\": \"slower\", \"peak_drift_bpm\": -9.5, \"baseline_bpm\": 161.5}, \"part_timing_candidates\": {\"vocals\": {\"offset_ms\": -12, \"direction\": \"aligned\", \"peak_correlation\": 0.239, \"confidence\": \"low\", \"confidence_score\": 0.239, \"at_offset_limit\": false}, \"guitar\": {\"offset_ms\": 174, \"direction\": \"later\", \"peak_correlation\": 0.299, \"confidence\": \"low\", \"confidence_score\": 0.299, \"at_offset_limit\": false}, \"bass\": {\"offset_ms\": 12, \"direction\": \"aligned\", \"peak_correlation\": 0.258, \"confidence\": \"low\", \"confidence_score\": 0.258, \"at_offset_limit\": false}}}, {\"time_range\": \"3:42–4:12\", \"start_seconds\": 222.0, \"end_seconds\": 252.0, \"tempo_observation\": {\"direction\": \"slower\", \"peak_drift_bpm\": -9.5, \"baseline_bpm\": 161.5}, \"part_timing_candidates\": {\"vocals\": {\"offset_ms\": 0, \"direction\": \"aligned\", \"peak_correlation\": 0.053, \"confidence\": \"low\", \"confidence_score\": 0.049, \"at_offset_limit\": false}, \"guitar\": {\"offset_ms\": -46, \"direction\": \"earlier\", \"peak_correlation\": 0.347, \"confidence\": \"medium\", \"confidence_score\": 0.347, \"at_offset_limit\": false}, \"bass\": {\"offset_ms\": 12, \"direction\": \"aligned\", \"peak_correlation\": 0.125, \"confidence\": \"low\", \"confidence_score\": 0.099, \"at_offset_limit\": false}}}]}"
+}

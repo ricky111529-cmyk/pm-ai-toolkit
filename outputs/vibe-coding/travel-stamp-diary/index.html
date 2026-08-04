@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<!--
+  생성: 2026-06-04 | 수정: 2026-06-05 | 작성자: mskim05+Claude
+  맥락: 여행 스탬프 다이어리 모바일 웹앱 — 하늘색/여름 청량감, 아날로그 스크랩북, 실제 책장 넘김.
+  인트로(최초 1회): 표지 드래그로 펼침 → 빈 배경 티켓을 위→아래로 뜯어 시작.
+  본편: 한 화면=한 페이지, 좌우 스와이프 시 3D 책장 넘김. 칸 클릭 시 카메라 촬영/사진 선택. localStorage 저장.
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#bfe3f5" />
+<title>여행 스탬프 다이어리</title>
+<style>
+  :root {
+    /* 하늘색 / 여름 청량 팔레트 */
+    --sky: #bfe3f5;
+    --sky-soft: #e3f2fb;
+    --sky-deep: #4e9ed4;
+    --sky-ink: #3f7fa3;
+    --paper: #fdfdf6;      /* 따뜻한 화이트 종이 */
+    --paper-2: #f6f9f2;
+    --ink: #3b4a58;        /* 슬레이트 (손글씨) */
+    --ink-soft: #7d8c9a;
+    --line: #d3e6f1;       /* 격자/괘선 */
+    --washi-blue: #a8d6ee;
+    --mint: #bfe6d2;
+    --lemon: #f7ecae;
+    --coral: #f4a79c;
+    --grid: rgba(120,170,200,.16);
+    --gold: #d9b25a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body {
+    font-family: "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 50% -10%, #ffffff 0%, transparent 45%),
+      linear-gradient(180deg, var(--sky) 0%, var(--sky-soft) 55%, #fef9ec 100%);
+    display: flex; flex-direction: column; height: 100dvh;
+  }
+
+  /* 손글씨 폰트 느낌(시스템 세리프 + 약간의 기울임으로 아날로그) */
+  .hand { font-family: "Bradley Hand", "Comic Sans MS", "Apple SD Gothic Neo", cursive; }
+
+  /* ============================================================
+     인트로 (최초 1회)
+     ============================================================ */
+  .onboard { position: fixed; inset: 0; z-index: 100; transition: opacity .45s ease; }
+  .ob-stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+
+  /* --- 표지 --- */
+  .cover-stage {
+    background:
+      radial-gradient(circle at 50% 15%, #ffffff 0%, transparent 50%),
+      linear-gradient(180deg, var(--sky) 0%, var(--sky-soft) 70%, #fef9ec 100%);
+    perspective: 1700px;
+  }
+  .cover {
+    position: relative; width: min(78vw, 320px); height: min(62dvh, 470px);
+    border-radius: 6px 14px 14px 6px;
+    background: linear-gradient(135deg, #9ed3ef 0%, #6fb9e0 55%, #5aa9d6 100%);
+    box-shadow: 0 22px 50px rgba(40,90,120,.4), inset 0 0 0 1px rgba(255,255,255,.25);
+    transform-origin: left center; will-change: transform; cursor: grab;
+    touch-action: pan-y; overflow: hidden;
+  }
+  .cover:active { cursor: grabbing; }
+  /* 린넨 결 */
+  .cover::after {
+    content: ""; position: absolute; inset: 0; opacity: .12; pointer-events: none;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.6) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.5) 0 1px, transparent 1px 3px);
+  }
+  .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 16px; background: linear-gradient(90deg, rgba(0,0,0,.22), rgba(0,0,0,.04)); border-right: 1px solid rgba(255,255,255,.25); }
+  .cover-inner {
+    position: absolute; inset: 24px 22px 24px 34px; border: 1.5px solid rgba(255,255,255,.7);
+    border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: #fff;
+  }
+  .cover-inner .sun { font-size: 44px; margin-bottom: 16px; filter: drop-shadow(0 2px 4px rgba(0,0,0,.15)); }
+  .cover-inner h1 { font-family: Georgia, "Times New Roman", serif; font-size: 27px; margin: 0; letter-spacing: 3px; text-shadow: 0 1px 3px rgba(0,0,0,.18); line-height: 1.25; }
+  .cover-inner .sub { font-size: 12px; letter-spacing: 4px; opacity: .92; margin-top: 10px; }
+  .cover-inner .yr { margin-top: 26px; font-family: Georgia, serif; font-size: 15px; letter-spacing: 4px; opacity: .85; border-top: 1px solid rgba(255,255,255,.55); padding-top: 12px; }
+  .cover .band { position: absolute; right: 26px; top: -10px; bottom: -10px; width: 11px; background: rgba(40,90,120,.28); box-shadow: inset 1px 0 2px rgba(255,255,255,.25); }
+  .cover-hint { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.92); font-size: 12px; letter-spacing: 1px; display: flex; gap: 6px; white-space: nowrap; animation: nudgeX 1.4s ease-in-out infinite; }
+  @keyframes nudgeX { 0%,100%{ transform: translateX(-50%); } 50%{ transform: translateX(calc(-50% - 8px)); } }
+
+  /* --- 티켓 (위→아래로 뜯기) --- */
+  .ticket-stage {
+    background:
+      radial-gradient(circle at 50% 20%, #ffffff 0%, transparent 55%),
+      linear-gradient(180deg, var(--sky-soft) 0%, #eaf6fc 60%, #fef9ec 100%);
+  }
+  .ticket {
+    position: relative; display: flex; flex-direction: column;
+    width: min(72vw, 280px);
+    filter: drop-shadow(0 16px 30px rgba(40,90,120,.3));
+    touch-action: pan-y;
+  }
+  .ticket-main, .ticket-stub { background: var(--paper); position: relative; padding: 16px 18px; }
+  .ticket-main {
+    border-radius: 14px 14px 0 0; text-align: center;
+    border-top: 4px solid var(--sky-deep);
+  }
+  .ticket-main .tk-label { font-size: 9px; letter-spacing: 3px; color: var(--sky-ink); font-weight: 800; }
+  .ticket-main .tk-title { font-family: Georgia, serif; font-size: 21px; font-weight: 800; margin: 5px 0 12px; color: var(--ink); }
+  .tk-row { display: flex; justify-content: center; gap: 20px; }
+  .tk-cell .k { font-size: 8px; letter-spacing: 1px; color: var(--ink-soft); }
+  .tk-cell .v { font-size: 13px; font-weight: 700; color: var(--ink); font-family: Georgia, serif; }
+  /* 가로 천공 + 좌우 반원 노치 */
+  .perf { position: relative; height: 0; margin: 0 10px; border-top: 2px dashed #9fb9c8; }
+  .perf::before, .perf::after { content: ""; position: absolute; top: -10px; width: 18px; height: 18px; border-radius: 50%; background: #ecf6fc; }
+  .perf::before { left: -19px; } .perf::after { right: -19px; }
+  .ticket-stub {
+    border-radius: 0 0 14px 14px; text-align: center; cursor: grab; will-change: transform;
+    background: linear-gradient(180deg, var(--paper), #f3f9ef); touch-action: none;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .ticket-stub:active { cursor: grabbing; }
+  .ticket-stub .st-air { font-size: 24px; }
+  .ticket-stub .st-seat { font-family: Georgia, serif; font-size: 17px; font-weight: 800; color: var(--sky-deep); margin: 3px 0; }
+  .ticket-stub .st-pull { font-size: 9px; color: var(--ink-soft); letter-spacing: 1px; }
+  .ticket-hint { margin-top: 26px; color: var(--sky-ink); font-size: 13px; letter-spacing: 1px; display: flex; flex-direction: column; align-items: center; gap: 2px; animation: nudgeY 1.4s ease-in-out infinite; }
+  @keyframes nudgeY { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(7px); } }
+
+  /* ============================================================
+     상단 바
+     ============================================================ */
+  .topbar { flex: 0 0 auto; padding: calc(env(safe-area-inset-top) + 12px) 18px 4px; text-align: center; color: var(--sky-ink); }
+  .topbar h1 { font-family: Georgia, serif; font-size: 17px; margin: 0; letter-spacing: 3px; }
+  .topbar .counter { font-size: 11px; opacity: .8; margin-top: 2px; letter-spacing: 1px; }
+
+  /* ============================================================
+     책 (3D 책장 넘김)
+     ============================================================ */
+  .book-wrap { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; padding: 6px 18px 4px; perspective: 2200px; }
+  .book {
+    position: relative; width: 100%; max-width: 400px; height: min(72dvh, 620px);
+    transform-style: preserve-3d;
+  }
+  /* 좌측 책등 그림자 */
+  .book::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 16px; z-index: 6; pointer-events: none; background: linear-gradient(90deg, rgba(40,70,90,.22), transparent); border-radius: 6px 0 0 6px; }
+  /* 우측 페이지 두께(겹쳐진 종이 단면) */
+  .book::after { content: ""; position: absolute; right: -7px; top: 10px; bottom: 10px; width: 7px; z-index: 0; border-radius: 0 4px 4px 0; background: repeating-linear-gradient(#ffffff, #ffffff 1px, #d9e8f1 1px, #d9e8f1 3px); box-shadow: 2px 2px 6px rgba(40,90,120,.18); }
+
+  .sheet, .leaf {
+    position: absolute; inset: 0; border-radius: 5px 8px 8px 5px;
+    transform-origin: left center;
+  }
+  .sheet { z-index: 1; box-shadow: 0 14px 30px rgba(40,90,120,.28); }
+  .sheet.under { z-index: 2; }
+  .leaf { z-index: 4; transform-style: preserve-3d; }
+  .leaf .face { position: absolute; inset: 0; border-radius: 5px 8px 8px 5px; overflow: hidden; backface-visibility: hidden; box-shadow: 0 14px 30px rgba(40,90,120,.28); }
+  .leaf .face.back { transform: rotateY(180deg); background: var(--paper); }
+  .leaf .face.back::after { /* 뒷면 살짝 비치는 괘선 */ content: ""; position: absolute; inset: 0; opacity: .5; background: repeating-linear-gradient(0deg, transparent 0 27px, var(--line) 27px 28px); }
+  .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(40,70,90,.32), rgba(40,70,90,0) 55%); opacity: 0; pointer-events: none; }
+
+  .leaf.go-next { animation: turnNext .72s cubic-bezier(.42,.04,.22,1) forwards; }
+  .leaf.go-prev { animation: turnPrev .72s cubic-bezier(.42,.04,.22,1) forwards; }
+  @keyframes turnNext { from { transform: rotateY(0deg); } to { transform: rotateY(-179deg); } }
+  @keyframes turnPrev { from { transform: rotateY(179deg); } to { transform: rotateY(0deg); } }
+  .leaf.go-next .shade, .leaf.go-prev .shade { animation: shadeSweep .72s ease-in-out forwards; }
+  @keyframes shadeSweep { 0% { opacity: 0; } 45% { opacity: .45; } 100% { opacity: 0; } }
+  .sheet.bounce { animation: bounce .3s ease; }
+  @keyframes bounce { 0%,100%{ transform: rotateY(0); } 50%{ transform: rotateY(-6deg); } }
+
+  /* ============================================================
+     다이어리 페이지 (스크랩북 / 아날로그)
+     ============================================================ */
+  .page2 {
+    position: absolute; inset: 0; background: var(--paper); overflow: hidden;
+    padding: 20px 18px;
+  }
+  .page2.grid { background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 22px 22px; }
+  .page2.dotpaper  { background-image: radial-gradient(var(--grid) 1.4px, transparent 1.4px); background-size: 20px 20px; }
+  /* 종이 grain */
+  .page2::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* 좌측 제본 구멍 */
+  .page2 .binding { position: absolute; left: 7px; top: 0; bottom: 0; width: 14px; display: flex; flex-direction: column; justify-content: space-around; padding: 40px 0; }
+  .page2 .binding i { width: 9px; height: 9px; border-radius: 50%; background: var(--sky-soft); box-shadow: inset 0 1px 2px rgba(40,90,120,.35); }
+
+  .page2 .stage { position: absolute; inset: 18px 16px 16px 28px; }
+
+  /* 마스킹테이프 */
+  .washi { position: absolute; height: 22px; width: 76px; opacity: .82; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .washi.blue { background: repeating-linear-gradient(45deg, var(--washi-blue) 0 7px, #c4e4f3 7px 14px); }
+  .washi.gingham { background: repeating-linear-gradient(0deg, rgba(168,214,238,.55) 0 6px, transparent 6px 12px), repeating-linear-gradient(90deg, rgba(168,214,238,.55) 0 6px, transparent 6px 12px), #eaf6fc; }
+  .washi.mint { background: repeating-linear-gradient(45deg, var(--mint) 0 7px, #d6f0e2 7px 14px); }
+
+  /* 테이프로 붙인 사진 */
+  .photo-card { position: absolute; cursor: pointer; }
+  .photo-card .tape { position: absolute; width: 46px; height: 17px; background: rgba(247,236,174,.7); box-shadow: 0 1px 2px rgba(0,0,0,.08); z-index: 3; }
+  .photo-card .tape.tl { top: -8px; left: -6px; transform: rotate(-32deg); }
+  .photo-card .tape.tr { top: -8px; right: -6px; transform: rotate(32deg); }
+  .photo-slot {
+    position: relative; width: 100%; height: 100%; border-radius: 2px; overflow: hidden;
+    background: repeating-linear-gradient(45deg, #eef6f0, #eef6f0 9px, #e4eee6 9px, #e4eee6 18px);
+    border: 1px solid #fff; box-shadow: 0 4px 12px rgba(40,90,120,.18), 0 0 0 1px var(--line);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+  .empty-hint { text-align: center; color: var(--ink-soft); }
+  .empty-hint .cam { font-size: 38px; }
+  .empty-hint .txt { font-size: 12px; margin-top: 6px; }
+
+  /* 스탬프 (사진 우측하단 → 종이까지 걸침, 여름 잉크) */
+  .stamp {
+    position: absolute; width: 96px; height: 96px; border: 3px solid var(--sky-ink); color: var(--sky-ink);
+    border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transform: rotate(-13deg); background: rgba(253,253,246,.5); text-align: center; z-index: 4; pointer-events: none;
+    opacity: .9;
+  }
+  .stamp::after { content: ""; position: absolute; inset: 6px; border: 1.5px solid var(--sky-ink); border-radius: 50%; opacity: .5; }
+  .stamp .s-top { font-size: 10px; letter-spacing: 1.5px; font-weight: 800; }
+  .stamp .s-day { font-size: 30px; font-weight: 800; line-height: .95; font-family: Georgia, serif; }
+  .stamp .s-mon { font-size: 11px; letter-spacing: 2px; font-weight: 700; }
+
+  /* 메모 노트지 */
+  .note-card {
+    position: absolute; background: #fffdf3; border-radius: 3px; padding: 12px 14px;
+    box-shadow: 0 5px 14px rgba(40,90,120,.16); border: 1px solid #f0ead2;
+    background-image: repeating-linear-gradient(0deg, transparent 0 21px, #eadfb8 21px 22px);
+  }
+  .note-card .place { font-family: Georgia, serif; font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+  .note-card .date { font-size: 11px; color: var(--sky-deep); font-weight: 700; letter-spacing: .5px; margin-bottom: 8px; }
+  .note-card .memo { font-size: 13px; color: var(--ink-soft); line-height: 22px; white-space: pre-wrap; }
+
+  /* 손그림 스티커(도들) */
+  .doodle { position: absolute; font-size: 26px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.08)); pointer-events: none; }
+
+  .edit-btn {
+    position: absolute; bottom: 6px; right: 8px; border: 1px dashed var(--line); background: rgba(255,255,255,.7);
+    color: var(--ink-soft); font-size: 11px; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-family: inherit; z-index: 5;
+  }
+  .page-num { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-family: Georgia, serif; font-size: 11px; color: var(--ink-soft); letter-spacing: 2px; }
+
+  /* 새 페이지 */
+  .page2.add { display: flex; align-items: center; justify-content: center; }
+  .add-inner { text-align: center; color: var(--sky-ink); border: 2px dashed var(--washi-blue); border-radius: 14px; padding: 44px 30px; cursor: pointer; background: rgba(255,255,255,.4); }
+  .add-inner .plus { font-size: 50px; line-height: 1; }
+  .add-inner .t { font-size: 14px; margin-top: 12px; letter-spacing: 1px; }
+
+  /* 좌우 넘김 버튼(보조) */
+  .nav { position: absolute; bottom: 50%; transform: translateY(50%); z-index: 7; width: 38px; height: 38px; border-radius: 50%; border: none; background: rgba(255,255,255,.65); color: var(--sky-ink); font-size: 20px; cursor: pointer; box-shadow: 0 3px 8px rgba(40,90,120,.2); display: flex; align-items: center; justify-content: center; }
+  .nav.prev { left: -6px; } .nav.next { right: -10px; }
+  .nav:disabled { opacity: .25; cursor: default; }
+
+  .dots { flex: 0 0 auto; display: flex; gap: 6px; justify-content: center; padding: 8px 0 calc(env(safe-area-inset-bottom) + 12px); flex-wrap: wrap; max-width: 90%; margin: 0 auto; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(63,127,163,.28); transition: all .2s; }
+  .dot.active { background: var(--sky-deep); width: 18px; border-radius: 4px; }
+
+  /* ============================================================
+     모달
+     ============================================================ */
+  .modal-bg { position: fixed; inset: 0; background: rgba(40,70,90,.55); display: none; align-items: flex-end; justify-content: center; z-index: 60; backdrop-filter: blur(2px); }
+  .modal-bg.show { display: flex; }
+  .modal { background: var(--paper); border-radius: 18px 18px 0 0; width: 100%; max-width: 480px; padding: 18px 20px calc(env(safe-area-inset-bottom) + 20px); box-shadow: 0 -10px 40px rgba(40,70,90,.35); max-height: 92dvh; overflow-y: auto; animation: slideUp .25s ease; }
+  @keyframes slideUp { from { transform: translateY(40px); opacity: .6; } to { transform: none; opacity: 1; } }
+  .modal .grab { width: 40px; height: 4px; background: var(--line); border-radius: 2px; margin: 0 auto 16px; }
+  .modal h2 { font-family: Georgia, serif; margin: 0 0 14px; font-size: 19px; }
+  .preview { position: relative; aspect-ratio: 3 / 4; border-radius: 8px; overflow: hidden; background: #e8eef0; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid var(--line); max-height: 38dvh; }
+  .preview img { width: 100%; height: 100%; object-fit: cover; }
+  .preview .ph { color: var(--ink-soft); font-size: 13px; text-align: center; }
+  video#cam { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .cam-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+  label.field { display: block; font-size: 12px; color: var(--ink-soft); margin: 10px 0 4px; font-weight: 600; }
+  input[type=text], input[type=date], textarea { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 11px 12px; font-size: 15px; color: var(--ink); font-family: inherit; }
+  textarea { resize: vertical; min-height: 60px; }
+  .btn { border: none; border-radius: 10px; padding: 13px 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; flex: 1; transition: filter .15s; }
+  .btn:active { filter: brightness(.93); }
+  .btn-primary { background: var(--sky-deep); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .btn-cam { background: var(--sky-ink); color: #fff; }
+  .btn-sm { padding: 11px 10px; font-size: 13px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 18px; }
+  .delete-link { display: block; text-align: center; color: var(--coral); font-size: 13px; margin-top: 14px; cursor: pointer; text-decoration: underline; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <!-- ===== 인트로 ===== -->
+  <div class="onboard" id="onboard">
+    <div class="ob-stage cover-stage" id="coverStage">
+      <div class="cover" id="cover">
+        <div class="band"></div>
+        <div class="cover-inner">
+          <div class="sun">⛅</div>
+          <h1>TRAVEL<br />DIARY</h1>
+          <div class="sub">SUMMER ’26</div>
+          <div class="yr">나의 여행 스탬프북</div>
+        </div>
+        <div class="cover-hint">← 표지를 넘겨보세요</div>
+      </div>
+    </div>
+    <div class="ob-stage ticket-stage hidden" id="ticketStage">
+      <div class="ticket" id="ticket">
+        <div class="ticket-main">
+          <div class="tk-label">BOARDING PASS</div>
+          <div class="tk-title">SUMMER TRIP</div>
+          <div class="tk-row">
+            <div class="tk-cell"><div class="k">PASSENGER</div><div class="v">YOU</div></div>
+            <div class="tk-cell"><div class="k">DATE</div><div class="v">2026</div></div>
+            <div class="tk-cell"><div class="k">GATE</div><div class="v">A1</div></div>
+          </div>
+        </div>
+        <div class="perf"></div>
+        <div class="ticket-stub" id="stub">
+          <div class="st-air">✈️</div>
+          <div class="st-seat">1A</div>
+          <div class="st-pull">↓ 뜯기</div>
+        </div>
+      </div>
+      <div class="ticket-hint"><span>점선을 따라 아래로 뜯어주세요</span><span>↓</span></div>
+    </div>
+  </div>
+
+  <!-- ===== 본편 ===== -->
+  <div class="topbar">
+    <h1>TRAVEL DIARY</h1>
+    <div class="counter" id="counter"></div>
+  </div>
+
+  <div class="book-wrap">
+    <div class="book" id="book">
+      <div class="sheet" id="sheet"></div>
+      <button class="nav prev" id="navPrev" aria-label="이전">‹</button>
+      <button class="nav next" id="navNext" aria-label="다음">›</button>
+    </div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <!-- 편집 모달 -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <div class="grab"></div>
+      <h2 id="modalTitle">새 여행 기록</h2>
+      <div class="preview" id="preview">
+        <video id="cam" playsinline autoplay muted></video>
+        <span class="ph" id="previewPh">📷 칸을 눌러 사진을 찍어보세요</span>
+        <img id="previewImg" class="hidden" alt="여행 사진" />
+      </div>
+      <div class="cam-controls">
+        <button class="btn btn-cam btn-sm" id="btnOpenCam">📸 카메라 켜기</button>
+        <button class="btn btn-ghost btn-sm" id="btnPickFile">🖼️ 사진 선택</button>
+      </div>
+      <div class="cam-controls hidden" id="shootRow">
+        <button class="btn btn-cam btn-sm" id="btnShoot">⚪ 촬영</button>
+        <button class="btn btn-ghost btn-sm" id="btnCloseCam">닫기</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden" />
+      <label class="field" for="inPlace">장소</label>
+      <input type="text" id="inPlace" placeholder="예: 교토, 청수사" />
+      <label class="field" for="inDate">날짜</label>
+      <input type="date" id="inDate" />
+      <label class="field" for="inMemo">메모</label>
+      <textarea id="inMemo" placeholder="그날의 기억을 적어보세요..."></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btnCancel">취소</button>
+        <button class="btn btn-primary" id="btnSave">저장</button>
+      </div>
+      <span class="delete-link hidden" id="btnDelete">이 기록 삭제하기</span>
+    </div>
+  </div>
+
+  <canvas id="canvas" class="hidden"></canvas>
+
+<script>
+const STORE_KEY = "travel-stamp-diary.v1";
+const ONBOARD_KEY = "travel-stamp-diary.onboarded.v1";
+const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+let entries = load();
+let cur = 0;          // 현재 페이지 인덱스
+let animating = false;
+let editingId = null, pendingPhoto = null, stream = null;
+
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch { return []; } }
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(entries)); }
+function uid() { return "e" + Date.now() + Math.floor(Math.random()*1000); }
+function fmtStamp(s) { if (!s) return null; const d = new Date(s+"T00:00"); return { day: String(d.getDate()).padStart(2,"0"), mon: MONTHS[d.getMonth()] }; }
+function fmtDate(s) { if (!s) return ""; const d = new Date(s+"T00:00"); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+
+/* ========================= 인트로 ========================= */
+function initOnboarding() {
+  const onboard = document.getElementById("onboard");
+  if (localStorage.getItem(ONBOARD_KEY)) { onboard.remove(); return; }
+  const cover = document.getElementById("cover");
+  const coverStage = document.getElementById("coverStage");
+  const ticketStage = document.getElementById("ticketStage");
+  const stub = document.getElementById("stub");
+
+  /* 표지 드래그로 펼치기 (왼쪽으로) */
+  let cDown = false, cStartX = 0, cRot = 0;
+  cover.addEventListener("pointerdown", (e) => { cDown = true; cStartX = e.clientX; cover.setPointerCapture(e.pointerId); cover.style.transition = "none"; });
+  cover.addEventListener("pointermove", (e) => {
+    if (!cDown) return;
+    const dx = e.clientX - cStartX;
+    cRot = Math.max(-180, Math.min(0, dx * 0.6));
+    cover.style.transform = `rotateY(${cRot}deg)`;
+    cover.style.opacity = String(1 + cRot / 260);
+  });
+  function endCover() {
+    if (!cDown) return; cDown = false;
+    cover.style.transition = "transform .5s ease, opacity .5s ease";
+    if (cRot < -55) {
+      cover.style.transform = "rotateY(-175deg)"; cover.style.opacity = "0";
+      setTimeout(() => { coverStage.classList.add("hidden"); ticketStage.classList.remove("hidden"); }, 480);
+    } else { cover.style.transform = "rotateY(0deg)"; cover.style.opacity = "1"; }
+  }
+  cover.addEventListener("pointerup", endCover);
+  cover.addEventListener("pointercancel", endCover);
+
+  /* 티켓 위→아래로 뜯기 */
+  let tDown = false, tStartY = 0, ty = 0;
+  stub.addEventListener("pointerdown", (e) => { tDown = true; tStartY = e.clientY; stub.setPointerCapture(e.pointerId); stub.style.transition = "none"; });
+  stub.addEventListener("pointermove", (e) => {
+    if (!tDown) return;
+    ty = Math.max(0, e.clientY - tStartY);
+    stub.style.transform = `translateY(${ty}px) rotate(${ty * 0.03}deg)`;
+  });
+  function endStub() {
+    if (!tDown) return; tDown = false;
+    if (ty > 80) {
+      stub.style.transition = "transform .45s ease, opacity .45s ease";
+      stub.style.transform = `translateY(${window.innerHeight}px) rotate(10deg)`;
+      stub.style.opacity = "0";
+      finishOnboarding();
+    } else { stub.style.transition = "transform .3s ease"; stub.style.transform = "translateY(0) rotate(0)"; }
+  }
+  stub.addEventListener("pointerup", endStub);
+  stub.addEventListener("pointercancel", endStub);
+}
+function finishOnboarding() {
+  localStorage.setItem(ONBOARD_KEY, "1");
+  const onboard = document.getElementById("onboard");
+  setTimeout(() => { onboard.style.opacity = "0"; setTimeout(() => onboard.remove(), 480); }, 350);
+}
+
+/* ========================= 페이지 렌더 ========================= */
+function pageCount() { return entries.length + 1; }   // +1 = 새 페이지
+
+function buildPageHTML(i) {
+  // 새 페이지
+  if (i >= entries.length) {
+    return `<div class="page2 dotpaper add"><div class="binding"><i></i><i></i><i></i><i></i></div>
+      <div class="add-inner" data-add="1"><div class="plus">+</div><div class="t">새 여행 기록 추가</div></div></div>`;
+  }
+  const e = entries[i];
+  const st = fmtStamp(e.date);
+  const base = i % 2 === 0 ? "grid" : "dotpaper";
+  return `
+  <div class="page2 ${base}">
+    <div class="binding"><i></i><i></i><i></i><i></i></div>
+    <div class="stage">
+      <div class="washi blue" style="top:-6px; left:14%; transform:rotate(-4deg);"></div>
+      <div class="washi gingham" style="bottom:30%; right:-14px; transform:rotate(38deg);"></div>
+      <div class="doodle" style="top:2px; right:6px;">☁️</div>
+      <div class="doodle" style="bottom:64px; left:-2px; font-size:20px;">⭐️</div>
+
+      <div class="photo-card" data-edit="${e.id}" style="top:6px; left:4%; width:62%; height:46%;">
+        <div class="tape tl"></div><div class="tape tr"></div>
+        <div class="photo-slot">
+          ${e.photo ? `<img src="${e.photo}" alt="${escapeHtml(e.place||'여행 사진')}" />`
+                    : `<div class="empty-hint"><div class="cam">📷</div><div class="txt">눌러서 사진 추가</div></div>`}
+        </div>
+      </div>
+      ${st ? `<div class="stamp" style="top:38%; left:50%;"><span class="s-top">VISITED</span><span class="s-day">${st.day}</span><span class="s-mon">${st.mon}</span></div>` : ""}
+
+      <div class="note-card" style="bottom:8%; left:2%; right:6%;">
+        <div class="place">${escapeHtml(e.place || "이름 없는 장소")}</div>
+        <div class="date">${fmtDate(e.date)}</div>
+        <div class="memo">${escapeHtml(e.memo || "")}</div>
+      </div>
+
+      <button class="edit-btn" data-edit="${e.id}">✎ 편집</button>
+    </div>
+    <div class="page-num">— ${String(i + 1).padStart(2, "0")} —</div>
+  </div>`;
+}
+
+const book = document.getElementById("book");
+const sheet = document.getElementById("sheet");
+
+function setSheet(i) { sheet.innerHTML = buildPageHTML(i); bindPageEvents(sheet); }
+function bindPageEvents(root) {
+  root.querySelectorAll("[data-edit]").forEach(el => {
+    el.addEventListener("click", (ev) => { ev.stopPropagation(); if (suppressClick) return; openModal(el.getAttribute("data-edit")); });
+  });
+  root.querySelectorAll("[data-add]").forEach(el => {
+    el.addEventListener("click", (ev) => { ev.stopPropagation(); if (suppressClick) return; openModal(null); });
+  });
+}
+
+/* 책장 넘김 */
+function turn(dir) {
+  if (animating) return;
+  const target = cur + dir;
+  if (target < 0 || target >= pageCount()) { sheet.classList.add("bounce"); setTimeout(() => sheet.classList.remove("bounce"), 320); return; }
+  animating = true;
+
+  const leaf = document.createElement("div");
+  leaf.className = "leaf";
+  let under = null;
+  if (dir > 0) {
+    // 다음: 목적지를 아래에 깔고, 현재 페이지를 왼쪽으로 넘김
+    under = document.createElement("div");
+    under.className = "sheet under"; under.innerHTML = buildPageHTML(target);
+    book.insertBefore(under, sheet.nextSibling);
+    leaf.innerHTML = `<div class="face front">${buildPageHTML(cur)}</div><div class="face back"></div><div class="shade"></div>`;
+    book.appendChild(leaf);
+    void leaf.offsetWidth;
+    leaf.classList.add("go-next");
+  } else {
+    // 이전: 이전 페이지가 왼쪽에서 덮으며 돌아옴
+    leaf.innerHTML = `<div class="face front">${buildPageHTML(target)}</div><div class="face back"></div><div class="shade"></div>`;
+    book.appendChild(leaf);
+    void leaf.offsetWidth;
+    leaf.classList.add("go-prev");
+  }
+
+  // animationend + 타임아웃 폴백(이벤트 누락 시에도 항상 마무리)
+  let settled = false;
+  function finalize() {
+    if (settled) return; settled = true;
+    cur = target; setSheet(cur);
+    if (under) under.remove();
+    leaf.remove();
+    animating = false; updateChrome();
+  }
+  leaf.addEventListener("animationend", finalize, { once: true });
+  setTimeout(finalize, 820);
+}
+
+function jumpTo(i) { if (i === cur || animating) return; cur = i; setSheet(cur); updateChrome(); }
+
+/* 도트 / 카운터 / 버튼 */
+function renderDots() {
+  const dots = document.getElementById("dots"); dots.innerHTML = "";
+  for (let i = 0; i < pageCount(); i++) {
+    const d = document.createElement("div"); d.className = "dot";
+    d.addEventListener("click", () => jumpTo(i));
+    dots.appendChild(d);
+  }
+}
+function updateChrome() {
+  document.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("active", i === cur));
+  document.getElementById("counter").textContent = cur < entries.length ? `${cur + 1} / ${entries.length}` : "새 기록";
+  document.getElementById("navPrev").disabled = cur <= 0;
+  document.getElementById("navNext").disabled = cur >= pageCount() - 1;
+}
+document.getElementById("navPrev").onclick = () => turn(-1);
+document.getElementById("navNext").onclick = () => turn(1);
+
+/* 스와이프 제스처 */
+let suppressClick = false;
+let gx = 0, gy = 0, gMoved = false, gDown = false;
+book.addEventListener("pointerdown", (e) => { gDown = true; gx = e.clientX; gy = e.clientY; gMoved = false; });
+book.addEventListener("pointermove", (e) => { if (!gDown) return; if (Math.abs(e.clientX - gx) > 12 || Math.abs(e.clientY - gy) > 12) gMoved = true; });
+book.addEventListener("pointerup", (e) => {
+  if (!gDown) return; gDown = false;
+  const dx = e.clientX - gx, dy = e.clientY - gy;
+  if (gMoved && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+    suppressClick = true; setTimeout(() => suppressClick = false, 50);
+    turn(dx < 0 ? 1 : -1);
+  }
+});
+
+/* ========================= 모달 ========================= */
+const modalBg = document.getElementById("modalBg");
+const previewImg = document.getElementById("previewImg");
+const previewPh = document.getElementById("previewPh");
+const video = document.getElementById("cam");
+
+function openModal(id) {
+  editingId = id;
+  const e = id ? entries.find(x => x.id === id) : null;
+  document.getElementById("modalTitle").textContent = e ? "여행 기록 편집" : "새 여행 기록";
+  document.getElementById("inPlace").value = e?.place || "";
+  document.getElementById("inDate").value = e?.date || new Date().toISOString().slice(0,10);
+  document.getElementById("inMemo").value = e?.memo || "";
+  pendingPhoto = e?.photo || null;
+  showPreview(pendingPhoto);
+  document.getElementById("btnDelete").classList.toggle("hidden", !id);
+  modalBg.classList.add("show");
+}
+function showPreview(u) { if (u) { previewImg.src = u; previewImg.classList.remove("hidden"); previewPh.classList.add("hidden"); } else { previewImg.classList.add("hidden"); previewPh.classList.remove("hidden"); } }
+function closeModal() { stopCam(); modalBg.classList.remove("show"); editingId = null; pendingPhoto = null; }
+
+async function openCam() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+    video.srcObject = stream; video.style.display = "block";
+    previewImg.classList.add("hidden"); previewPh.classList.add("hidden");
+    document.getElementById("shootRow").classList.remove("hidden");
+  } catch (err) { alert("카메라를 직접 열 수 없어요. '사진 선택'으로 촬영/선택해주세요.\n(" + err.name + ")"); document.getElementById("fileInput").click(); }
+}
+function stopCam() { if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } video.style.display = "none"; document.getElementById("shootRow").classList.add("hidden"); }
+function shoot() {
+  const canvas = document.getElementById("canvas");
+  const w = video.videoWidth, h = video.videoHeight;
+  let cw = w, ch = w * 4 / 3; if (ch > h) { ch = h; cw = h * 3 / 4; }
+  canvas.width = cw; canvas.height = ch;
+  canvas.getContext("2d").drawImage(video, (w-cw)/2, (h-ch)/2, cw, ch, 0, 0, cw, ch);
+  pendingPhoto = canvas.toDataURL("image/jpeg", 0.82); stopCam(); showPreview(pendingPhoto);
+}
+function onFile(ev) {
+  const file = ev.target.files?.[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => downscale(reader.result, 1000, (url) => { pendingPhoto = url; showPreview(url); });
+  reader.readAsDataURL(file); ev.target.value = "";
+}
+function downscale(dataUrl, maxSize, cb) {
+  const img = new Image();
+  img.onload = () => {
+    let { width: w, height: h } = img; const scale = Math.min(1, maxSize / Math.max(w, h));
+    w = Math.round(w*scale); h = Math.round(h*scale);
+    const canvas = document.getElementById("canvas"); canvas.width = w; canvas.height = h;
+    canvas.getContext("2d").drawImage(img, 0, 0, w, h); cb(canvas.toDataURL("image/jpeg", 0.82));
+  };
+  img.src = dataUrl;
+}
+function saveEntry() {
+  const place = document.getElementById("inPlace").value.trim();
+  const date = document.getElementById("inDate").value;
+  const memo = document.getElementById("inMemo").value.trim();
+  const isNew = !editingId;
+  if (editingId) Object.assign(entries.find(x => x.id === editingId), { place, date, memo, photo: pendingPhoto });
+  else entries.push({ id: uid(), place, date, memo, photo: pendingPhoto });
+  try { save(); } catch { alert("저장 공간이 가득 찼어요. 오래된 기록을 지워주세요."); return; }
+  closeModal();
+  renderDots();
+  if (isNew) { cur = entries.length - 1; }
+  if (cur >= pageCount()) cur = pageCount() - 1;
+  setSheet(cur); updateChrome();
+}
+function deleteEntry() {
+  if (!editingId) return; if (!confirm("이 여행 기록을 삭제할까요?")) return;
+  entries = entries.filter(x => x.id !== editingId); save();
+  closeModal(); renderDots();
+  if (cur >= pageCount()) cur = Math.max(0, pageCount() - 1);
+  setSheet(cur); updateChrome();
+}
+
+document.getElementById("btnOpenCam").onclick = openCam;
+document.getElementById("btnShoot").onclick = shoot;
+document.getElementById("btnCloseCam").onclick = () => { stopCam(); showPreview(pendingPhoto); };
+document.getElementById("btnPickFile").onclick = () => document.getElementById("fileInput").click();
+document.getElementById("fileInput").onchange = onFile;
+document.getElementById("btnSave").onclick = saveEntry;
+document.getElementById("btnCancel").onclick = closeModal;
+document.getElementById("btnDelete").onclick = deleteEntry;
+modalBg.onclick = (e) => { if (e.target === modalBg) closeModal(); };
+
+/* 샘플 */
+if (entries.length === 0) {
+  entries = [
+    { id: uid(), place: "교토, 청수사", date: "2026-04-12", memo: "벚꽃이 흩날리던 오후.\n골목마다 기모노를 입은 사람들.", photo: null },
+    { id: uid(), place: "제주, 성산일출봉", date: "2026-05-03", memo: "새벽 일출을 보러 올랐던 길.", photo: null },
+  ];
+  save();
+}
+
+initOnboarding();
+renderDots();
+setSheet(cur);
+updateChrome();
+</script>
+</body>
+</html>
