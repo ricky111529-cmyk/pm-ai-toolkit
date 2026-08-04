@@ -6,7 +6,7 @@
 韓国のデザインSaaS企業で、日本市場向けAIプロダクトの企画（Assistant PdM）をしています。
 
 📄 **ケーススタディ** → [ポートフォリオ](outputs/vibe-coding/portfolio-aisaac)
-🖱 **触ってみる** → [デザイン評価ビューアのデモ](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) — `샘플 불러오기`（サンプル読み込み）を押すとデータなしで動きます
+🖱 **触ってみる** → [デザイン評価ビューアのデモ](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) — `サンプル読み込み` を押すとデータなしで動きます
 
 ---
 

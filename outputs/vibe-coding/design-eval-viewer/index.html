@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>디자인 평가 뷰어</title>
+<title>デザイン評価ビューア</title>
 <style>
   /* 미리캔버스 실측 토큰 — .claude/design.md */
   :root{
@@ -150,8 +150,8 @@
     border:1px solid var(--line);border-radius:var(--r-sm);
     box-shadow:0 6px 20px rgba(22,24,29,.14);min-width:190px;max-height:300px;
     overflow:auto;padding:6px}
-  /* 팝업 머리 — '전체 선택'·'선택 해제' 를 나란히. 값이 10개 넘는 컬럼(NPS 등)에서
-     하나하나 체크하지 않고 전체를 켠 뒤 (빈값)만 빼는 게 실제 사용 패턴이다. */
+  /* 팝업 머리 — 'すべて選択'·'選択解除' 를 나란히. 값이 10개 넘는 컬럼(NPS 등)에서
+     하나하나 체크하지 않고 すべて를 켠 뒤 (空)만 빼는 게 실제 사용 패턴이다. */
   .ms-head{display:flex;gap:2px;border-bottom:1px solid var(--line);
     margin-bottom:4px;padding-bottom:3px}
   .ms-head button{flex:1;background:none;border:0;border-radius:6px;
@@ -264,7 +264,7 @@
     resize:vertical;line-height:1.5;font-family:inherit;color:var(--text);width:100%;
     box-sizing:border-box}
   .memo:focus{outline:2px solid var(--primary);outline-offset:-1px}
-  /* 메모 3분할 — 다 채울 필요는 없다. 나중에 컴포넌트 층위별로 모으려고 나눠 둔 것 */
+  /* メモ 3분할 — 다 채울 필요는 없다. 나중에 컴포넌트 층위별로 모으려고 나눠 둔 것 */
   .mgrp{display:flex;flex-direction:column;gap:4px}
   .mgrp label{font-size:12.5px;font-weight:500;color:var(--text)}
   .mgrp .hint{display:block;font-size:11.5px}
@@ -278,7 +278,7 @@
   .saved.show{display:block}
   .saved .row{display:flex;gap:6px;align-items:baseline}
   .saved .row b{color:var(--primary-dark);font-weight:500}
-  /* 피드백 남긴 페이지 표시 */
+  /* 피드백 남긴 ページ 표시 */
   figcaption.done{background:var(--primary)}
   @media (max-width:900px){
     .lbwrap{flex-direction:column}
@@ -290,28 +290,28 @@
 
 <!-- ── 업로드 ─────────────────────────────────── -->
 <section id="intro">
-  <h1>디자인 평가 뷰어</h1>
-  <p class="lead">AI가 만든 결과물을 <b>전 페이지 썸네일 + 맥락(원래 요청·만족도·코멘트)</b>과 함께 보고,
-     그 자리에서 <b>페이지 단위로</b> 평가를 남기는 화면입니다.</p>
+  <h1>デザイン評価ビューア</h1>
+  <p class="lead">AIが生成した成果物を <b>全ページのサムネイル + 文脈（元の依頼・満足度・コメント）</b>と一緒に見て、
+     その場で <b>ページ単位で</b> 評価を残す画面です。</p>
 
   <div class="steps">
     <div class="step">
       <span class="no">1</span>
       <div>
-        <b>샘플 데이터로 바로 보기</b>
-        <div class="copyrow"><button class="btn sm" id="demo">샘플 불러오기</button></div>
-        <p class="note">가짜 데이터 12건입니다. 필터·검색·라이트박스·평가 작성이 전부 동작합니다.
-           썸네일은 placeholder 이미지입니다.</p>
+        <b>サンプルデータですぐ見る</b>
+        <div class="copyrow"><button class="btn sm" id="demo">サンプル読み込み</button></div>
+        <p class="note">ダミーデータ12件です。フィルタ・検索・ライトボックス・評価入力がすべて動きます。
+           サムネイルはplaceholder画像です。</p>
       </div>
     </div>
     <div class="step">
       <span class="no">2</span>
       <div>
-        <b>내 CSV로 보기</b>
-        <p class="note">아래에 CSV(또는 <code>.csv.gz</code>)를 끌어다 놓으세요.
-           필수 컬럼은 <code>design_id</code>·<code>page_url</code> 둘뿐이고,
-           나머지는 <b>값 종류를 보고 필터를 자동 생성</b>합니다.
-           계약은 <code>demo/sample.csv</code>에 있습니다.</p>
+        <b>自分のCSVで見る</b>
+        <p class="note">下に CSV（または <code>.csv.gz</code>）をドラッグ&ドロップしてください。
+           必須カラムは <code>design_id</code>·<code>page_url</code> の2つだけで、
+           残りは <b>値の種類を見てフィルタを自動生成</b>します。
+           カラム定義は <code>demo/sample.csv</code>にあります。</p>
       </div>
     </div>
   </div>
@@ -324,8 +324,8 @@
 
   <div id="drop">
     <div class="ico">📄</div>
-    <b>CSV 파일 올리기</b>
-    <span>여기에 끌어다 놓거나 클릭해서 선택 — <b>여러 개 한꺼번에</b> 가능, <code>.csv.gz</code>도 그대로</span>
+    <b>CSVファイルをアップロード</b>
+    <span>ここにドラッグ&ドロップ、またはクリックして選択 — <b>複数まとめて</b> 可能、 <code>.csv.gz</code>もそのまま</span>
   </div>
   <input type="file" id="file" accept=".csv,.gz,text/csv" multiple hidden>
   <div id="progress"></div>
@@ -337,10 +337,10 @@
   <div id="apperr"></div>
   <header>
     <div class="htop">
-      <h1>디자인 평가 뷰어</h1>
+      <h1>デザイン評価ビューア</h1>
       <span class="stat" id="stat"></span>
       <span class="spacer"></span>
-      <button class="btn ghost" id="reload">다른 CSV 올리기</button>
+      <button class="btn ghost" id="reload">別のCSVを読み込む</button>
     </div>
     <div class="bar" id="filters"></div>
   </header>
@@ -353,7 +353,7 @@
 <div id="busy" hidden>
   <div class="busycard">
     <div class="spin" aria-hidden="true"></div>
-    <div id="busytext">읽는 중…</div>
+    <div id="busytext">読み込み中…</div>
   </div>
 </div>
 
@@ -363,53 +363,53 @@
       <img id="lbimg" alt="">
       <div id="lbinfo"></div>
       <div class="lbnav">
-        <button class="btn" id="prev">← 이전</button>
-        <button class="btn" id="next">다음 →</button>
-        <button class="btn" id="close">닫기 (Esc)</button>
+        <button class="btn" id="prev">← 前</button>
+        <button class="btn" id="next">次 →</button>
+        <button class="btn" id="close">閉じる (Esc)</button>
       </div>
     </div>
 
-    <!-- 이 페이지에 대한 피드백 -->
+    <!-- 이 ページ에 대한 피드백 -->
     <aside class="lbside">
       <div class="side-hd">
-        <b>이 페이지 피드백</b>
+        <b>このページの評価</b>
       </div>
 
       <div class="fld">
         <div class="memorow">
-          <label>메모 <span class="hint">해당하는 칸만 채우면 됩니다</span></label>
-          <input id="author" placeholder="이름 (처음 한 번만)" maxlength="20"
+          <label>メモ <span class="hint">該当する欄だけ埋めれば大丈夫です</span></label>
+          <input id="author" placeholder="名前（最初の1回だけ）" maxlength="20"
                  autocomplete="off" title="한 번 입력하면 이 브라우저에서 계속 기억합니다">
         </div>
 
         <div class="mgrp">
-          <label for="memo-body">바디 컴포넌트</label>
+          <label for="memo-body">ボディコンポーネント</label>
           <textarea id="memo-body" class="memo" rows="3"
                     placeholder="예: 아이콘 색상대치"></textarea>
         </div>
 
         <div class="mgrp">
-          <label for="memo-master">마스터 컴포넌트</label>
+          <label for="memo-master">マスターコンポーネント</label>
           <textarea id="memo-master" class="memo" rows="3"
                     placeholder="예: 소제목 줄바꿈"></textarea>
         </div>
 
         <div class="mgrp">
-          <label for="memo-etc">그 외</label>
+          <label for="memo-etc">その他</label>
           <textarea id="memo-etc" class="memo" rows="3"
                     placeholder="예: 텅 비어 보임"></textarea>
         </div>
       </div>
 
       <div class="side-ft">
-        <button class="btn" id="save">저장 <span class="kbd">⌘↵</span></button>
+        <button class="btn" id="save">保存 <span class="kbd">⌘↵</span></button>
         <span id="savemsg" class="savemsg"></span>
       </div>
 
       <div id="saved" class="saved"></div>
     </aside>
   </div>
-  <!-- form 전송의 응답을 흘려버리는 싱크. 구글이 X-Frame-Options 로 자기 페이지의
+  <!-- form 전송의 응답을 흘려버리는 싱크. 구글이 X-Frame-Options 로 자기 ページ의
        iframe 표시를 막아서 응답을 보여줄 수는 없다(빈 칸/깨진 아이콘만 뜸 — 실측).
        요청 자체는 정상 도착한다. -->
   <iframe name="sinkFrame" id="sinkFrame" style="display:none"></iframe>
@@ -419,15 +419,15 @@
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-// 필수 2개 + 특별 취급 컬럼. 나머지는 값 종류 수를 보고 필터/검색으로 자동 분류한다.
+// 필수 2개 + 특별 취급 컬럼. 残りは 값 종류 수를 보고 필터/검색으로 자동 분류한다.
 const REQUIRED = ['design_id', 'page_url'];
-const PAGE_COL = '페이지순서';
-const LONG_COLS = ['프롬프트', '코멘트'];      // 카드에 본문으로 표시. 필터 만들지 않음
+const PAGE_COL = 'ページ順';
+const LONG_COLS = ['プロンプト', 'コメント'];      // 카드에 본문으로 표시. 필터 만들지 않음
 // 필터로 만들지 않을 컬럼: 검증용 중복(AIP모드원본) · 고유값이 사실상 무한(레이아웃키·생성시각·
-// 캔버스·페이지수) → 드롭다운이 쓸모없고 바가 지저분해진다. 검색으로 찾으면 된다.
+// 캔버스·ページ수) → 드롭다운이 쓸모없고 바가 지저분해진다. 검색으로 찾으면 된다.
 // 입력유형(원본 request_type)은 숨긴다: 7/14 업데이트 이후 분류(150자 INSTRUCTION·
 // 파일 타입)가 기록되지 않아 사실상 전부 TOPIC — 백엔드 확인 중. 실제 입력 수단은 입력방식이 담당.
-const NO_FILTER = ['생성모드원본', '레이아웃키', '생성시각', '캔버스', '페이지수', '순서정확도', '생성일', '입력유형'];  // 생성일은 달력 기간으로
+const NO_FILTER = ['生成モード原本', 'レイアウトキー', '生成時刻', 'キャンバス', 'ページ数', '順序正確度', '生成日', '入力タイプ'];  // 생성일은 달력 기간으로
 
 // 값이 수천 개여도 드롭다운을 만드는 컬럼. 값 종류 수 제한(MAX_FILTER_VALUES)을 면제하고,
 // 대신 팝업 안에 검색칸을 넣어 좁혀 고르게 한다. account_id 는 '이 유저 것만' 과
@@ -438,19 +438,19 @@ const MS_RENDER_MAX = 300;             // 한 번에 그리는 옵션 상한 (�
 // 읽을 때 컬럼명·값을 새 워딩으로 정규화한다.
 // SQL 도 같은 값을 내지만, 볼륨에 이미 올라간 옛 CSV(함/안함·개요없음·요청타입)를
 // 다시 만들지 않고도 화면이 같아지게 앱에서도 맞춘다.
-const COL_RENAME = { '요청타입': '입력유형' };
+const COL_RENAME = { 'リクエストタイプ': '入力タイプ' };
 const VAL_RENAME = {
-  '다운로드여부': { '함': '다운로드O', '안함': '다운로드X' },
-  '입력방식':  { '개요없음': '매칭안됨' },
+  'ダウンロード有無': { 'あり': 'ダウンロード○', 'なし': 'ダウンロード×' },
+  '入力方式':  { 'アウトラインなし': 'マッチなし' },
 };
 // AIP모드는 원본 값 변형이 많다(TEMPLATE_BASED · AI_PRESENTATION_TEMPLATE_BASED ·
 // BASIC_LAYOUT_PAGE_BASED …). 정확 일치로 지도를 관리하면 새 변형이 나올 때마다
 // 드롭다운이 갈라지므로 부분 일치로 세 갈래에 합친다.
-const normMode = v => /TEMPLATE/i.test(v) ? '템플릿'
-                    : /LAYOUT/i.test(v)   ? '레이아웃'
-                    : /COMPONENT/i.test(v) ? '컴포넌트' : v;
-const NPS_COL = 'NPS', NPS_BAND = 'NPS구간', DL_COL = '다운로드';
-// 값 종류 상한. 전량(6.4만 디자인)에서 국가가 61개국이라 40이면 국가 필터가 사라진다.
+const normMode = v => /TEMPLATE/i.test(v) ? 'テンプレート'
+                    : /LAYOUT/i.test(v)   ? 'レイアウト'
+                    : /COMPONENT/i.test(v) ? 'コンポーネント' : v;
+const NPS_COL = 'NPS', NPS_BAND = 'NPS区分', DL_COL = 'ダウンロード';
+// 값 종류 상한. 전량(6.4만 成果物)에서 국가가 61개국이라 40이면 국가 필터가 사라진다.
 // 노이즈 컬럼은 개수가 아니라 NO_FILTER 로 이름을 지정해 막는다.
 const MAX_FILTER_VALUES = 120;
 const PAGE_SIZE = 60;
@@ -460,15 +460,15 @@ const PAGE_SIZE = 60;
 // ══════════════════════════════════════════════════════════════════════════
 
 // Apps Script 웹 앱 URL. 구글 시트 → 확장 프로그램 → Apps Script 에
-// docs/apps-script.gs 를 붙여넣고 "배포 → 웹 앱"(액세스: 미리디 내 모든 사용자)한 뒤
-// 나오는 /exec 주소를 넣으세요. 비워두면 저장 대신 클립보드 복사로 동작합니다.
+// docs/apps-script.gs 를 붙여넣고 "배포 → 웹 앱"(액세스: 미리디 내 모든 사용文字)한 뒤
+// 나오는 /exec 주소를 넣으세요. 비워두면 保存 대신 클립보드 복사로 동작します。
 const SHEET_ENDPOINT = '';   // 비우면 시트로 보내지 않고 클립보드에 TSV 한 줄을 복사한다
 
 // ══════════════════════════════════════════════════════════════════════════
 // ▲▲▲ 여기까지 ▲▲▲
 // ══════════════════════════════════════════════════════════════════════════
 
-// 저장한 피드백을 (design_id, 페이지번호) 로 기억한다.
+// 保存한 피드백을 (design_id, ページ번호) 로 기억한다.
 // 새로고침해도 남도록 localStorage 에 둔다 — 어디까지 봤는지 잃지 않게.
 const FB_STORE = 'aip-eval-feedback';
 const AUTHOR_KEY = 'aip-eval-author';   // 이름은 한 번 입력하면 이 브라우저에서 계속 기억
@@ -480,14 +480,14 @@ let DESIGNS = [], VIEW = [], COLS = [], FILTER_COLS = [], shown = 0, EXPANDED = 
 
 // 고른 필터 값의 원천은 DOM 이 아니라 이 객체다(컬럼 → 값 Set).
 // buildFilters 는 이어 읽는 동안 여러 번 불리고, 값이 많은 컬럼은 일부만 그리므로
-// 화면에 없는 체크박스에서 선택을 되살릴 수 없다. 초기화는 '다른 CSV 올리기'(새로고침)뿐.
+// 화면에 없는 체크박스에서 선택을 되살릴 수 없다. 초기화는 '別のCSVを読み込む'(새로고침)뿐.
 let SELECTED = {};
 const selOf = c => (SELECTED[c] ||= new Set());
 // 한 화면에 이미지가 700장까지 들어간다. 첫 EAGER_N 장은 즉시 받아 첫 화면이 바로 채워지게 하고
-// 나머지는 lazy 로 둔다 (lazy 만 쓰면 스크롤·가시성 판정 전까지 빈 화면이 보인다).
+// 残りは lazy 로 둔다 (lazy 만 쓰면 스크롤·가시성 판정 전까지 빈 화면이 보인다).
 const EAGER_N = 24;
 let imgSeq = 0;
-let LOADED = null;   // design_id → 디자인. 날짜별로 이어 읽을 때 병합에 쓴다
+let LOADED = null;   // design_id → 成果物. 날짜별로 이어 읽을 때 병합에 쓴다
 let lbD = null, lbP = 0;
 
 // ── CSV 파싱 ────────────────────────────────────
@@ -530,20 +530,20 @@ function* parseCsv(text) {
   }
 }
 
-/** 행을 디자인 단위로 묶는다. 디자인 속성은 값이 있는 첫 행에서 취한다
- *  (프롬프트처럼 첫 페이지 행에만 채워진 컬럼이 있으므로 빈 값은 덮어쓰지 않는다). */
+/** 행을 成果物 단위로 묶는다. 成果物 속성은 값이 있는 첫 행에서 취한다
+ *  (프롬프트처럼 첫 ページ 행에만 채워진 컬럼이 있으므로 빈 값은 덮어쓰지 않는다). */
 /** CSV 텍스트를 읽어 DESIGNS 를 만든다.
  *  append=true 면 기존 DESIGNS 에 이어 붙인다 — 날짜별 파일을 순서대로 읽을 때 쓴다.
- *  같은 design_id 가 두 파일에 걸치는 일은 없다(생성일이 디자인 단위라 날짜별로 안 쪼개진다).
+ *  같은 design_id 가 두 파일에 걸치는 일은 없다(생성일이 成果物 단위라 날짜별로 안 쪼개진다).
  *  그래도 안전하게 id 맵을 들고 병합한다. */
 async function load(text, append) {
   const it = parseCsv(text);
   const header = it.next().value;
-  if (!header) throw new Error('빈 파일입니다.');
+  if (!header) throw new Error('空のファイルです。');
   const cols = header.map(h => COL_RENAME[h.replace(/^﻿/, '').trim()] || h.replace(/^﻿/, '').trim());
   for (const req of REQUIRED) {
     if (!cols.includes(req)) {
-      throw new Error(`필수 컬럼 '${req}'이 없습니다. 현재 1·2번째 컬럼: ${cols.slice(0,2).join(' · ') || '(없음)'}`);
+      throw new Error(`必須カラム '${req}'がありません。現在の1・2番目のカラム: ${cols.slice(0,2).join(' · ') || '（なし）'}`);
     }
   }
   const iId = cols.indexOf('design_id'), iUrl = cols.indexOf('page_url');
@@ -565,7 +565,7 @@ async function load(text, append) {
     for (const k of attrIdx) {
       let v = r[k];
       if (v === undefined || v === '' || d.attrs[cols[k]]) continue;
-      if (cols[k] === 'AIP모드') v = normMode(v);
+      if (cols[k] === '生成モード') v = normMode(v);
       else {
         const m = VAL_RENAME[cols[k]];
         if (m && m[v]) v = m[v];
@@ -573,7 +573,7 @@ async function load(text, append) {
       d.attrs[cols[k]] = v;
     }
     if (++rows % 50000 === 0) {                      // UI가 얼지 않게 양보 + 진행 표시
-      busy.set(`읽는 중… ${rows.toLocaleString()}행 · 디자인 ${map.size.toLocaleString()}개`);
+      busy.set(`読み込み中… ${rows.toLocaleString()}行 · 成果物 ${map.size.toLocaleString()}件`);
       await nextTick();
     }
   }
@@ -590,7 +590,7 @@ async function load(text, append) {
     for (const d of DESIGNS) { const v = d.attrs[c]; if (v) vals.add(v); if (vals.size > MAX_FILTER_VALUES) break; }
     if (vals.size >= 2 && vals.size <= MAX_FILTER_VALUES) FILTER_COLS.push(c);
   }
-  console.log(`${rows}행 → 디자인 ${DESIGNS.length}개, ${((performance.now()-t)/1000).toFixed(1)}s`);
+  console.log(`${rows}行 → 成果物 ${DESIGNS.length}件, ${((performance.now()-t)/1000).toFixed(1)}s`);
   return rows;
 }
 
@@ -609,14 +609,14 @@ function buildFilters() {
                  [...b.querySelectorAll('input:checked')].map(i => i.value)])
       .filter(([, v]) => v.length)),
   };
-  bar.innerHTML = `<input type="search" id="q" placeholder="검색 — 코멘트 · 프롬프트 · account_id">`;
+  bar.innerHTML = `<input type="search" id="q" placeholder="検索 — コメント · プロンプト · account_id">`;
 
   // 생성일은 값이 날짜라 목록보다 달력 기간이 맞다. 값 형식이 YYYY-MM-DD 라
   // date input 값과 문자열 비교가 그대로 성립한다.
-  if (COLS.includes('생성일')) {
+  if (COLS.includes('生成日')) {
     let lo = '', hi = '';
     for (const d of DESIGNS) {
-      const v = d.attrs['생성일'];
+      const v = d.attrs['生成日'];
       if (!v) continue;
       if (!lo || v < lo) lo = v;
       if (!hi || v > hi) hi = v;
@@ -630,36 +630,36 @@ function buildFilters() {
   }
   for (const c of FILTER_COLS) {
     const counts = new Map();
-    for (const d of DESIGNS) { const v = d.attrs[c] || '(빈값)'; counts.set(v, (counts.get(v) || 0) + 1); }
+    for (const d of DESIGNS) { const v = d.attrs[c] || '(空)'; counts.set(v, (counts.get(v) || 0) + 1); }
     // 체크박스 팝업 — 같은 컬럼 안에서 여러 값을 동시에 고를 수 있다(OR)
     const big = BIG_FILTER_COLS.includes(c);
     bar.insertAdjacentHTML('beforeend',
       `<div class="ms${big ? ' big' : ''}" data-col="${esc(c)}">
-         <button type="button" class="ms-btn">${esc(c)} 전체</button>
+         <button type="button" class="ms-btn">${esc(c)} すべて</button>
          <div class="ms-pop" hidden>
            ${big ? `<input type="search" class="ms-find" placeholder="${esc(c)} 검색"
                       aria-label="${esc(c)} 검색">` : ''}
            <div class="ms-head">
-             <button type="button" class="ms-all">전체 선택</button>
-             <button type="button" class="ms-clear">선택 해제</button>
+             <button type="button" class="ms-all">すべて選択</button>
+             <button type="button" class="ms-clear">選択解除</button>
            </div>
            <div class="ms-list"></div>
          </div>
        </div>`);
     const box = bar.lastElementChild;
-    box._entries = [...counts.entries()].sort((a, b) => b[1] - a[1]);   // 건수 많은 값 먼저
+    box._entries = [...counts.entries()].sort((a, b) => b[1] - a[1]);   // 件수 많은 값 먼저
     drawOpts(box);
   }
   bar.insertAdjacentHTML('beforeend',
     `<select id="sort">
-       <option value="new">최근 생성순</option>
-       <option value="nps">NPS 낮은순</option>
+       <option value="new">生成が新しい順</option>
+       <option value="nps">NPSが低い順</option>
      </select>
      <button class="btn ghost" id="mode"></button>
      <span class="spacer"></span><span class="stat" id="count"></span>`);
 
   // 검색어·정렬·기간 되살리기. 고른 필터 값은 SELECTED 에 있으므로 되살릴 필요가 없다.
-  $('#mode').textContent = EXPANDED ? '필름스트립' : '전체 펼치기';   // 재구성 후에도 상태와 일치
+  $('#mode').textContent = EXPANDED ? 'フィルムストリップ' : 'すべて展開';   // 재구성 후에도 상태와 일치
   $('#q').value = keep.q;
   if ($('#d-from')) { $('#d-from').value = keep.from; $('#d-to').value = keep.to; }
   if (keep.sort) $('#sort').value = keep.sort;
@@ -669,7 +669,7 @@ function buildFilters() {
     bar._init = true;
     bar.addEventListener('input', e => {
       const box = e.target.closest('.ms');
-      // 팝업 안 검색칸: 목록만 좁힌다. 갤러리는 건드리지 않는다
+      // 팝업 안 검색칸: 목록만 좁힌다. 갤러리는 件드리지 않는다
       if (box && e.target.classList.contains('ms-find')) { drawOpts(box); return; }
       if (box && e.target.matches('.ms-opt input')) {
         const sel = selOf(box.dataset.col);
@@ -681,8 +681,8 @@ function buildFilters() {
     });
     // 팝업 열고 닫기
     bar.addEventListener('click', e => {
-      // 전체 선택 / 선택 해제 — 값이 많은 컬럼에서 '전체 켜고 몇 개만 빼기'가 되게 한다.
-      // 검색으로 좁힌 상태의 '전체 선택'은 **일치하는 값 전부**를 고른다(그려진 것만이 아니라).
+      // すべて選択 / 選択解除 — 값이 많은 컬럼에서 'すべて 켜고 몇 개만 빼기'가 되게 한다.
+      // 검색으로 좁힌 상태의 'すべて選択'은 **일치하는 값 전부**를 고른다(그려진 것만이 아니라).
       const head = e.target.closest('.ms-all, .ms-clear');
       if (head) {
         const box = head.closest('.ms'), sel = selOf(box.dataset.col);
@@ -704,7 +704,7 @@ function buildFilters() {
   }
   $('#mode').onclick = () => {
     EXPANDED = !EXPANDED;
-    $('#mode').textContent = EXPANDED ? '필름스트립' : '전체 펼치기';
+    $('#mode').textContent = EXPANDED ? 'フィルムストリップ' : 'すべて展開';
     render();
   };
 }
@@ -722,18 +722,18 @@ function drawOpts(box) {
   box.querySelector('.ms-list').innerHTML =
     shown.map(([v, n]) => `<label class="ms-opt"><input type="checkbox" value="${esc(v)}"${sel.has(v) ? ' checked' : ''}>
                            <span>${esc(v)}</span><em>${n.toLocaleString()}</em></label>`).join('')
-    + (rest > 0 ? `<p class="ms-more">${rest.toLocaleString()}개 더 있습니다 — 검색으로 좁혀주세요</p>` : '')
-    + (!hits.length ? `<p class="ms-more">일치하는 값이 없습니다</p>` : '');
+    + (rest > 0 ? `<p class="ms-more">${rest.toLocaleString()}件あります — 検索で絞ってください</p>` : '')
+    + (!hits.length ? `<p class="ms-more">一致する値がありません</p>` : '');
   msLabel(box);
 }
 
-/** 다중 선택 버튼의 라벨: 전체 / 값 하나 / 'N개' */
+/** 다중 선택 버튼의 라벨: すべて / 값 하나 / 'N개' */
 function msLabel(box) {
   const c = box.dataset.col;
   const vals = [...selOf(c)];
   const btn = box.querySelector('.ms-btn');
-  btn.textContent = !vals.length ? `${c} 전체`
-    : vals.length === 1 ? `${c}: ${vals[0]}` : `${c} ${vals.length}개`;
+  btn.textContent = !vals.length ? `${c} すべて`
+    : vals.length === 1 ? `${c}: ${vals[0]}` : `${c} ${vals.length}件`;
   btn.classList.toggle('on', vals.length > 0);
 }
 
@@ -746,13 +746,13 @@ function render(keepShown) {
 
   VIEW = DESIGNS.filter(d => {
     if (dFrom || dTo) {
-      const g = d.attrs['생성일'] || '';
+      const g = d.attrs['生成日'] || '';
       if (dFrom && g < dFrom) return false;
       if (dTo && g > dTo) return false;
     }
-    for (const [c, set] of sels) if (!set.has(d.attrs[c] || '(빈값)')) return false;
+    for (const [c, set] of sels) if (!set.has(d.attrs[c] || '(空)')) return false;
     if (q) {
-      const hay = (d.attrs['코멘트'] || '') + ' ' + (d.attrs['프롬프트'] || '') + ' ' +
+      const hay = (d.attrs['コメント'] || '') + ' ' + (d.attrs['プロンプト'] || '') + ' ' +
                   (d.attrs['account_id'] || '') + ' ' + d.id;
       if (!hay.toLowerCase().includes(q)) return false;
     }
@@ -762,20 +762,20 @@ function render(keepShown) {
   const sort = $('#sort').value;
   const nps = d => { const v = d.attrs[NPS_COL]; return v === '' || v === undefined ? 999 : +v; };
   if (sort === 'nps') VIEW.sort((a, b) => nps(a) - nps(b));
-  else VIEW.sort((a, b) => String(b.attrs['생성시각'] || '').localeCompare(String(a.attrs['생성시각'] || '')));
+  else VIEW.sort((a, b) => String(b.attrs['生成時刻'] || '').localeCompare(String(a.attrs['生成時刻'] || '')));
 
-  $('#count').textContent = `${VIEW.length.toLocaleString()} / ${DESIGNS.length.toLocaleString()} 디자인`;
+  $('#count').textContent = `${VIEW.length.toLocaleString()} / ${DESIGNS.length.toLocaleString()} 成果物`;
   // 이어 읽는 중이면 보고 있던 만큼은 그대로 다시 그린다(스크롤이 튀지 않게)
   const want = keepShown ? Math.min(shown, VIEW.length) : 0;
   const y = keepShown ? scrollY : 0;
   shown = 0; imgSeq = 0; $('#list').innerHTML = '';
-  if (!VIEW.length) { $('#list').innerHTML = '<div class="empty">조건에 맞는 디자인이 없습니다.</div>'; return; }
+  if (!VIEW.length) { $('#list').innerHTML = '<div class="empty">条件に合う成果物がありません。</div>'; return; }
   do { appendMore(); } while (keepShown && shown < want);
   if (keepShown) scrollTo(0, y);
   markDone();
 }
 
-/** 화면에 보이는 만큼만 그린다. 디자인 수가 수만 개여도 필터 응답이 일정하게 유지된다. */
+/** 화면에 보이는 만큼만 그린다. 成果物 수가 수만 개여도 필터 응답이 일정하게 유지된다. */
 function appendMore() {
   const slice = VIEW.slice(shown, shown + PAGE_SIZE);
   if (!slice.length) return;
@@ -784,7 +784,7 @@ function appendMore() {
   shown += slice.length;
   if (shown < VIEW.length) {
     $('#list').insertAdjacentHTML('beforeend',
-      `<button id="more" type="button">${shown.toLocaleString()} / ${VIEW.length.toLocaleString()} — 더 보기 (+${Math.min(PAGE_SIZE, VIEW.length - shown)})</button>`);
+      `<button id="more" type="button">${shown.toLocaleString()} / ${VIEW.length.toLocaleString()} — もっと見る (+${Math.min(PAGE_SIZE, VIEW.length - shown)})</button>`);
     $('#more').onclick = () => appendMore();
   }
   markDone();
@@ -803,7 +803,7 @@ function card(d, i) {
     .map(c => {
       // 계정은 숫자만 있으면 무슨 값인지 모른다 — 'acc' 를 붙인다
       const txt = c === 'account_id' ? `acc ${a[c]}` : a[c];
-      return `<span class="chip${/모드$/.test(c) ? ' key' : ''}${c === 'account_id' ? ' acc' : ''}${a[c] === '다운로드O' ? ' dlo' : a[c] === '다운로드X' ? ' dlx' : ''}">${esc(txt)}</span>`;
+      return `<span class="chip${/モード$/.test(c) ? ' key' : ''}${c === 'account_id' ? ' acc' : ''}${a[c] === 'ダウンロード○' ? ' dlo' : a[c] === 'ダウンロード×' ? ' dlx' : ''}">${esc(txt)}</span>`;
     }).join('');
   const npsChip = a[NPS_COL] ? `<span class="chip nps ${npsCls(a[NPS_COL])}">NPS ${esc(a[NPS_COL])}</span>` : '';
   const dlChip = a[DL_COL] ? `<span class="chip dl">⬇ ${esc(a[DL_COL])}</span>` : '';
@@ -817,12 +817,12 @@ function card(d, i) {
   <section class="card">
     <div class="chead">
       <span class="idx">${(i + 1).toLocaleString()}</span>
-      <span class="chip">${esc(a['생성시각'] || a['생성일'] || '')}</span>
+      <span class="chip">${esc(a['生成時刻'] || a['生成日'] || '')}</span>
       <span class="chip">${d.pages.length}p</span>
       ${chips}${npsChip}${dlChip}
     </div>
-    ${a['코멘트'] ? `<div class="voc">${esc(a['코멘트'])}</div>` : ''}
-    ${a['프롬프트'] ? `<details class="prompt"><summary>최초 프롬프트 (${a['프롬프트'].length.toLocaleString()}자)</summary><div class="body">${esc(a['프롬프트'])}</div></details>` : ''}
+    ${a['コメント'] ? `<div class="voc">${esc(a['コメント'])}</div>` : ''}
+    ${a['プロンプト'] ? `<details class="prompt"><summary>最初のプロンプト (${a['プロンプト'].length.toLocaleString()}文字)</summary><div class="body">${esc(a['プロンプト'])}</div></details>` : ''}
     <div class="${EXPANDED ? 'grid' : 'strip'}">${pages}</div>
   </section>`;
 }
@@ -838,23 +838,23 @@ function showLb() {
   const p = lbD.pages[lbP], a = lbD.attrs;
   $('#lbimg').src = p.url;
   $('#lbinfo').innerHTML =
-    `<b>${lbP + 1} / ${lbD.pages.length}</b> · ${esc(a['생성시각'] || '')}` +
+    `<b>${lbP + 1} / ${lbD.pages.length}</b> · ${esc(a['生成時刻'] || '')}` +
     (a[NPS_COL] ? ` · NPS ${esc(a[NPS_COL])}` : '') +
     ` · acc ${esc(a['account_id'] || '')} · <code>${esc(lbD.id.slice(0, 8))}</code>`;
   $('#lb').classList.add('open');
   loadPanel();
 }
 
-/** 라이트박스 우측 패널을 현재 페이지 상태로 다시 그린다 */
+/** 라이트박스 우측 패널을 현재 ページ 상태로 다시 그린다 */
 function loadPanel() {
   const prev = myFeedback[fbKey(lbD.id, lbP + 1)];
-  // 3분할 이전에 저장한 건은 memo 하나만 있다 — '그 외'로 되살린다
+  // 3분할 이전에 保存한 件은 memo 하나만 있다 — 'その他'로 되살린다
   $('#memo-body').value = prev?.body || '';
   $('#memo-master').value = prev?.master || '';
   $('#memo-etc').value = prev ? (prev.etc ?? prev.memo ?? '') : '';
   $('#savemsg').textContent = '';
   $('#savemsg').classList.remove('err');
-  // 이 디자인에서 이미 남긴 페이지 목록
+  // 이 成果物에서 이미 남긴 ページ 목록
   const mine = Object.entries(myFeedback)
     .filter(([k]) => k.startsWith(lbD.id + '#'))
     .map(([k, v]) => ({ p: +k.split('#')[1], v }))
@@ -862,7 +862,7 @@ function loadPanel() {
   const box = $('#saved');
   if (mine.length) {
     box.classList.add('show');
-    box.innerHTML = `<div style="margin-bottom:6px">이 디자인에 남긴 피드백 ${mine.length}건</div>` +
+    box.innerHTML = `<div style="margin-bottom:6px">この成果物に残した評価 ${mine.length}件</div>` +
       mine.map(m => `<div class="row"><b>p${m.p}</b> <span>${esc((m.v.memo || '').replace(/\n/g, ' / ').slice(0, 40)) || '—'}</span></div>`).join('');
   } else { box.classList.remove('show'); box.innerHTML = ''; }
 }
@@ -873,10 +873,10 @@ $('#author').addEventListener('change', () => {
   try { localStorage.setItem(AUTHOR_KEY, $('#author').value.trim()); } catch {}
 });
 
-/** 저장 — Apps Script 로 form POST.
+/** 保存 — Apps Script 로 form POST.
  *  fetch 를 쓰지 않는 이유: Apps Script 를 "미리디 내 모든 사용자"로 배포하면
- *  fetch 는 구글 로그인 페이지로 리다이렉트돼 CORS 에 막힌다.
- *  form 전송은 일반 페이지 이동이라 브라우저가 구글 세션을 그대로 실어 보내
+ *  fetch 는 구글 로그인 ページ로 리다이렉트돼 CORS 에 막힌다.
+ *  form 전송은 일반 ページ 이동이라 브라우저가 구글 세션을 그대로 실어 보내
  *  이미 로그인된 상태를 그대로 쓸 수 있다. 응답은 숨은 iframe 으로 흘려버린다.
  *  작성자는 Apps Script 가 Session.getActiveUser() 로 알아내므로 위조할 수 없다. */
 function save() {
@@ -884,19 +884,19 @@ function save() {
   const body = $('#memo-body').value.trim();
   const master = $('#memo-master').value.trim();
   const etc = $('#memo-etc').value.trim();
-  // 시트의 '메모' 열에는 채운 칸만 이어 붙여 넣는다. 세 열을 따로도 넣지만,
+  // 시트의 'メモ' 열에는 채운 칸만 이어 붙여 넣는다. 세 열을 따로도 넣지만,
   // 한 열만 봐도 무슨 얘기였는지 알 수 있어야 한다(그리고 예전 행과 형태가 같다).
-  const memo = [body && `[바디] ${body}`, master && `[마스터] ${master}`, etc && `[그 외] ${etc}`]
+  const memo = [body && `[ボディ] ${body}`, master && `[マスター] ${master}`, etc && `[その他] ${etc}`]
     .filter(Boolean).join('\n');
   const author = $('#author').value.trim();
   if (!author) {
-    $('#savemsg').textContent = '이름을 입력하세요 (처음 한 번만)';
+    $('#savemsg').textContent = '名前を入力してください（最初の1回だけ）';
     $('#savemsg').classList.add('err');
     $('#author').focus();
     return;
   }
   if (!memo) {
-    $('#savemsg').textContent = '세 칸 중 하나는 채워주세요';
+    $('#savemsg').textContent = '3つのうち1つは記入してください';
     $('#savemsg').classList.add('err');
     $('#memo-body').focus();
     return;
@@ -921,7 +921,7 @@ function save() {
     holder.style.cssText = 'position:fixed;left:-9999px;white-space:pre';
     document.body.appendChild(holder);
     copyText(holder).then(() => holder.remove());
-    msg = '시트에 붙여넣을 한 줄을 복사했습니다';
+    msg = 'シートに貼り付ける1行をコピーしました';
   } else {
     const f = document.createElement('form');
     f.method = 'POST'; f.action = SHEET_ENDPOINT; f.target = 'sinkFrame';
@@ -934,21 +934,21 @@ function save() {
     add('pageNo', rec.pageNo);
     add('pageUrl', rec.pageUrl);
     add('memo', memo);          // 합친 것 (예전 Apps Script 배포에서도 내용이 남는다)
-    add('body', body);          // 바디 컴포넌트
-    add('master', master);      // 마스터 컴포넌트
-    add('etc', etc);            // 그 외
+    add('body', body);          // ボディコンポーネント
+    add('master', master);      // マスターコンポーネント
+    add('etc', etc);            // その他
     document.body.appendChild(f); f.submit(); f.remove();
-    msg = '저장했습니다 ✓';
+    msg = '保存しました ✓';
   }
 
   myFeedback[fbKey(lbD.id, rec.pageNo)] = { memo, body, master, etc, savedAt: rec.savedAt };
   try { localStorage.setItem(FB_STORE, JSON.stringify(myFeedback)); } catch {}
   markDone();
-  loadPanel();               // 저장 목록을 다시 그린 뒤에
+  loadPanel();               // 保存 목록을 다시 그린 뒤에
   $('#savemsg').textContent = msg;   // 안내를 남긴다 (loadPanel 이 지우므로 순서 중요)
 }
 
-/** 피드백 남긴 페이지의 번호 배지를 강조 */
+/** 피드백 남긴 ページ의 번호 배지를 강조 */
 function markDone() {
   document.querySelectorAll('figure').forEach(f => {
     const done = !!myFeedback[fbKey(f.dataset.id, +f.dataset.p + 1)];
@@ -964,7 +964,7 @@ $('#save').onclick = save;
 $('#lb').onclick = e => { if (e.target.id === 'lb') $('#lb').classList.remove('open'); };
 document.addEventListener('keydown', e => {
   if (!$('#lb').classList.contains('open')) return;
-  // 입력 중에는 화살표로 페이지가 넘어가지 않게 한다 (메모·이름 모두)
+  // 입력 중에는 화살표로 ページ가 넘어가지 않게 한다 (メモ·이름 모두)
   const typing = e.target.classList?.contains('memo') || e.target.id === 'author';
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { save(); return; }
   if (e.key === 'Escape') { $('#lb').classList.remove('open'); return; }
@@ -983,7 +983,7 @@ const MANIFEST = 'data/manifest.json';   // 공개판에는 없다(404 → 샘�
 const RECENT_DAYS = 7;   // '최근 N일' 버튼의 N. 다운로드 실측상 7일이면 99.1% 가 확정된다
 let MANI = null;
 const VOLUME_DIR = '/Volumes/<CATALOG>/<SCHEMA>/exports/design-eval';
-// 월 전체를 gz 한 파일로 둔 곳. 압축본이라 받기 편하고, 앱이 브라우저에서 직접 푼다.
+// 월 すべて를 gz 한 파일로 둔 곳. 압축본이라 받기 편하고, 앱이 브라우저에서 직접 푼다.
 // VOLUME_DIR 안이 아니라 옆이다 — n8n 이 VOLUME_DIR 를 매일 덮어쓰며 하위를 지우기 때문.
 const GZ_DIR = VOLUME_DIR + '-gz';
 
@@ -1015,7 +1015,7 @@ const DBX_HOST = 'https://<YOUR_WAREHOUSE_HOST>';
 // 작은 파일에서 '0MB' 로 보이지 않게 단위를 바꾼다
 /** 브라우저가 화면을 그릴 틈을 준다.
  *  requestAnimationFrame 을 쓰면 안 된다 — 탭이 숨겨지면 아예 발화하지 않아
- *  이어 읽기가 그 자리에서 멈춘다(실측). setTimeout 도 숨겨진 탭에서 1초까지 눌린다.
+ *  이어 읽기가 その場で 멈춘다(실측). setTimeout 도 숨겨진 탭에서 1초까지 눌린다.
  *  MessageChannel 은 눌리지 않으므로 탭을 옮겨도 계속 읽는다. */
 const nextTick = () => new Promise(r => {
   if (typeof MessageChannel === 'function') {
@@ -1025,9 +1025,9 @@ const nextTick = () => new Promise(r => {
   } else setTimeout(r);
 });
 
-// CSV 읽는 동안의 전체 화면 진행 표시
+// CSV 읽는 동안의 すべて 화면 진행 표시
 const busy = {
-  show(t) { $('#busytext').textContent = t || '읽는 중…'; $('#busy').hidden = false; },
+  show(t) { $('#busytext').textContent = t || '読み込み中…'; $('#busy').hidden = false; },
   set(t) { $('#busytext').textContent = t; },
   hide() { $('#busy').hidden = true; },
 };
@@ -1053,10 +1053,10 @@ const mb = b => b >= 1073741824 ? (b / 1073741824).toFixed(1) + 'GB'
     const recent = ps.slice(-RECENT_DAYS);
     const sum = a => a.reduce((s, p) => s + (p.gzBytes || p.bytes || 0), 0);
     const meta = [
-      f.designs ? `디자인 ${(+f.designs).toLocaleString()}개` : '',
-      f.rows ? `페이지 ${(+f.rows).toLocaleString()}장` : '',
+      f.designs ? `成果物 ${(+f.designs).toLocaleString()}件` : '',
+      f.rows ? `ページ ${(+f.rows).toLocaleString()}枚` : '',
       mb(f.gzBytes || f.bytes || 0),
-      ps.length ? `${ps.length}일` : '',
+      ps.length ? `${ps.length}日` : '',
     ].filter(Boolean).join(' · ');
     return `
     <div class="rdy" data-i="${i}">
@@ -1067,12 +1067,11 @@ const mb = b => b >= 1073741824 ? (b / 1073741824).toFixed(1) + 'GB'
       </div>
       ${recent.length && recent.length < ps.length ? `<button class="btn ghost" data-recent="1"
          title="${esc(recent[0].date)} ~ ${esc(recent[recent.length - 1].date)}"
-         >최근 ${recent.length}일 (${mb(sum(recent))})</button>` : ''}
-      <button class="btn" data-all="1">전체 불러오기</button>
+         >최근 ${recent.length}日 (${mb(sum(recent))})</button>` : ''}
+      <button class="btn" data-all="1">すべて読み込み</button>
     </div>`;
   }).join('') +
-    `<p class="foot">버튼을 누르면 앱이 알아서 가져옵니다 — 데이터브릭스에 들어갈 일이 없습니다.
-      전체가 무거우면 <b>최근 며칠만</b> 먼저 보세요.</p>`;
+    `<p class="foot">ボタンを押すとアプリが取得します。全部が重いときは <b>直近の数日だけ</b> を先に。</p>`;
 
   $('#ready').querySelectorAll('.rdy').forEach(card => {
     const f = m.files[+card.dataset.i];
@@ -1102,17 +1101,17 @@ async function openRemote(f, card, recentDays) {
     ? (recentDays ? f.parts.slice(-recentDays) : f.parts)
     : [{ path: f.path, gzBytes: f.bytes, date: f.ym }];
 
-  // 최근 날짜부터 읽는다. 기본 정렬이 '최근 생성순'이라 먼저 읽은 것이 곧 화면 위쪽이다.
+  // 최근 날짜부터 읽는다. 기본 정렬이 '生成が新しい順'이라 먼저 읽은 것이 곧 화면 위쪽이다.
   list = [...list].reverse();
 
   if (list.some(p => p.path.endsWith('.gz')) && typeof DecompressionStream === 'undefined') {
-    $('#error').innerHTML = '<div class="err"><b>이 브라우저는 압축 파일을 열 수 없습니다.</b><br>' +
-      '크롬(또는 사파리 16.4 이상)에서 열어 주세요.</div>';
+    $('#error').innerHTML = '<div class="err"><b>このブラウザは圧縮ファイルを開けません。</b><br>' +
+      'Chrome（またはSafari 16.4以上）で開いてください。</div>';
     return;
   }
 
   btns.forEach(b => { b.disabled = true; });
-  pressed.textContent = '불러오는 중…';
+  pressed.textContent = '読み込み中…';
   card.classList.add('busy'); bar.hidden = false; fill.style.width = '0%';
   $('#error').innerHTML = '';
 
@@ -1125,7 +1124,7 @@ async function openRemote(f, card, recentDays) {
     for (let i = 0; i < list.length; i++) {
       const p = list[i];
       const res = await fetch(p.path);
-      if (!res.ok) throw new Error(`${p.path} 을 찾을 수 없습니다 (HTTP ${res.status})`);
+      if (!res.ok) throw new Error(`${p.path} が見つかりません (HTTP ${res.status})`);
 
       // 압축 해제 전에 바이트를 세야 진행률이 manifest 의 gzBytes 와 맞는다
       let stream = res.body.pipeThrough(new TransformStream({
@@ -1155,23 +1154,23 @@ async function openRemote(f, card, recentDays) {
 
       const left = list.length - i - 1;
       $('#stat').textContent =
-        `디자인 ${DESIGNS.length.toLocaleString()}개 · 페이지 ` +
-        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}장 · ${label}` +
-        (left ? ` · 이어서 읽는 중 ${left}일 남음` : '');
+        `成果物 ${DESIGNS.length.toLocaleString()}件 · ページ ` +
+        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}枚 · ${label}` +
+        (left ? ` · 続けて読み込み中 ${left}日 残り` : '');
       await nextTick();   // 화면을 실제로 그리게 양보
     }
     $('#loading')?.remove();
   } catch (err) {
     if (DESIGNS.length) {
       // 이미 보고 있는 게 있으면 화면을 뒤엎지 않고 알려만 준다
-      $('#stat').textContent += ' · 나머지를 읽지 못했습니다';
+      $('#stat').textContent += ' · 残りを読み込めませんでした';
       console.error(err);
       return;
     }
     card.classList.remove('busy'); bar.hidden = true;
     btns.forEach(b => { b.disabled = false; });
-    pressed.textContent = '다시 시도';
-    $('#error').innerHTML = `<div class="err"><b>불러오지 못했습니다.</b><br>${esc(err.message)}</div>`;
+    pressed.textContent = '再試行';
+    $('#error').innerHTML = `<div class="err"><b>読み込めませんでした。</b><br>${esc(err.message)}</div>`;
     console.error(err);
   }
 }
@@ -1197,13 +1196,13 @@ document.querySelectorAll('.mode').forEach(b => {
  *  사내 hub 를 http:// 로 서비스하면 navigator.clipboard 가 아예 없다. */
 async function copyText(el) {
   const text = el.textContent;
-  try { await navigator.clipboard.writeText(text); return '복사됨'; } catch {}
+  try { await navigator.clipboard.writeText(text); return 'コピーしました'; } catch {}
 
   const sel = getSelection(), range = document.createRange();
   range.selectNodeContents(el);
   sel.removeAllRanges(); sel.addRange(range);
-  try { if (document.execCommand('copy')) { sel.removeAllRanges(); return '복사됨'; } } catch {}
-  return '⌘C 를 누르세요';   // 선택은 남겨둔다
+  try { if (document.execCommand('copy')) { sel.removeAllRanges(); return 'コピーしました'; } } catch {}
+  return '⌘C を押してください';   // 선택은 남겨둔다
 }
 
 document.querySelectorAll('[data-copy]').forEach(b => {
@@ -1233,7 +1232,7 @@ $('#reload').onclick = () => location.reload();
 $('#demo')?.addEventListener('click', async () => {
   try {
     const r = await fetch('demo/sample.csv', { cache: 'no-cache' });
-    if (!r.ok) throw new Error('sample.csv 를 찾을 수 없습니다 (' + r.status + ')');
+    if (!r.ok) throw new Error('sample.csv が見つかりません (' + r.status + ')');
     await handle([new File([await r.blob()], 'sample.csv', { type: 'text/csv' })]);
   } catch (e) {
     $('#error').innerHTML = `<div class="err">${e.message}</div>`;
@@ -1241,11 +1240,11 @@ $('#demo')?.addEventListener('click', async () => {
 });
 
 /** 파일 하나를 텍스트로 읽는다. .gz 면 브라우저에서 바로 압축을 푼다.
- *  하루치 gz 는 작아서, 월 전체를 받는 대신 필요한 날짜만 받아 올릴 수 있다. */
+ *  하루치 gz 는 작아서, 월 すべて를 받는 대신 필요한 날짜만 받아 올릴 수 있다. */
 async function readFile(file) {
   if (!/\.gz$/i.test(file.name)) return file.text();
   if (typeof DecompressionStream === 'undefined') {
-    throw new Error(`${file.name} — 이 브라우저는 압축 파일을 열 수 없습니다. 크롬(또는 사파리 16.4 이상)에서 열어 주세요.`);
+    throw new Error(`${file.name} — このブラウザは圧縮ファイルを開けません。 Chrome（またはSafari 16.4以上）で開いてください。`);
   }
   const rd = file.stream().pipeThrough(new DecompressionStream('gzip')).getReader();
   const dec = new TextDecoder('utf-8'), out = [];
@@ -1261,39 +1260,39 @@ async function readFile(file) {
 /** 파일을 받아 읽는다. 한 개도 되고 여러 개도 된다.
  *  헤더는 load() 가 파일마다 알아서 처리하므로 여기서 자르지 않는다 —
  *  직접 잘라내면 첫 데이터 행이 헤더로 오해되어 'design_id 없음'으로 실패한다(실측).
- *  이름 역순(최신 먼저)으로 읽어서, 기본 정렬(최근 생성순)과 화면 순서를 맞춘다. */
+ *  이름 역순(최신 먼저)으로 읽어서, 기본 정렬(生成が新しい順)과 화면 순서를 맞춘다. */
 async function handle(files) {
   $('#error').innerHTML = '';
   const list = [...files].sort((a, b) => b.name.localeCompare(a.name));
   const totalMB = (list.reduce((s, f) => s + f.size, 0) / 1048576).toFixed(1);
   LOADED = null;
-  busy.show(`파일 읽는 중… (${totalMB}MB)`);
+  busy.show(`ファイル読み込み中… (${totalMB}MB)`);
 
   try {
     for (let i = 0; i < list.length; i++) {
       const f = list[i];
       busy.set(list.length > 1
-        ? `읽는 중… ${i + 1}/${list.length}개 · ${f.name}`
-        : `파일 읽는 중… (${totalMB}MB)`);
+        ? `読み込み中… ${i + 1}/${list.length}件 · ${f.name}`
+        : `ファイル読み込み中… (${totalMB}MB)`);
       await nextTick();
       await load(await readFile(f), i > 0);
       buildFilters();
       if (i === 0) { $('#intro').style.display = 'none'; $('#app').style.display = 'block'; }
       render(i > 0);
       $('#stat').textContent =
-        `디자인 ${DESIGNS.length.toLocaleString()}개 · 페이지 ` +
-        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}장 · ` +
-        (list.length > 1 ? `파일 ${i + 1}/${list.length}개` : f.name);
+        `成果物 ${DESIGNS.length.toLocaleString()}件 · ページ ` +
+        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}枚 · ` +
+        (list.length > 1 ? `ファイル ${i + 1}/${list.length}件` : f.name);
       await nextTick();
     }
   } catch (err) {
     // 첫 파일 이후에는 intro(와 그 안의 #error)가 숨겨져 있다 —
     // 갤러리 위 알림 바(#apperr)에도 같이 써서 어느 화면에서든 보이게 한다.
-    const html = `<div class="err"><b>불러오지 못했습니다.</b><br>${esc(err.message)}</div>`;
+    const html = `<div class="err"><b>読み込めませんでした。</b><br>${esc(err.message)}</div>`;
     $('#error').innerHTML = html;
     if (getComputedStyle($('#app')).display === 'block') {
       $('#apperr').innerHTML = html +
-        `<div class="err" style="border-top:0"><button class="btn ghost" onclick="this.closest('#apperr').innerHTML=''">닫기</button></div>`;
+        `<div class="err" style="border-top:0"><button class="btn ghost" onclick="this.closest('#apperr').innerHTML=''">閉じる</button></div>`;
     }
     console.error(err);
   } finally {

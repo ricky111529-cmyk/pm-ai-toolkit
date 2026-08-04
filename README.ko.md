@@ -6,7 +6,7 @@
 디자인 SaaS 기업에서 일본 시장향 AI 제품 기획(Assistant PdM)을 하고 있습니다.
 
 📄 **케이스 스터디** → [포트폴리오](outputs/vibe-coding/portfolio-aisaac)
-🖱 **바로 만져보기** → [디자인 평가 뷰어 데모](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) — `샘플 불러오기`를 누르면 데이터 없이 바로 동작합니다
+🖱 **바로 만져보기** → [디자인 평가 뷰어 데모](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) — `サンプル読み込み`을 누르면 데이터 없이 바로 동작합니다 (UI는 일본어)
 
 ---
 
