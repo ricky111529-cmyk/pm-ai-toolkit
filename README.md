@@ -1,45 +1,73 @@
-# PM AI Toolkit
+# 김민섭 — Product / UX Research
 
-PM 업무에 AI를 붙여 쓰기 위해 만든 작업환경과, 개인 사이드 프로젝트를 모아둔 저장소입니다.
+유저의 "왜"를 파고들어 가설을 세우고, 데이터로 검증하면서 제품을 밀고 나갑니다.
+디자인 SaaS 기업에서 일본 시장향 AI 제품 기획(Assistant PdM)을 하고 있습니다.
 
-## 왜 이 저장소가 있나
+📄 **케이스 스터디는 포트폴리오에 있습니다** → [`outputs/vibe-coding/portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac)
 
-기획·리서치·데이터 분석·프로토타이핑을 AI와 페어로 하면서, **매번 다시 설명하지 않아도 되는 상태**를 만드는 게 목표였습니다. 그래서 규칙을 파일로 고정했습니다 — 어떤 문서를 어디에 저장하고, 어떤 유형이면 어떤 골격을 쓰고, 무엇을 물어봐야 하는지.
+---
 
-## 무엇이 들어 있나
+## 이 저장소는 무엇인가
 
-### AI 작업환경 (`CLAUDE.md`, `AGENTS.md`, `.claude/`, `.agents/`, `.codex/`)
+**기획자가 자기 작업환경을 직접 설계한 기록입니다.**
 
-| | |
-|---|---|
-| `CLAUDE.md` | 진입 시 항상 읽는 규칙. 저장 위치 결정 트리 · 문서 유형별 강제 구조 · 라우팅. 200줄 이내로 유지 |
-| `.claude/prompts/templates/` | 문서 유형별 골격 — PRD · 기능 스펙 · VoC 분석 · 경쟁사 리서치 · 데이터 분석 · 설문 · 실험 · 평가 루브릭 |
-| `.claude/prompts/ux-research-guideline.md` | 리서치 질문·가설·인터뷰 설계 프레임워크 |
-| `.claude/commands/` | 반복 작업 슬래시 커맨드 |
-| `.claude/skills/`, `.agents/skills/` | Databricks SQL · Unity Catalog · Genie 스킬 |
-| `.claude/design.md` | 디자인 토큰 참고 (공개 웹사이트를 브라우저 computed style로 추출한 것) |
-
-설계 원칙 하나만 꼽으면 **"이 줄이 없으면 AI가 실수하는가? No면 삭제"** 입니다. 코드나 파일 구조에서 읽히는 정보는 넣지 않습니다.
-
-### 사이드 프로젝트 (`outputs/vibe-coding/`)
+AI와 페어로 일하면서 가장 비효율적이었던 건 매번 맥락을 다시 설명하는 일이었습니다. 그래서 규칙을 파일로 고정했습니다 — 어떤 문서를 어디에 저장하고, 어떤 유형이면 어떤 골격을 쓰고, 무엇을 되물어야 하는지.
 
 | | |
 |---|---|
-| `band-jam-feedback` | 밴드 합주 녹음을 받아 파트별 타이밍을 분석하는 도구 (Python · demucs · librosa) |
-| `between-us` | 두 사람이 세션 코드로 입장해 각자의 답을 원하는 순간에 공개하는 대화 웹앱 (Next.js) |
-| `habit-app-retention-analysis` | 습관 형성 앱의 리텐션 분석 연습 |
-| `travel-stamp-diary` | 여행 스탬프 기록 (단일 HTML) |
-| `portfolio-aisaac` | 포트폴리오 사이트 |
+| [`CLAUDE.md`](CLAUDE.md) | 진입 시 항상 읽는 규칙. 저장 위치 결정 트리 · 문서 유형별 강제 구조 · 라우팅 |
+| [`.claude/prompts/templates/`](.claude/prompts/templates) | 문서 유형 8종의 골격 — PRD · 기능 스펙 · VoC 분석 · 경쟁사 리서치 · 데이터 분석 · 설문 · 실험 · 평가 루브릭 |
+| [`.claude/prompts/ux-research-guideline.md`](.claude/prompts/ux-research-guideline.md) | 리서치 질문·가설·인터뷰 설계 프레임워크 (질문 6기준 + 인사이트 4질문) |
+| [`.claude/commands/`](.claude/commands) | 반복 작업을 커맨드로 고정 |
+| [`.claude/skills/`](.claude/skills) | Databricks SQL · Unity Catalog · Genie |
 
-### 학습 기록 (`projects/`)
+설계 원칙은 하나입니다. **"이 줄이 없으면 AI가 실수하는가? No면 삭제."** 코드나 파일 구조에서 읽히는 정보는 넣지 않습니다. 그래서 `CLAUDE.md`는 200줄을 넘기지 않습니다.
 
-- `adsp-study` — ADsP 학습 플랜
-- `google-data-analytics` — Google Data Analytics Certificate 진행 기록
+---
+
+## 어떻게 일하는가
+
+**가설과 검증** — 무엇이·왜 일어나는지 찾아내고 데이터로 확인합니다.
+AI 슬라이드 생성의 초기 실패를 3만 건 분석해 세 갈래(되묻기 / 부적절한 거부 / 빈 응답)로 분류하고, 13.4% → 5.1%로 낮췄습니다. 발견부터 검증까지 혼자 닫아본 경험입니다.
+
+**오너십** — 지시를 기다리지 않고 문제를 정의합니다.
+기획이 통하지 않는 이유를 파보니 팀이 유저를 깊이 이해하지 못하는 게 근본이었습니다. 1on1에서 문제를 제기해 UX 리서치를 직접 시작했습니다. 현재 진행 중입니다.
+
+**직접 만든다** — 기획만 하지 않고 검증 도구를 만듭니다.
+LLM 품질 평가 파이프라인을 Python으로 자작했습니다. 자사 API로 슬라이드를 자동 생성하고 외부 LLM이 PASS/FAIL을 판정하는 2층 구조(규칙 기반 + LLM 기반)였습니다. **실운용까지는 가지 못했습니다** — "LLM으로 LLM을 평가하는" 판정 정확도를 담보하지 못한 게 벽이었습니다. 이 저장소도 그 연장선입니다.
+
+---
+
+## 만든 것
+
+| | |
+|---|---|
+| [`band-jam-feedback`](outputs/vibe-coding/band-jam-feedback) | 밴드 합주 녹음에서 파트별 타이밍을 분석하는 도구. Python · demucs로 소스 분리 · librosa로 온셋 검출 |
+| [`between-us`](outputs/vibe-coding/between-us) | 두 사람이 세션 코드로 입장해 각자의 답을 원하는 순간에 공개하는 대화 웹앱. Next.js |
+| [`habit-app-retention-analysis`](outputs/vibe-coding/habit-app-retention-analysis) | 습관 형성 앱의 리텐션 분석 |
+| [`travel-stamp-diary`](outputs/vibe-coding/travel-stamp-diary) | 여행 스탬프 기록. 의존성 없는 단일 HTML |
+| [`portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac) | 포트폴리오 사이트 |
+
+---
+
+## 다룰 수 있는 것
+
+정직하게 적습니다.
+
+| | |
+|---|---|
+| 기획·리서치 | PRD·기능 스펙 작성, 인터뷰 설계, 정성 분석, VoC 분류 체계 |
+| 데이터 | SQL(Databricks). 기술통계·퍼널·코호트·A/B 결과 해석은 스스로 / **가설검정·회귀는 개념 수준이며 AI 보조로 씁니다** / 모델링은 아직 못 합니다 |
+| 만들기 | Python(오디오 분석·LLM 파이프라인), 단일 HTML 앱, Next.js 기초 |
+| 언어 | 한국어 · 일본어 (JLPT N1) |
+| 학습 중 | [ADsP](projects/adsp-study) · [Google Data Analytics Certificate](projects/google-data-analytics) |
+
+---
 
 ## 담지 않은 것
 
-회사 업무 산출물(기획서·리서치 보고서·고객 데이터·사내 인프라 설정)은 들어 있지 않습니다. 템플릿과 규칙 같은 **방법**만 옮겼고, 사내 스키마·호스트·경로는 플레이스홀더로 치환했습니다.
+회사 업무 산출물(기획서·리서치 보고서·고객 데이터·사내 인프라 설정)은 들어 있지 않습니다. 재사용 가능한 **방법**만 옮겼고, 사내 스키마·호스트·경로는 플레이스홀더로 치환했습니다.
 
-## 라이선스
+## 연락
 
-미정입니다. 참고하실 분은 자유롭게 보셔도 됩니다.
+ricky111529@gmail.com
