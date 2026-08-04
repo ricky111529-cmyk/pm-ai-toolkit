@@ -1,9 +1,12 @@
 # 김민섭 — Product / UX Research
 
+**한국어** · [日本語](README.ja.md)
+
 유저의 "왜"를 파고들어 가설을 세우고, 데이터로 검증하면서 제품을 밀고 나갑니다.
 디자인 SaaS 기업에서 일본 시장향 AI 제품 기획(Assistant PdM)을 하고 있습니다.
 
-📄 **케이스 스터디는 포트폴리오에 있습니다** → [`outputs/vibe-coding/portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac)
+📄 **케이스 스터디** → [포트폴리오](outputs/vibe-coding/portfolio-aisaac)
+🖱 **바로 만져보기** → [디자인 평가 뷰어 데모](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) — `샘플 불러오기`를 누르면 데이터 없이 바로 동작합니다
 
 ---
 
@@ -45,7 +48,7 @@ LLM 품질 평가 파이프라인을 Python으로 자작했습니다([코드와 
 | [`between-us`](outputs/vibe-coding/between-us) | 두 사람이 세션 코드로 입장해 각자의 답을 원하는 순간에 공개하는 대화 웹앱. Next.js |
 | [`habit-app-retention-analysis`](outputs/vibe-coding/habit-app-retention-analysis) | 습관 형성 앱의 리텐션 분석 |
 | [`travel-stamp-diary`](outputs/vibe-coding/travel-stamp-diary) | 여행 스탬프 기록. 의존성 없는 단일 HTML |
-| [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer) | AI 결과물을 전 페이지 썸네일 + 맥락과 함께 보고 **페이지 단위로** 평가를 남기는 단일 HTML 앱. 큰 gz 를 브라우저에서 스트리밍 해제 · 점진 렌더링 · 컬럼 자동 분류. **샘플 데이터로 바로 열립니다** |
+| [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer) | AI 결과물을 전 페이지 썸네일 + 맥락과 함께 보고 **페이지 단위로** 평가를 남기는 단일 HTML 앱. 큰 gz 를 브라우저에서 스트리밍 해제 · 점진 렌더링 · 컬럼 자동 분류. [**데모 열기 ↗**](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) |
 | [`llm-qa-pipeline`](outputs/vibe-coding/llm-qa-pipeline) | AI 채팅 응답 품질을 자동 검증하는 파이프라인. 2층 판정(규칙 + LLM) · 멀티턴 자동화 · Flask UI. **실운용까지는 가지 못했습니다** — [회고](outputs/vibe-coding/llm-qa-pipeline/PORTFOLIO.md) |
 | [`portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac) | 포트폴리오 사이트 |
 
