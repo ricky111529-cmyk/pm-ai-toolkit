@@ -142,6 +142,11 @@
   select:focus,input:focus{outline:2px solid var(--primary);outline-offset:-1px}
   input[type=search]{min-width:210px}
   /* 다중 선택 드롭다운 */
+  #lang{position:absolute;top:0;right:0;display:flex;gap:2px}
+  #lang button{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:5px 10px;font-size:12.5px;cursor:pointer;color:var(--text-dim);font-family:inherit}
+  #lang button.on{border-color:var(--primary);color:var(--primary-dark);background:var(--primary-tint);font-weight:500}
+  #intro{position:relative}
   .ms{position:relative}
   .ms-btn{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);
     padding:7px 10px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text)}
@@ -290,40 +295,42 @@
 
 <!-- ── 업로드 ─────────────────────────────────── -->
 <section id="intro">
-  <h1>デザイン評価ビューア</h1>
-  <p class="lead">AIが生成した成果物を <b>全ページのサムネイル + 文脈（元の依頼・満足度・コメント）</b>と一緒に見て、
-     その場で <b>ページ単位で</b> 評価を残す画面です。</p>
+  <div id="lang" role="group" aria-label="언어 / 言語">
+    <button type="button" data-lang="ja">日本語</button><button type="button" data-lang="ko">한국어</button>
+  </div>
+  <h1 data-i18n="title"></h1>
+  <p class="lead"><span data-i18n="lead1"></span> <b data-i18n="leadB"></b>
+     <span data-i18n="lead2"></span> <b data-i18n="leadB2"></b> <span data-i18n="lead3"></span></p>
 
   <div class="steps">
     <div class="step">
       <span class="no">1</span>
       <div>
-        <b>サンプルデータですぐ見る</b>
-        <div class="copyrow"><button class="btn sm" id="demo">サンプル読み込み</button></div>
-        <p class="note">ダミーデータ12件です。フィルタ・検索・ライトボックス・評価入力がすべて動きます。
-           サムネイルはplaceholder画像です。</p>
+        <b data-i18n="step1"></b>
+        <div class="copyrow"><button class="btn sm" id="demo" data-i18n="demoBtn"></button></div>
+        <p class="note" data-i18n="step1note"></p>
       </div>
     </div>
     <div class="step">
       <span class="no">2</span>
       <div>
-        <b>自分のCSVで見る</b>
-        <p class="note">下に CSV（または <code>.csv.gz</code>）をドラッグ&ドロップしてください。
-           必須カラムは <code>design_id</code>·<code>page_url</code> の2つだけで、
-           残りは <b>値の種類を見てフィルタを自動生成</b>します。
-           カラム定義は <code>demo/sample.csv</code>にあります。</p>
+        <b data-i18n="step2"></b>
+        <p class="note" data-i18n="step2note"></p>
       </div>
     </div>
   </div>
 
-  <!-- 사내판에는 데이터 볼륨에서 받아오는 경로(①)와 쿼리 안내(②)가 있었다.
-       공개판에서는 지웠고, 그 자리를 참조하는 스크립트가 죽지 않게 빈 자리만 남긴다. -->
+  <!-- 사내판에는 데이터 볼륨에서 받아오는 경로가 있었다. 공개판에서는 지웠고,
+       그 자리를 참조하는 스크립트가 죽지 않게 빈 자리만 남긴다. -->
   <div hidden><div id="ready"></div><div id="noready"></div>
     <a id="vollink"></a><pre id="clisnip"></pre><pre id="clisnip-all"></pre>
     <button id="peek"></button><pre id="sqltext"></pre></div>
 
   <div id="drop">
     <div class="ico">📄</div>
+    <b data-i18n="dropTitle"></b>
+    <span data-i18n="dropNote"></span>
+  </div>
     <b>CSVファイルをアップロード</b>
     <span>ここにドラッグ&ドロップ、またはクリックして選択 — <b>複数まとめて</b> 可能、 <code>.csv.gz</code>もそのまま</span>
   </div>
@@ -340,7 +347,7 @@
       <h1>デザイン評価ビューア</h1>
       <span class="stat" id="stat"></span>
       <span class="spacer"></span>
-      <button class="btn ghost" id="reload">別のCSVを読み込む</button>
+      <button class="btn ghost" id="reload" data-i18n="reload"></button>
     </div>
     <div class="bar" id="filters"></div>
   </header>
@@ -363,46 +370,46 @@
       <img id="lbimg" alt="">
       <div id="lbinfo"></div>
       <div class="lbnav">
-        <button class="btn" id="prev">← 前</button>
-        <button class="btn" id="next">次 →</button>
-        <button class="btn" id="close">閉じる (Esc)</button>
+        <button class="btn" id="prev" data-i18n="prev"></button>
+        <button class="btn" id="next" data-i18n="next"></button>
+        <button class="btn" id="close" data-i18n="close"></button>
       </div>
     </div>
 
     <!-- 이 ページ에 대한 피드백 -->
     <aside class="lbside">
       <div class="side-hd">
-        <b>このページの評価</b>
+        <b data-i18n="sideTitle"></b>
       </div>
 
       <div class="fld">
         <div class="memorow">
-          <label>メモ <span class="hint">該当する欄だけ埋めれば大丈夫です</span></label>
-          <input id="author" placeholder="名前（最初の1回だけ）" maxlength="20"
+          <label><span data-i18n="memo"></span> <span class="hint" data-i18n="memoHint"></span></label>
+          <input id="author" data-i18n-ph="author" maxlength="20"
                  autocomplete="off" title="한 번 입력하면 이 브라우저에서 계속 기억합니다">
         </div>
 
         <div class="mgrp">
-          <label for="memo-body">ボディコンポーネント</label>
+          <label for="memo-body" data-i18n="body"></label>
           <textarea id="memo-body" class="memo" rows="3"
-                    placeholder="예: 아이콘 색상대치"></textarea>
+                    data-i18n-ph="phBody"></textarea>
         </div>
 
         <div class="mgrp">
-          <label for="memo-master">マスターコンポーネント</label>
+          <label for="memo-master" data-i18n="master"></label>
           <textarea id="memo-master" class="memo" rows="3"
-                    placeholder="예: 소제목 줄바꿈"></textarea>
+                    data-i18n-ph="phMaster"></textarea>
         </div>
 
         <div class="mgrp">
-          <label for="memo-etc">その他</label>
+          <label for="memo-etc" data-i18n="etc"></label>
           <textarea id="memo-etc" class="memo" rows="3"
-                    placeholder="예: 텅 비어 보임"></textarea>
+                    data-i18n-ph="phEtc"></textarea>
         </div>
       </div>
 
       <div class="side-ft">
-        <button class="btn" id="save">保存 <span class="kbd">⌘↵</span></button>
+        <button class="btn" id="save"><span data-i18n="save"></span> <span class="kbd">⌘↵</span></button>
         <span id="savemsg" class="savemsg"></span>
       </div>
 
@@ -420,38 +427,152 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 // 필수 2개 + 특별 취급 컬럼. 残りは 값 종류 수를 보고 필터/검색으로 자동 분류한다.
-const REQUIRED = ['design_id', 'page_url'];
-const PAGE_COL = 'ページ順';
-const LONG_COLS = ['プロンプト', 'コメント'];      // 카드에 본문으로 표시. 필터 만들지 않음
-// 필터로 만들지 않을 컬럼: 검증용 중복(AIP모드원본) · 고유값이 사실상 무한(레이아웃키·생성시각·
-// 캔버스·ページ수) → 드롭다운이 쓸모없고 바가 지저분해진다. 검색으로 찾으면 된다.
-// 입력유형(원본 request_type)은 숨긴다: 7/14 업데이트 이후 분류(150자 INSTRUCTION·
-// 파일 타입)가 기록되지 않아 사실상 전부 TOPIC — 백엔드 확인 중. 실제 입력 수단은 입력방식이 담당.
-const NO_FILTER = ['生成モード原本', 'レイアウトキー', '生成時刻', 'キャンバス', 'ページ数', '順序正確度', '生成日', '入力タイプ'];  // 생성일은 달력 기간으로
 
-// 값이 수천 개여도 드롭다운을 만드는 컬럼. 값 종류 수 제한(MAX_FILTER_VALUES)을 면제하고,
-// 대신 팝업 안에 검색칸을 넣어 좁혀 고르게 한다. account_id 는 '이 유저 것만' 과
-// '여러 유저를 나란히' 둘 다 필요해서 검색만으로는 부족하다.
-const BIG_FILTER_COLS = ['account_id'];
-const MS_RENDER_MAX = 300;             // 한 번에 그리는 옵션 상한 (그 이상은 검색으로)
-
-// 읽을 때 컬럼명·값을 새 워딩으로 정규화한다.
-// SQL 도 같은 값을 내지만, 볼륨에 이미 올라간 옛 CSV(함/안함·개요없음·요청타입)를
-// 다시 만들지 않고도 화면이 같아지게 앱에서도 맞춘다.
-const COL_RENAME = { 'リクエストタイプ': '入力タイプ' };
-const VAL_RENAME = {
-  'ダウンロード有無': { 'あり': 'ダウンロード○', 'なし': 'ダウンロード×' },
-  '入力方式':  { 'アウトラインなし': 'マッチなし' },
+// ── 언어 ────────────────────────────────────────
+// 문구는 여기 한 곳에만 둔다. 화면의 정적 텍스트는 data-i18n 으로 표시해두고
+// applyI18n() 이 채운다. 동적으로 만드는 문구는 t() 를 쓴다.
+const STR = {
+  ja: {
+    title:'デザイン評価ビューア',
+    lead1:'AIが生成した成果物を', leadB:'全ページのサムネイル + 文脈（元の依頼・満足度・コメント）',
+    lead2:'と一緒に見て、その場で', leadB2:'ページ単位で', lead3:'評価を残す画面です。',
+    step1:'サンプルデータですぐ見る', demoBtn:'サンプル読み込み',
+    step1note:'ダミーデータ12件です。フィルタ・検索・ライトボックス・評価入力がすべて動きます。サムネイルはplaceholder画像です。',
+    step2:'自分のCSVで見る',
+    step2note:'下に CSV（または .csv.gz）をドラッグ&ドロップしてください。必須カラムは design_id・page_url の2つだけで、残りは値の種類を見てフィルタを自動生成します。',
+    dropTitle:'CSVファイルをアップロード',
+    dropNote:'ここにドラッグ&ドロップ、またはクリックして選択 — 複数まとめて可能、.csv.gz もそのまま',
+    reload:'別のCSVを読み込む', search:'検索 — コメント · プロンプト · account_id',
+    sortNew:'生成が新しい順', sortNps:'NPSが低い順',
+    expand:'すべて展開', strip:'フィルムストリップ', files:'ファイル',
+    selAll:'すべて選択', selNone:'選択解除', noMatch:'一致する値がありません',
+    all:'すべて', more:'もっと見る', narrow:'検索で絞ってください', empty:'条件に合う成果物がありません。',
+    designs:'成果物', pages:'ページ', unitItem:'件', unitSheet:'枚',
+    firstPrompt:'最初のプロンプト', chars:'文字',
+    sideTitle:'このページの評価', memo:'メモ', memoHint:'該当する欄だけ埋めれば大丈夫です',
+    author:'名前（最初の1回だけ）', body:'ボディコンポーネント', master:'マスターコンポーネント', etc:'その他',
+    save:'保存', prev:'← 前', next:'次 →', close:'閉じる (Esc)',
+    needAuthor:'名前を入力してください（最初の1回だけ）', needMemo:'3つのうち1つは記入してください',
+    saved:'保存しました ✓', copied:'シートに貼り付ける1行をコピーしました',
+    mineIn:'この成果物に残した評価',
+    modeTemplate:'テンプレート', modeLayout:'レイアウト', modeComponent:'コンポーネント',
+    empt:'(空)', loadFail:'読み込めませんでした。', reading:'読み込み中…',
+    phBody:'例: アイコンの色が置き換わる', phMaster:'例: 小見出しが改行される', phEtc:'例: ガラガラに見える',
+    sampleFile:'demo/sample.ja.csv',
+  },
+  ko: {
+    title:'디자인 평가 뷰어',
+    lead1:'AI가 만든 결과물을', leadB:'전 페이지 썸네일 + 맥락(원래 요청·만족도·코멘트)',
+    lead2:'과 함께 보고, 그 자리에서', leadB2:'페이지 단위로', lead3:'평가를 남기는 화면입니다.',
+    step1:'샘플 데이터로 바로 보기', demoBtn:'샘플 불러오기',
+    step1note:'가짜 데이터 12건입니다. 필터·검색·라이트박스·평가 작성이 전부 동작합니다. 썸네일은 placeholder 이미지입니다.',
+    step2:'내 CSV로 보기',
+    step2note:'아래에 CSV(또는 .csv.gz)를 끌어다 놓으세요. 필수 컬럼은 design_id·page_url 둘뿐이고, 나머지는 값 종류를 보고 필터를 자동 생성합니다.',
+    dropTitle:'CSV 파일 올리기',
+    dropNote:'여기에 끌어다 놓거나 클릭해서 선택 — 여러 개 한꺼번에 가능, .csv.gz 도 그대로',
+    reload:'다른 CSV 올리기', search:'검색 — 코멘트 · 프롬프트 · account_id',
+    sortNew:'최근 생성순', sortNps:'NPS 낮은순',
+    expand:'전체 펼치기', strip:'필름스트립', files:'파일',
+    selAll:'전체 선택', selNone:'선택 해제', noMatch:'일치하는 값이 없습니다',
+    all:'전체', more:'더 보기', narrow:'검색으로 좁혀주세요', empty:'조건에 맞는 디자인이 없습니다.',
+    designs:'디자인', pages:'페이지', unitItem:'개', unitSheet:'장',
+    firstPrompt:'최초 프롬프트', chars:'자',
+    sideTitle:'이 페이지 피드백', memo:'메모', memoHint:'해당하는 칸만 채우면 됩니다',
+    author:'이름 (처음 한 번만)', body:'바디 컴포넌트', master:'마스터 컴포넌트', etc:'그 외',
+    save:'저장', prev:'← 이전', next:'다음 →', close:'닫기 (Esc)',
+    needAuthor:'이름을 입력하세요 (처음 한 번만)', needMemo:'세 칸 중 하나는 채워주세요',
+    saved:'저장했습니다 ✓', copied:'시트에 붙여넣을 한 줄을 복사했습니다',
+    mineIn:'이 디자인에 남긴 피드백',
+    modeTemplate:'템플릿', modeLayout:'레이아웃', modeComponent:'컴포넌트',
+    empt:'(빈값)', loadFail:'불러오지 못했습니다.', reading:'읽는 중…',
+    phBody:'예: 아이콘 색상대치', phMaster:'예: 소제목 줄바꿈', phEtc:'예: 텅 비어 보임',
+    sampleFile:'demo/sample.ko.csv',
+  },
 };
-// AIP모드는 원본 값 변형이 많다(TEMPLATE_BASED · AI_PRESENTATION_TEMPLATE_BASED ·
-// BASIC_LAYOUT_PAGE_BASED …). 정확 일치로 지도를 관리하면 새 변형이 나올 때마다
-// 드롭다운이 갈라지므로 부분 일치로 세 갈래에 합친다.
-const normMode = v => /TEMPLATE/i.test(v) ? 'テンプレート'
-                    : /LAYOUT/i.test(v)   ? 'レイアウト'
-                    : /COMPONENT/i.test(v) ? 'コンポーネント' : v;
-const NPS_COL = 'NPS', NPS_BAND = 'NPS区分', DL_COL = 'ダウンロード';
-// 값 종류 상한. 전량(6.4만 成果物)에서 국가가 61개국이라 40이면 국가 필터가 사라진다.
-// 노이즈 컬럼은 개수가 아니라 NO_FILTER 로 이름을 지정해 막는다.
+const LANG_KEY = 'evalViewerLang';
+let LANG = (() => { try { return localStorage.getItem(LANG_KEY) || 'ja'; } catch { return 'ja'; } })();
+const t = k => (STR[LANG] && STR[LANG][k]) ?? k;
+
+// 헤더 요약은 문구가 섞여 있어 언어를 바꿀 때 다시 그려야 한다. 원본(파일명 등)만 들고 있는다.
+let STAT_SRC = '';
+function drawStat() {
+  const el = $('#stat'); if (!el) return;
+  const pages = DESIGNS.reduce((s, d) => s + d.pages.length, 0);
+  el.textContent = `${t('designs')} ${DESIGNS.length.toLocaleString()}${t('unitItem')} · `
+    + `${t('pages')} ${pages.toLocaleString()}${t('unitSheet')}`
+    + (STAT_SRC ? ` · ${STAT_SRC}` : '');
+}
+
+/** data-i18n 이 붙은 정적 요소를 현재 언어로 채운다 */
+function applyI18n() {
+  document.documentElement.lang = LANG === 'ko' ? 'ko' : 'ja';
+  document.title = t('title');
+  for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+  for (const el of document.querySelectorAll('[data-i18n-ph]')) el.placeholder = t(el.dataset.i18nPh);
+  for (const b of document.querySelectorAll('#lang button'))
+    b.classList.toggle('on', b.dataset.lang === LANG);
+}
+function setLang(l) {
+  if (l === LANG) return;
+  LANG = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch {}
+  applyI18n();
+  if (DESIGNS.length) { buildFilters(); render(); drawStat(); }   // 필터 라벨·정렬 문구를 다시 그린다
+  if ($('#lb').classList.contains('open')) loadPanel();
+}
+
+const REQUIRED = ['design_id', 'page_url'];
+// 컬럼명은 CSV 가 정한다. 한 언어로 못 박으면 다른 언어(또는 다른 팀)의 CSV 에서
+// 필터가 조용히 사라진다. 그래서 '역할 → 이름 후보'로 관리하고, 실제 헤더를 보고 굳힌다.
+const ALIAS = {
+  page:      ['페이지순서', 'ページ順', 'page_no'],
+  pages:     ['페이지수', 'ページ数'],
+  prompt:    ['프롬프트', 'プロンプト'],
+  comment:   ['코멘트', 'コメント'],
+  created:   ['생성일', '生成日'],
+  createdAt: ['생성시각', '生成時刻'],
+  mode:      ['생성모드', '生成モード', 'AIP모드'],
+  modeRaw:   ['생성모드원본', '生成モード原本'],
+  layoutKey: ['레이아웃키', 'レイアウトキー'],
+  canvas:    ['캔버스', 'キャンバス'],
+  orderAcc:  ['순서정확도', '順序正確度'],
+  inputType: ['입력유형', '入力タイプ'],
+  inputWay:  ['입력방식', '入力方式'],
+  dl:        ['다운로드', 'ダウンロード'],
+  dlFlag:    ['다운로드여부', 'ダウンロード有無'],
+  nps:       ['NPS'],
+  npsBand:   ['NPS구간', 'NPS区分'],
+};
+let COL = {};
+const resolveCols = cols => {
+  for (const [k, v] of Object.entries(ALIAS)) COL[k] = v.find(n => cols.includes(n)) || v[0];
+};
+resolveCols([]);                       // 파일을 읽기 전에도 참조가 안전하게
+
+const REQUIRED2 = ['design_id', 'page_url'];
+// 필터로 만들지 않을 컬럼: 검증용 중복 · 고유값이 사실상 무한(생성시각·캔버스·페이지수) →
+// 드롭다운이 쓸모없고 바가 지저분해진다. 검색으로 찾으면 된다.
+// 생성일은 달력 기간으로 받는다. 입력유형은 원본 로깅이 신뢰할 수 없어 숨긴다.
+const noFilter = () => [COL.modeRaw, COL.layoutKey, COL.createdAt, COL.canvas,
+                        COL.pages, COL.orderAcc, COL.created, COL.inputType];
+
+// 값이 수천 개여도 드롭다운을 만드는 컬럼. 값 종류 수 제한을 면제하고, 팝업 안에
+// 검색칸을 넣어 좁혀 고르게 한다. account_id 는 '이 유저만'과 '여러 유저 비교' 둘 다 필요하다.
+const BIG_FILTER_COLS = ['account_id'];
+const MS_RENDER_MAX = 300;
+
+// 옛 CSV 의 워딩을 화면 워딩으로 맞춘다(두 언어를 함께 담아 어느 쪽이 와도 통한다)
+const COL_RENAME = { '요청타입': '입력유형', 'リクエストタイプ': '入力タイプ' };
+const valRename = () => ({
+  [COL.dlFlag]: { '함': '다운로드O', '안함': '다운로드X', 'あり': 'ダウンロード○', 'なし': 'ダウンロード×' },
+  [COL.inputWay]: { '개요없음': '매칭안됨', 'アウトラインなし': 'マッチなし' },
+});
+// 생성모드 원본 값은 변형이 많다(TEMPLATE_BASED · AI_PRESENTATION_TEMPLATE_BASED …).
+// 정확 일치로 관리하면 새 변형마다 드롭다운이 갈라지므로 부분 일치로 세 갈래에 합친다.
+const normMode = v => /TEMPLATE/i.test(v)  ? t('modeTemplate')
+                    : /LAYOUT/i.test(v)    ? t('modeLayout')
+                    : /COMPONENT/i.test(v) ? t('modeComponent') : v;
+const DL_OK = ['다운로드O', 'ダウンロード○'], DL_NO = ['다운로드X', 'ダウンロード×'];
 const MAX_FILTER_VALUES = 120;
 const PAGE_SIZE = 60;
 
@@ -541,13 +662,15 @@ async function load(text, append) {
   const header = it.next().value;
   if (!header) throw new Error('空のファイルです。');
   const cols = header.map(h => COL_RENAME[h.replace(/^﻿/, '').trim()] || h.replace(/^﻿/, '').trim());
+  resolveCols(cols);
+  const VR = valRename();
   for (const req of REQUIRED) {
     if (!cols.includes(req)) {
       throw new Error(`必須カラム '${req}'がありません。現在の1・2番目のカラム: ${cols.slice(0,2).join(' · ') || '（なし）'}`);
     }
   }
   const iId = cols.indexOf('design_id'), iUrl = cols.indexOf('page_url');
-  const iPage = cols.indexOf(PAGE_COL);
+  const iPage = cols.indexOf(COL.page);
   const attrIdx = cols.map((c, k) => (k === iId || k === iUrl || k === iPage) ? -1 : k)
                       .filter(k => k >= 0);
 
@@ -565,9 +688,9 @@ async function load(text, append) {
     for (const k of attrIdx) {
       let v = r[k];
       if (v === undefined || v === '' || d.attrs[cols[k]]) continue;
-      if (cols[k] === '生成モード') v = normMode(v);
+      if (cols[k] === COL.mode) v = normMode(v);
       else {
-        const m = VAL_RENAME[cols[k]];
+        const m = VR[cols[k]];
         if (m && m[v]) v = m[v];
       }
       d.attrs[cols[k]] = v;
@@ -582,9 +705,10 @@ async function load(text, append) {
   COLS = cols;
 
   // 필터로 쓸 컬럼 결정: 값 종류가 적고 긴 텍스트가 아닌 것
+  const NF = noFilter();
   FILTER_COLS = [];
   for (const c of cols) {
-    if (REQUIRED.includes(c) || c === PAGE_COL || LONG_COLS.includes(c) || NO_FILTER.includes(c)) continue;
+    if (REQUIRED2.includes(c) || c === COL.page || [COL.prompt, COL.comment].includes(c) || NF.includes(c)) continue;
     if (BIG_FILTER_COLS.includes(c)) { FILTER_COLS.push(c); continue; }   // 값 종류 수 제한 면제
     const vals = new Set();
     for (const d of DESIGNS) { const v = d.attrs[c]; if (v) vals.add(v); if (vals.size > MAX_FILTER_VALUES) break; }
@@ -609,14 +733,14 @@ function buildFilters() {
                  [...b.querySelectorAll('input:checked')].map(i => i.value)])
       .filter(([, v]) => v.length)),
   };
-  bar.innerHTML = `<input type="search" id="q" placeholder="検索 — コメント · プロンプト · account_id">`;
+  bar.innerHTML = `<input type="search" id="q" placeholder="${t('search')}">`;
 
   // 생성일은 값이 날짜라 목록보다 달력 기간이 맞다. 값 형식이 YYYY-MM-DD 라
   // date input 값과 문자열 비교가 그대로 성립한다.
-  if (COLS.includes('生成日')) {
+  if (COLS.includes(COL.created)) {
     let lo = '', hi = '';
     for (const d of DESIGNS) {
-      const v = d.attrs['生成日'];
+      const v = d.attrs[COL.created];
       if (!v) continue;
       if (!lo || v < lo) lo = v;
       if (!hi || v > hi) hi = v;
@@ -630,7 +754,7 @@ function buildFilters() {
   }
   for (const c of FILTER_COLS) {
     const counts = new Map();
-    for (const d of DESIGNS) { const v = d.attrs[c] || '(空)'; counts.set(v, (counts.get(v) || 0) + 1); }
+    for (const d of DESIGNS) { const v = d.attrs[c] || t('empt'); counts.set(v, (counts.get(v) || 0) + 1); }
     // 체크박스 팝업 — 같은 컬럼 안에서 여러 값을 동시에 고를 수 있다(OR)
     const big = BIG_FILTER_COLS.includes(c);
     bar.insertAdjacentHTML('beforeend',
@@ -640,8 +764,8 @@ function buildFilters() {
            ${big ? `<input type="search" class="ms-find" placeholder="${esc(c)} 검색"
                       aria-label="${esc(c)} 검색">` : ''}
            <div class="ms-head">
-             <button type="button" class="ms-all">すべて選択</button>
-             <button type="button" class="ms-clear">選択解除</button>
+             <button type="button" class="ms-all">${t('selAll')}</button>
+             <button type="button" class="ms-clear">${t('selNone')}</button>
            </div>
            <div class="ms-list"></div>
          </div>
@@ -652,14 +776,14 @@ function buildFilters() {
   }
   bar.insertAdjacentHTML('beforeend',
     `<select id="sort">
-       <option value="new">生成が新しい順</option>
-       <option value="nps">NPSが低い順</option>
+       <option value="new">${t('sortNew')}</option>
+       <option value="nps">${t('sortNps')}</option>
      </select>
      <button class="btn ghost" id="mode"></button>
      <span class="spacer"></span><span class="stat" id="count"></span>`);
 
   // 검색어·정렬·기간 되살리기. 고른 필터 값은 SELECTED 에 있으므로 되살릴 필요가 없다.
-  $('#mode').textContent = EXPANDED ? 'フィルムストリップ' : 'すべて展開';   // 재구성 후에도 상태와 일치
+  $('#mode').textContent = EXPANDED ? t('strip') : t('expand');   // 재구성 후에도 상태와 일치
   $('#q').value = keep.q;
   if ($('#d-from')) { $('#d-from').value = keep.from; $('#d-to').value = keep.to; }
   if (keep.sort) $('#sort').value = keep.sort;
@@ -704,7 +828,7 @@ function buildFilters() {
   }
   $('#mode').onclick = () => {
     EXPANDED = !EXPANDED;
-    $('#mode').textContent = EXPANDED ? 'フィルムストリップ' : 'すべて展開';
+    $('#mode').textContent = EXPANDED ? t('strip') : t('expand');
     render();
   };
 }
@@ -722,8 +846,8 @@ function drawOpts(box) {
   box.querySelector('.ms-list').innerHTML =
     shown.map(([v, n]) => `<label class="ms-opt"><input type="checkbox" value="${esc(v)}"${sel.has(v) ? ' checked' : ''}>
                            <span>${esc(v)}</span><em>${n.toLocaleString()}</em></label>`).join('')
-    + (rest > 0 ? `<p class="ms-more">${rest.toLocaleString()}件あります — 検索で絞ってください</p>` : '')
-    + (!hits.length ? `<p class="ms-more">一致する値がありません</p>` : '');
+    + (rest > 0 ? `<p class="ms-more">${rest.toLocaleString()}${t('unitItem')} — ${t('narrow')}</p>` : '')
+    + (!hits.length ? `<p class="ms-more">${t('noMatch')}</p>` : '');
   msLabel(box);
 }
 
@@ -732,8 +856,8 @@ function msLabel(box) {
   const c = box.dataset.col;
   const vals = [...selOf(c)];
   const btn = box.querySelector('.ms-btn');
-  btn.textContent = !vals.length ? `${c} すべて`
-    : vals.length === 1 ? `${c}: ${vals[0]}` : `${c} ${vals.length}件`;
+  btn.textContent = !vals.length ? `${c} ${t('all')}`
+    : vals.length === 1 ? `${c}: ${vals[0]}` : `${c} ${vals.length}${t('unitItem')}`;
   btn.classList.toggle('on', vals.length > 0);
 }
 
@@ -746,13 +870,13 @@ function render(keepShown) {
 
   VIEW = DESIGNS.filter(d => {
     if (dFrom || dTo) {
-      const g = d.attrs['生成日'] || '';
+      const g = d.attrs[COL.created] || '';
       if (dFrom && g < dFrom) return false;
       if (dTo && g > dTo) return false;
     }
-    for (const [c, set] of sels) if (!set.has(d.attrs[c] || '(空)')) return false;
+    for (const [c, set] of sels) if (!set.has(d.attrs[c] || t('empt'))) return false;
     if (q) {
-      const hay = (d.attrs['コメント'] || '') + ' ' + (d.attrs['プロンプト'] || '') + ' ' +
+      const hay = (d.attrs[COL.comment] || '') + ' ' + (d.attrs[COL.prompt] || '') + ' ' +
                   (d.attrs['account_id'] || '') + ' ' + d.id;
       if (!hay.toLowerCase().includes(q)) return false;
     }
@@ -760,16 +884,16 @@ function render(keepShown) {
   });
 
   const sort = $('#sort').value;
-  const nps = d => { const v = d.attrs[NPS_COL]; return v === '' || v === undefined ? 999 : +v; };
+  const nps = d => { const v = d.attrs[COL.nps]; return v === '' || v === undefined ? 999 : +v; };
   if (sort === 'nps') VIEW.sort((a, b) => nps(a) - nps(b));
-  else VIEW.sort((a, b) => String(b.attrs['生成時刻'] || '').localeCompare(String(a.attrs['生成時刻'] || '')));
+  else VIEW.sort((a, b) => String(b.attrs[COL.createdAt] || '').localeCompare(String(a.attrs[COL.createdAt] || '')));
 
-  $('#count').textContent = `${VIEW.length.toLocaleString()} / ${DESIGNS.length.toLocaleString()} 成果物`;
+  $('#count').textContent = `${VIEW.length.toLocaleString()} / ${DESIGNS.length.toLocaleString()} ${t('designs')}`;
   // 이어 읽는 중이면 보고 있던 만큼은 그대로 다시 그린다(스크롤이 튀지 않게)
   const want = keepShown ? Math.min(shown, VIEW.length) : 0;
   const y = keepShown ? scrollY : 0;
   shown = 0; imgSeq = 0; $('#list').innerHTML = '';
-  if (!VIEW.length) { $('#list').innerHTML = '<div class="empty">条件に合う成果物がありません。</div>'; return; }
+  if (!VIEW.length) { $('#list').innerHTML = `<div class="empty">${t('empty')}</div>`; return; }
   do { appendMore(); } while (keepShown && shown < want);
   if (keepShown) scrollTo(0, y);
   markDone();
@@ -784,7 +908,7 @@ function appendMore() {
   shown += slice.length;
   if (shown < VIEW.length) {
     $('#list').insertAdjacentHTML('beforeend',
-      `<button id="more" type="button">${shown.toLocaleString()} / ${VIEW.length.toLocaleString()} — もっと見る (+${Math.min(PAGE_SIZE, VIEW.length - shown)})</button>`);
+      `<button id="more" type="button">${shown.toLocaleString()} / ${VIEW.length.toLocaleString()} — ${t('more')} (+${Math.min(PAGE_SIZE, VIEW.length - shown)})</button>`);
     $('#more').onclick = () => appendMore();
   }
   markDone();
@@ -799,14 +923,14 @@ const npsCls = v => (v === '' || v === undefined) ? '' : (+v >= 9 ? 'nps-pro' : 
 function card(d, i) {
   const a = d.attrs;
   // 헤더 칩: AIP모드는 강조, 나머지 필터 컬럼은 일반 칩
-  const chips = FILTER_COLS.filter(c => a[c] && c !== NPS_COL && c !== NPS_BAND && c !== DL_COL)
+  const chips = FILTER_COLS.filter(c => a[c] && c !== COL.nps && c !== COL.npsBand && c !== COL.dl)
     .map(c => {
       // 계정은 숫자만 있으면 무슨 값인지 모른다 — 'acc' 를 붙인다
       const txt = c === 'account_id' ? `acc ${a[c]}` : a[c];
-      return `<span class="chip${/モード$/.test(c) ? ' key' : ''}${c === 'account_id' ? ' acc' : ''}${a[c] === 'ダウンロード○' ? ' dlo' : a[c] === 'ダウンロード×' ? ' dlx' : ''}">${esc(txt)}</span>`;
+      return `<span class="chip${/モード$/.test(c) ? ' key' : ''}${c === 'account_id' ? ' acc' : ''}${DL_OK.includes(a[c]) ? ' dlo' : DL_NO.includes(a[c]) ? ' dlx' : ''}">${esc(txt)}</span>`;
     }).join('');
-  const npsChip = a[NPS_COL] ? `<span class="chip nps ${npsCls(a[NPS_COL])}">NPS ${esc(a[NPS_COL])}</span>` : '';
-  const dlChip = a[DL_COL] ? `<span class="chip dl">⬇ ${esc(a[DL_COL])}</span>` : '';
+  const npsChip = a[COL.nps] ? `<span class="chip nps ${npsCls(a[COL.nps])}">NPS ${esc(a[COL.nps])}</span>` : '';
+  const dlChip = a[COL.dl] ? `<span class="chip dl">⬇ ${esc(a[COL.dl])}</span>` : '';
   const pages = d.pages.map((p, n) => `
     <figure data-id="${esc(d.id)}" data-p="${n}">
       <img loading="${imgSeq++ < EAGER_N ? 'eager' : 'lazy'}" src="${esc(p.url)}" alt="p${n + 1}">
@@ -817,12 +941,12 @@ function card(d, i) {
   <section class="card">
     <div class="chead">
       <span class="idx">${(i + 1).toLocaleString()}</span>
-      <span class="chip">${esc(a['生成時刻'] || a['生成日'] || '')}</span>
+      <span class="chip">${esc(a[COL.createdAt] || a[COL.created] || '')}</span>
       <span class="chip">${d.pages.length}p</span>
       ${chips}${npsChip}${dlChip}
     </div>
-    ${a['コメント'] ? `<div class="voc">${esc(a['コメント'])}</div>` : ''}
-    ${a['プロンプト'] ? `<details class="prompt"><summary>最初のプロンプト (${a['プロンプト'].length.toLocaleString()}文字)</summary><div class="body">${esc(a['プロンプト'])}</div></details>` : ''}
+    ${a[COL.comment] ? `<div class="voc">${esc(a[COL.comment])}</div>` : ''}
+    ${a[COL.prompt] ? `<details class="prompt"><summary>${t('firstPrompt')} (${a[COL.prompt].length.toLocaleString()}${t('chars')})</summary><div class="body">${esc(a[COL.prompt])}</div></details>` : ''}
     <div class="${EXPANDED ? 'grid' : 'strip'}">${pages}</div>
   </section>`;
 }
@@ -838,8 +962,8 @@ function showLb() {
   const p = lbD.pages[lbP], a = lbD.attrs;
   $('#lbimg').src = p.url;
   $('#lbinfo').innerHTML =
-    `<b>${lbP + 1} / ${lbD.pages.length}</b> · ${esc(a['生成時刻'] || '')}` +
-    (a[NPS_COL] ? ` · NPS ${esc(a[NPS_COL])}` : '') +
+    `<b>${lbP + 1} / ${lbD.pages.length}</b> · ${esc(a[COL.createdAt] || '')}` +
+    (a[COL.nps] ? ` · NPS ${esc(a[COL.nps])}` : '') +
     ` · acc ${esc(a['account_id'] || '')} · <code>${esc(lbD.id.slice(0, 8))}</code>`;
   $('#lb').classList.add('open');
   loadPanel();
@@ -862,7 +986,7 @@ function loadPanel() {
   const box = $('#saved');
   if (mine.length) {
     box.classList.add('show');
-    box.innerHTML = `<div style="margin-bottom:6px">この成果物に残した評価 ${mine.length}件</div>` +
+    box.innerHTML = `<div style="margin-bottom:6px">${t('mineIn')} ${mine.length}${t('unitItem')}</div>` +
       mine.map(m => `<div class="row"><b>p${m.p}</b> <span>${esc((m.v.memo || '').replace(/\n/g, ' / ').slice(0, 40)) || '—'}</span></div>`).join('');
   } else { box.classList.remove('show'); box.innerHTML = ''; }
 }
@@ -890,13 +1014,13 @@ function save() {
     .filter(Boolean).join('\n');
   const author = $('#author').value.trim();
   if (!author) {
-    $('#savemsg').textContent = '名前を入力してください（最初の1回だけ）';
+    $('#savemsg').textContent = t('needAuthor');
     $('#savemsg').classList.add('err');
     $('#author').focus();
     return;
   }
   if (!memo) {
-    $('#savemsg').textContent = '3つのうち1つは記入してください';
+    $('#savemsg').textContent = t('needMemo');
     $('#savemsg').classList.add('err');
     $('#memo-body').focus();
     return;
@@ -921,7 +1045,7 @@ function save() {
     holder.style.cssText = 'position:fixed;left:-9999px;white-space:pre';
     document.body.appendChild(holder);
     copyText(holder).then(() => holder.remove());
-    msg = 'シートに貼り付ける1行をコピーしました';
+    msg = t('copied');
   } else {
     const f = document.createElement('form');
     f.method = 'POST'; f.action = SHEET_ENDPOINT; f.target = 'sinkFrame';
@@ -938,7 +1062,7 @@ function save() {
     add('master', master);      // マスターコンポーネント
     add('etc', etc);            // その他
     document.body.appendChild(f); f.submit(); f.remove();
-    msg = '保存しました ✓';
+    msg = t('saved');
   }
 
   myFeedback[fbKey(lbD.id, rec.pageNo)] = { memo, body, master, etc, savedAt: rec.savedAt };
@@ -1154,8 +1278,8 @@ async function openRemote(f, card, recentDays) {
 
       const left = list.length - i - 1;
       $('#stat').textContent =
-        `成果物 ${DESIGNS.length.toLocaleString()}件 · ページ ` +
-        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}枚 · ${label}` +
+        `${t('designs')} ${DESIGNS.length.toLocaleString()}${t('unitItem')} · ${t('pages')} ` +
+        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}${t('unitSheet')} · ${label}` +
         (left ? ` · 続けて読み込み中 ${left}日 残り` : '');
       await nextTick();   // 화면을 실제로 그리게 양보
     }
@@ -1170,7 +1294,7 @@ async function openRemote(f, card, recentDays) {
     card.classList.remove('busy'); bar.hidden = true;
     btns.forEach(b => { b.disabled = false; });
     pressed.textContent = '再試行';
-    $('#error').innerHTML = `<div class="err"><b>読み込めませんでした。</b><br>${esc(err.message)}</div>`;
+    $('#error').innerHTML = `<div class="err"><b>${t('loadFail')}</b><br>${esc(err.message)}</div>`;
     console.error(err);
   }
 }
@@ -1226,14 +1350,20 @@ fileEl.onchange = () => {
   if (fileEl.files.length) handle([...fileEl.files]);
   fileEl.value = '';   // 같은 파일을 다시 골라도 change 가 뜨게
 };
+$('#lang')?.addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]');
+  if (b) setLang(b.dataset.lang);
+});
+applyI18n();          // 저장된 언어로 정적 문구를 채운다 (스크립트가 끝에 있어 DOM 은 이미 준비됨)
+
 $('#reload').onclick = () => location.reload();
 
 // 공개판 전용: 샘플 CSV 를 파일 업로드와 같은 경로로 흘려보낸다
 $('#demo')?.addEventListener('click', async () => {
   try {
-    const r = await fetch('demo/sample.csv', { cache: 'no-cache' });
-    if (!r.ok) throw new Error('sample.csv が見つかりません (' + r.status + ')');
-    await handle([new File([await r.blob()], 'sample.csv', { type: 'text/csv' })]);
+    const r = await fetch(t('sampleFile'), { cache: 'no-cache' });
+    if (!r.ok) throw new Error(t('sampleFile') + ' — HTTP ' + r.status);
+    await handle([new File([await r.blob()], t('sampleFile').split('/').pop(), { type: 'text/csv' })]);
   } catch (e) {
     $('#error').innerHTML = `<div class="err">${e.message}</div>`;
   }
@@ -1279,16 +1409,14 @@ async function handle(files) {
       buildFilters();
       if (i === 0) { $('#intro').style.display = 'none'; $('#app').style.display = 'block'; }
       render(i > 0);
-      $('#stat').textContent =
-        `成果物 ${DESIGNS.length.toLocaleString()}件 · ページ ` +
-        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}枚 · ` +
-        (list.length > 1 ? `ファイル ${i + 1}/${list.length}件` : f.name);
+      STAT_SRC = list.length > 1 ? `${t('files')} ${i + 1}/${list.length}` : f.name;
+      drawStat();
       await nextTick();
     }
   } catch (err) {
     // 첫 파일 이후에는 intro(와 그 안의 #error)가 숨겨져 있다 —
     // 갤러리 위 알림 바(#apperr)에도 같이 써서 어느 화면에서든 보이게 한다.
-    const html = `<div class="err"><b>読み込めませんでした。</b><br>${esc(err.message)}</div>`;
+    const html = `<div class="err"><b>${t('loadFail')}</b><br>${esc(err.message)}</div>`;
     $('#error').innerHTML = html;
     if (getComputedStyle($('#app')).display === 'block') {
       $('#apperr').innerHTML = html +
