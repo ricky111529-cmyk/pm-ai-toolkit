@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}검증 결과{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="mb-4">📊 검증 결과 분석</h1>
+
+        <!-- 통계 카드 -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted">전체 오류</h6>
+                        <h2 id="stat-total">0</h2>
+                        <small class="text-muted">저장된 오류 수</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center bg-light">
+                    <div class="card-body">
+                        <h6 class="text-muted">해결된 항목</h6>
+                        <h2 id="stat-resolved">0</h2>
+                        <small class="text-muted">마크된 오류</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center" style="background-color: #e7f3ff;">
+                    <div class="card-body">
+                        <h6 class="text-muted">해결율</h6>
+                        <h2 id="stat-rate">0%</h2>
+                        <small class="text-muted">진행률</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center bg-light">
+                    <div class="card-body">
+                        <h6 class="text-muted">최근 검증</h6>
+                        <h2 id="stat-sessions">0</h2>
+                        <small class="text-muted">세션 수</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 필터 및 검색 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">🔍 필터링</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">TC 유형</label>
+                        <select id="filter-type" class="form-select">
+                            <option value="">모든 유형</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">실패 카테고리</label>
+                        <select id="filter-category" class="form-select">
+                            <option value="">모든 카테고리</option>
+                            <option value="format">형식 오류</option>
+                            <option value="quality">품질 오류</option>
+                            <option value="type_rule">유형 규칙 오류</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">상태</label>
+                        <select id="filter-status" class="form-select">
+                            <option value="false">미해결</option>
+                            <option value="true">해결됨</option>
+                            <option value="">모두</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="apply-filter-btn" class="btn btn-primary mt-3">
+                    <i class="fas fa-search"></i> 검색
+                </button>
+                <button id="reset-filter-btn" class="btn btn-secondary mt-3">
+                    <i class="fas fa-redo"></i> 초기화
+                </button>
+            </div>
+        </div>
+
+        <!-- 실패 TC 테이블 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">❌ 실패한 TC (<span id="failures-count">0</span>개)</h5>
+            </div>
+            <div class="card-body" style="overflow-x: auto;">
+                <table class="table table-striped table-hover" id="failures-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 15%;">TC ID</th>
+                            <th style="width: 15%;">유형</th>
+                            <th style="width: 20%;">카테고리</th>
+                            <th style="width: 35%;">실패 사유</th>
+                            <th style="width: 15%;">발생일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="failures-body">
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="fas fa-spinner fa-spin"></i> 로드 중...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 페이지네이션 -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center" id="pagination">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 통계 차트 -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">유형별 오류율</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-by-type"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">카테고리별 오류</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-by-category"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 최근 세션 -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">📈 최근 검증 세션</h5>
+            </div>
+            <div class="card-body" style="overflow-x: auto;">
+                <table class="table table-sm" id="sessions-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>세션 ID</th>
+                            <th>유형</th>
+                            <th>생성</th>
+                            <th>유효</th>
+                            <th>무효</th>
+                            <th>저장</th>
+                            <th>시간</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sessions-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+{% endblock %}

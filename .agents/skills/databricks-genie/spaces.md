@@ -276,7 +276,7 @@ When migrating between environments (e.g. prod → dev), Unity Catalog names are
 
 **Step 1 — Export from source workspace:**
 ```python
-exported = manage_genie(action="export", space_id="01f106e1239d14b28d6ab46f9c15e540")
+exported = manage_genie(action="export", space_id="<SOURCE_SPACE_ID>")
 # exported keys: warehouse_id, title, description, serialized_space
 # exported["serialized_space"] contains all references to source catalog
 ```

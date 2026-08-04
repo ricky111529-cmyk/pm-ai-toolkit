@@ -1,0 +1,39 @@
+# 환경변수 / API 키 (절대 커밋 금지)
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Flask / SQLite
+database.db
+*.db
+*.sqlite3
+instance/
+
+# 캐시 / 임시 파일
+.cache/
+data/
+*.log
+*.tmp
+
+# 리포트 (민감 데이터 포함 가능)
+reports/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

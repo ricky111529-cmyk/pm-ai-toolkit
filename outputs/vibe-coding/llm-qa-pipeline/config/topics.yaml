@@ -1,0 +1,57 @@
+topics:
+  optimization:
+    name: "Token & Performance Optimization"
+    keywords:
+      - optimize
+      - token
+      - cache
+      - performance
+      - cost
+      - compress
+      - compress
+    description: "토큰 최적화, 캐싱, 성능 개선"
+
+  nlp:
+    name: "NLP & Language Models"
+    keywords:
+      - nlp
+      - llm
+      - transformer
+      - bert
+      - language
+      - text
+      - embedding
+    description: "자연어처리, 언어모델"
+
+  reinforcement_learning:
+    name: "Reinforcement Learning"
+    keywords:
+      - rl
+      - reinforcement
+      - policy
+      - reward
+      - agent
+      - mdp
+    description: "강화학습, 정책 학습"
+
+  infrastructure:
+    name: "Infrastructure & Architecture"
+    keywords:
+      - architecture
+      - infrastructure
+      - routing
+      - pipeline
+      - system
+      - structure
+    description: "시스템 구축, 아키텍처"
+
+  testing:
+    name: "Testing & Validation"
+    keywords:
+      - test
+      - validation
+      - benchmark
+      - verify
+      - check
+      - eval
+    description: "테스트, 검증, 벤치마크"

@@ -18,7 +18,6 @@ AI와 페어로 일하면서 가장 비효율적이었던 건 매번 맥락을 �
 | [`CLAUDE.md`](CLAUDE.md) | 진입 시 항상 읽는 규칙. 저장 위치 결정 트리 · 문서 유형별 강제 구조 · 라우팅 |
 | [`.claude/prompts/templates/`](.claude/prompts/templates) | 문서 유형 8종의 골격 — PRD · 기능 스펙 · VoC 분석 · 경쟁사 리서치 · 데이터 분석 · 설문 · 실험 · 평가 루브릭 |
 | [`.claude/prompts/ux-research-guideline.md`](.claude/prompts/ux-research-guideline.md) | 리서치 질문·가설·인터뷰 설계 프레임워크 (질문 6기준 + 인사이트 4질문) |
-| [`.claude/commands/`](.claude/commands) | 반복 작업을 커맨드로 고정 |
 | [`.claude/skills/`](.claude/skills) | Databricks SQL · Unity Catalog · Genie |
 
 설계 원칙은 하나입니다. **"이 줄이 없으면 AI가 실수하는가? No면 삭제."** 코드나 파일 구조에서 읽히는 정보는 넣지 않습니다. 그래서 `CLAUDE.md`는 200줄을 넘기지 않습니다.
@@ -34,7 +33,7 @@ AI 슬라이드 생성의 초기 실패를 3만 건 분석해 세 갈래(되묻�
 기획이 통하지 않는 이유를 파보니 팀이 유저를 깊이 이해하지 못하는 게 근본이었습니다. 1on1에서 문제를 제기해 UX 리서치를 직접 시작했습니다. 현재 진행 중입니다.
 
 **직접 만든다** — 기획만 하지 않고 검증 도구를 만듭니다.
-LLM 품질 평가 파이프라인을 Python으로 자작했습니다. 자사 API로 슬라이드를 자동 생성하고 외부 LLM이 PASS/FAIL을 판정하는 2층 구조(규칙 기반 + LLM 기반)였습니다. **실운용까지는 가지 못했습니다** — "LLM으로 LLM을 평가하는" 판정 정확도를 담보하지 못한 게 벽이었습니다. 이 저장소도 그 연장선입니다.
+LLM 품질 평가 파이프라인을 Python으로 자작했습니다([코드와 회고](outputs/vibe-coding/llm-qa-pipeline)). 자사 API로 슬라이드를 자동 생성하고 외부 LLM이 PASS/FAIL을 판정하는 2층 구조(규칙 기반 + LLM 기반)였습니다. **실운용까지는 가지 못했습니다** — "LLM으로 LLM을 평가하는" 판정 정확도를 담보하지 못한 게 벽이었습니다. 이 저장소도 그 연장선입니다.
 
 ---
 
@@ -46,6 +45,7 @@ LLM 품질 평가 파이프라인을 Python으로 자작했습니다. 자사 API
 | [`between-us`](outputs/vibe-coding/between-us) | 두 사람이 세션 코드로 입장해 각자의 답을 원하는 순간에 공개하는 대화 웹앱. Next.js |
 | [`habit-app-retention-analysis`](outputs/vibe-coding/habit-app-retention-analysis) | 습관 형성 앱의 리텐션 분석 |
 | [`travel-stamp-diary`](outputs/vibe-coding/travel-stamp-diary) | 여행 스탬프 기록. 의존성 없는 단일 HTML |
+| [`llm-qa-pipeline`](outputs/vibe-coding/llm-qa-pipeline) | AI 채팅 응답 품질을 자동 검증하는 파이프라인. 2층 판정(규칙 + LLM) · 멀티턴 자동화 · Flask UI. **실운용까지는 가지 못했습니다** — [회고](outputs/vibe-coding/llm-qa-pipeline/PORTFOLIO.md) |
 | [`portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac) | 포트폴리오 사이트 |
 
 ---

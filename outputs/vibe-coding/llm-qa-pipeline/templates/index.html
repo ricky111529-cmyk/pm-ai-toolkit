@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Chat AIP 스토리라인 자동 검증{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">Chat AIP 스토리라인 자동 검증</h1>
+
+        <!-- 입력 폼 -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">검증 설정</h5>
+            </div>
+            <div class="card-body">
+                <!-- 토큰 입력 -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">miri-access Token</label>
+                    <input type="password" id="miri-access" class="form-control form-control-lg"
+                           placeholder="<AUTH_COOKIE_NAME> 쿠키의 JWT 토큰을 입력하세요">
+                    <small class="text-muted">
+                        💡 브라우저 개발자 도구 → 응용 프로그램 → 쿠키 → <AUTH_COOKIE_NAME>에서 토큰 복사
+                    </small>
+                </div>
+
+                <!-- TC 유형 선택 -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">TC 유형 선택 (복수 선택 가능)</label>
+
+                    <!-- 단일턴 -->
+                    <div class="mb-2">
+                        <h6 class="text-secondary">📄 단일턴 (Single-turn)</h6>
+                        <div id="single-turn-types" class="row g-2">
+                            {% for tc_type in single_turn_types %}
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="tc-type"
+                                           id="tc-{{ loop.index }}" value="{{ tc_type }}">
+                                    <label class="form-check-label" for="tc-{{ loop.index }}">
+                                        {{ tc_type }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- 멀티턴 -->
+                    <div>
+                        <h6 class="text-secondary">🔄 멀티턴 (Multi-turn)</h6>
+                        <div id="multi-turn-types" class="row g-2">
+                            {% for tc_type in multi_turn_types %}
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="tc-type"
+                                           id="tc-multi-{{ loop.index }}" value="{{ tc_type }}">
+                                    <label class="form-check-label" for="tc-multi-{{ loop.index }}">
+                                        {{ tc_type }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 개수 입력 -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">각 유형당 TC 개수</label>
+                    <input type="number" id="n-per-type" class="form-control"
+                           value="2" min="1" max="10">
+                    <small class="text-muted">기본값: 2개</small>
+                </div>
+
+                <!-- 버튼 -->
+                <button id="validate-btn" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-play-circle"></i> 검증 시작
+                </button>
+            </div>
+        </div>
+
+        <!-- 진행 상황 (처음엔 숨김) -->
+        <div id="progress-section" class="card mb-4 shadow-sm" style="display:none;">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">⏳ 진행 중...</h5>
+            </div>
+            <div class="card-body">
+                <!-- 진행률 바 -->
+                <div class="mb-3">
+                    <div class="progress" style="height: 30px;">
+                        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             role="progressbar" style="width: 0%">
+                            <span id="progress-text">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 로그 -->
+                <div id="progress-log" class="alert alert-info" style="height: 250px; overflow-y: auto; font-family: monospace;">
+                    <div class="text-muted"><i class="fas fa-hourglass-start"></i> 대기 중...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 결과 요약 (처음엔 숨김) -->
+        <div id="result-section" class="card shadow-sm" style="display:none;">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">✅ 검증 완료</h5>
+            </div>
+            <div class="card-body">
+                <!-- 통계 카드 -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center bg-light">
+                            <div class="card-body">
+                                <h6 class="text-muted">전체</h6>
+                                <h2 id="result-total">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center" style="background-color: #d4edda;">
+                            <div class="card-body">
+                                <h6 class="text-success">유효 ✅</h6>
+                                <h2 id="result-valid" style="color: #28a745;">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center" style="background-color: #f8d7da;">
+                            <div class="card-body">
+                                <h6 class="text-danger">무효 ❌</h6>
+                                <h2 id="result-invalid" style="color: #dc3545;">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center" style="background-color: #fff3cd;">
+                            <div class="card-body">
+                                <h6 class="text-warning">중복 ⚠️</h6>
+                                <h2 id="result-duplicate" style="color: #ffc107;">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 알림 -->
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>저장된 오류:</strong>
+                    <span id="failures-count" class="badge bg-danger">0</span>개
+                </div>
+
+                <!-- 버튼 -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button id="view-results-btn" class="btn btn-info btn-lg">
+                        <i class="fas fa-chart-bar"></i> 저장된 결과 보기
+                    </button>
+                    <button id="validate-again-btn" class="btn btn-primary btn-lg">
+                        <i class="fas fa-redo"></i> 다시 검증
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TC별 상세 결과 -->
+        <div id="detail-section" class="card shadow-sm mt-4" style="display:none;">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">🔍 TC별 상세 검증 결과</h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="tc-detail-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
