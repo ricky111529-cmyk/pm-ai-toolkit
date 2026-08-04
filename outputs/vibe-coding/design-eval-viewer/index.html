@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>디자인 평가 뷰어</title>
+<style>
+  /* 미리캔버스 실측 토큰 — .claude/design.md */
+  :root{
+    --primary:#21AFBF; --primary-dark:#1C95A2; --primary-tint:#E7F9FB; --accent:#26C7D9;
+    --bg:#FFFFFF; --surface:#F1F2F3; --text:#16181D; --text-nav:#23242A; --text-dim:#8F93A3;
+    --ink:#586276; --line:#E4E7EC;
+    --r-sm:8px; --r-lg:12px;
+    --font:"Pretendard Variable",Pretendard,Figtree,"IBM Plex Sans JP",
+           -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 var(--font);
+       -webkit-font-smoothing:antialiased}
+  button,input,select{font:inherit}
+
+  /* ── 업로드 화면 ─────────────────────────────── */
+  #intro{max-width:760px;margin:0 auto;padding:72px 24px 96px;text-align:center}
+  #intro h1{font-size:40px;font-weight:700;margin:0 0 14px;letter-spacing:-.02em}
+  #intro .lead{font-size:18px;color:var(--ink);margin:0 0 40px;line-height:1.6}
+  #drop{border:2px dashed var(--line);border-radius:var(--r-lg);background:var(--surface);
+        padding:56px 24px;cursor:pointer;transition:.15s}
+  #drop:hover,#drop.over{border-color:var(--primary);background:var(--primary-tint)}
+  #drop .ico{font-size:34px;line-height:1;margin-bottom:14px}
+  #drop b{display:block;font-size:17px;font-weight:700;margin-bottom:6px}
+  #drop span{color:var(--text-dim);font-size:14px}
+  /* 모드 선택 — CSV 를 어떻게 구하는지가 사람마다 다르다 */
+  .modes{display:flex;gap:10px;margin-bottom:18px}
+  .mode{flex:1;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:14px 16px;text-align:left;cursor:pointer;transition:.14s}
+  .mode:hover{border-color:var(--primary)}
+  .mode b{display:block;font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+  .mode span{font-size:12.5px;color:var(--text-dim)}
+  .mode.on{border-color:var(--primary);background:var(--primary-tint);box-shadow:inset 0 0 0 1px var(--primary)}
+  .mode.on b{color:var(--primary-dark)}
+
+  .pane{display:none;text-align:left;background:var(--surface);border-radius:var(--r-lg);
+    padding:22px 24px;margin-bottom:26px}
+  .pane.on{display:block}
+  .steps{display:flex;flex-direction:column;gap:18px}
+  .step{display:flex;gap:12px;align-items:flex-start}
+  .step .no{flex:0 0 22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;
+    font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;
+    margin-top:2px}
+  .step b{font-size:14.5px;font-weight:700;color:var(--text)}
+  .step p{margin:5px 0 0;font-size:13.5px;line-height:1.65;color:var(--ink)}
+  .step p.note{color:var(--text-dim);font-size:12.5px}
+  code{background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 6px;
+       font-size:12.5px;color:var(--primary-dark);font-family:ui-monospace,SFMono-Regular,monospace}
+  .copyrow{display:flex;gap:8px;align-items:flex-start;margin-top:9px;flex-wrap:wrap}
+  .btn.sm{padding:5px 11px;font-size:12.5px;white-space:nowrap}
+  .path{flex:1;min-width:240px;padding:7px 10px;word-break:break-all;line-height:1.5}
+  .snip{flex:1;min-width:240px;margin:0;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r-sm);padding:9px 11px;font-size:12px;line-height:1.6;
+    white-space:pre-wrap;word-break:break-all;color:var(--primary-dark)}
+  .ptab{width:100%;border-collapse:collapse;margin-top:9px;font-size:12.5px;background:#fff;
+    border-radius:var(--r-sm);overflow:hidden}
+  .ptab th,.ptab td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);
+    vertical-align:top;line-height:1.55}
+  .ptab th{background:var(--primary-tint);color:var(--primary-dark);font-weight:500;font-size:12px}
+  .ptab tr:last-child td{border-bottom:0}
+  .ptab code{font-size:11.5px;padding:1px 4px}
+  .plead{margin:0 0 18px;font-size:13.5px;color:var(--ink);line-height:1.6}
+  /* 준비된 파일 카드 */
+  .rdy{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r-lg);padding:16px 18px}
+  .rdy+.rdy{margin-top:9px}
+  .rdy .meta{flex:1;min-width:0}
+  .rdy .ym{font-size:16px;font-weight:700;color:var(--text)}
+  .rdy .sub{font-size:12.5px;color:var(--text-dim);margin-top:3px;line-height:1.5}
+  .rdy .btn{flex:0 0 auto}
+  .rdy.busy{border-color:var(--primary);background:var(--primary-tint)}
+  .prog{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:9px}
+  .prog i{display:block;height:100%;width:0;background:var(--primary);transition:width .2s}
+  /* CSV 계약을 말 대신 예시 표로 보여준다 — 필수 2칸 / 선택 나머지 */
+  .csvex{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+  .csvex .rule{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;
+    line-height:1.65;color:var(--text);margin-bottom:8px}
+  /* 단계(1·2·3·4)와 섞이지 않게 번호 대신 점을 쓴다 — 순서가 아니라 규칙이다 */
+  .csvex .bul{flex:0 0 5px;width:5px;height:5px;border-radius:50%;
+    background:var(--text-dim);margin-top:9px}
+  .csvhd{display:block;font-size:14.5px;margin-bottom:2px}
+  .csvex .note{margin:0 0 12px}
+  .exlabel{display:block;font-size:13px;margin:14px 0 7px}
+  .extable{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff}
+  .extable table{border-collapse:collapse;width:100%;font-size:12.5px;white-space:nowrap}
+  .extable th,.extable td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
+  .extable tr:last-child td{border-bottom:0}
+  .extable th{font-weight:500;font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px}
+  .extable td{color:var(--ink)}
+  th.req{background:#FDF3E3;color:#96631A}
+  th.opt{background:var(--primary-tint);color:var(--primary-dark)}
+  code.req{background:#FDF3E3;border-color:#F0DCBB;color:#96631A}
+  .legend{margin:9px 0 0;font-size:12px;color:var(--text-dim);line-height:1.7}
+  .legend .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    margin:0 5px 0 0;vertical-align:middle}
+  .legend .dot.opt{margin-left:14px}
+  .dot.req{background:#C98A2E} .dot.opt{background:var(--primary)}
+  .legend code{font-size:11.5px;padding:1px 5px}
+  .more{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .more summary{cursor:pointer;font-size:13.5px;font-weight:500;color:var(--primary-dark);
+    list-style:none}
+  .more summary::-webkit-details-marker{display:none}
+  .more summary::before{content:'▸ '}
+  .more[open] summary::before{content:'▾ '}
+  .more p{font-size:13px;line-height:1.7;color:var(--ink);margin:14px 0 0}
+  .more p.note{color:var(--text-dim);font-size:12.5px}
+  .sqlbox{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+  .sqlbox summary{cursor:pointer;font-size:14px;font-weight:500;color:var(--primary-dark);
+    list-style:none}
+  .sqlbox summary::-webkit-details-marker{display:none}
+  .sqlbox summary::before{content:'▸ '}
+  .sqlbox[open] summary::before{content:'▾ '}
+  #sqltext{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:14px;font-size:11.5px;line-height:1.6;max-height:420px;overflow:auto;
+    white-space:pre;margin:0}
+  .foot{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);
+    font-size:12.5px;line-height:1.7;color:var(--text-dim)}
+  #progress{margin-top:26px;font-size:15px;color:var(--primary-dark);font-weight:500}
+  .err{margin-top:20px;background:#FEF3F2;border:1px solid #FDA29B;color:#B42318;
+       border-radius:var(--r-sm);padding:12px 16px;font-size:14px;text-align:left}
+  #apperr{position:sticky;top:0;z-index:55}
+  #apperr .err{margin:0;border-radius:0;text-align:center}
+
+  /* ── 갤러리 ─────────────────────────────────── */
+  #app{display:none}
+  header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);
+         padding:14px 24px}
+  .htop{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .htop h1{font-size:18px;font-weight:700;margin:0}
+  .stat{color:var(--text-dim);font-size:13px}
+  .spacer{flex:1}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  select,input[type=search]{background:#fff;color:var(--text);border:1px solid var(--line);
+    border-radius:var(--r-sm);padding:7px 10px;font-size:14px;font-weight:500}
+  select:focus,input:focus{outline:2px solid var(--primary);outline-offset:-1px}
+  input[type=search]{min-width:210px}
+  /* 다중 선택 드롭다운 */
+  .ms{position:relative}
+  .ms-btn{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:7px 10px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text)}
+  .ms-btn.on{border-color:var(--primary);color:var(--primary-dark);background:var(--primary-tint)}
+  .ms-pop{position:absolute;top:calc(100% + 4px);left:0;z-index:60;background:#fff;
+    border:1px solid var(--line);border-radius:var(--r-sm);
+    box-shadow:0 6px 20px rgba(22,24,29,.14);min-width:190px;max-height:300px;
+    overflow:auto;padding:6px}
+  /* 팝업 머리 — '전체 선택'·'선택 해제' 를 나란히. 값이 10개 넘는 컬럼(NPS 등)에서
+     하나하나 체크하지 않고 전체를 켠 뒤 (빈값)만 빼는 게 실제 사용 패턴이다. */
+  .ms-head{display:flex;gap:2px;border-bottom:1px solid var(--line);
+    margin-bottom:4px;padding-bottom:3px}
+  .ms-head button{flex:1;background:none;border:0;border-radius:6px;
+    padding:6px 4px;font-size:12.5px;color:var(--text-dim);cursor:pointer;
+    white-space:nowrap}
+  .ms-head button:hover{color:var(--primary-dark);background:var(--surface)}
+  .ms-opt{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;
+    font-size:13.5px;cursor:pointer;white-space:nowrap}
+  .ms-opt:hover{background:var(--surface)}
+  .ms-opt em{margin-left:auto;color:var(--text-dim);font-style:normal;font-size:12px;
+    padding-left:10px}
+  .ms-opt input{accent-color:var(--primary)}
+  /* 값이 많은 컬럼(account_id): 검색칸·머리는 고정하고 목록만 스크롤한다 */
+  .ms-find{display:block;width:100%;box-sizing:border-box;margin-bottom:6px;padding:6px 8px;
+    border:1px solid var(--line);border-radius:6px;font-size:13px;font-family:inherit}
+  .ms.big .ms-pop{min-width:250px;max-height:none;overflow:visible}
+  .ms.big .ms-list{max-height:230px;overflow:auto}
+  .ms-more{margin:6px 6px 2px;font-size:12px;color:var(--text-dim);line-height:1.5}
+
+  .dr{display:inline-flex;align-items:center;gap:4px}
+  .dr input[type=date]{background:#fff;color:var(--text);border:1px solid var(--line);
+    border-radius:var(--r-sm);padding:6px 8px;font-size:13px;font-weight:500;
+    font-family:inherit}
+  .dr input[type=date]:focus{outline:2px solid var(--primary);outline-offset:-1px}
+  .dr .tilde{color:var(--text-dim);font-size:13px}
+  .btn{background:var(--primary);color:#fff;border:0;border-radius:var(--r-sm);
+       padding:8px 16px;font-size:14px;font-weight:500;cursor:pointer}
+  .btn:hover{background:var(--primary-dark)}
+  .btn.ghost{background:#fff;color:var(--primary-dark);border:1px solid var(--primary-dark)}
+  .btn.ghost:hover{background:var(--primary-tint)}
+
+  main{padding:20px 24px 80px;display:flex;flex-direction:column;gap:16px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+  .chead{display:flex;align-items:center;gap:8px;padding:13px 16px;flex-wrap:wrap;
+         border-bottom:1px solid var(--line)}
+  .idx{color:var(--text-dim);font-size:13px;min-width:34px;font-variant-numeric:tabular-nums}
+  .chip{background:var(--surface);border-radius:999px;padding:3px 10px;font-size:12.5px;
+        color:var(--ink);white-space:nowrap}
+  .chip.key{background:var(--primary-tint);color:var(--primary-dark);font-weight:500}
+  .chip.nps{color:#fff;font-weight:700}
+  .nps-pro{background:#0E9F6E} .nps-pas{background:#C27803} .nps-det{background:#E02424}
+  .chip.dl{background:#E7F9FB;color:var(--primary-dark)}
+  .chip.dlo{background:#E7F7F0;color:#0E9F6E;font-weight:500}
+  .chip.dlx{background:#FEF3F2;color:#E02424;font-weight:500}
+
+  .voc{padding:11px 16px;border-bottom:1px solid var(--line);background:var(--surface);
+       font-size:14px;line-height:1.6;white-space:pre-wrap}
+  details.prompt{border-bottom:1px solid var(--line);font-size:14px}
+  details.prompt summary{padding:10px 16px;cursor:pointer;color:var(--primary-dark);
+    font-weight:500;list-style:none}
+  details.prompt summary::-webkit-details-marker{display:none}
+  details.prompt summary::before{content:'▸ '}
+  details.prompt[open] summary::before{content:'▾ '}
+  details.prompt .body{padding:0 16px 14px;white-space:pre-wrap;color:var(--ink);
+    max-height:340px;overflow:auto;line-height:1.65}
+
+  .strip{display:flex;gap:9px;overflow-x:auto;padding:14px 16px}
+  .strip::-webkit-scrollbar{height:8px}
+  .strip::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px;padding:14px 16px}
+  figure{margin:0;position:relative;cursor:zoom-in;flex:0 0 auto}
+  .strip figure{width:220px}
+  figure img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--r-sm)}
+  figcaption{position:absolute;left:6px;top:6px;background:rgba(22,24,29,.72);color:#fff;
+    font-size:11px;padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
+
+  #more{width:100%;padding:15px;font-size:14px;font-weight:500;color:var(--primary-dark);
+    background:#fff;border:1px dashed var(--line);border-radius:var(--r-lg);cursor:pointer}
+  #more:hover{border-color:var(--primary);background:var(--primary-tint)}
+  .empty{padding:64px;text-align:center;color:var(--text-dim)}
+
+  #busy{position:fixed;inset:0;z-index:150;background:rgba(22,24,29,.55);
+    display:flex;align-items:center;justify-content:center}
+  #busy[hidden]{display:none}
+  .busycard{background:#fff;border-radius:var(--r-lg);padding:20px 28px;
+    display:flex;align-items:center;gap:14px;font-size:14.5px;font-weight:500;
+    box-shadow:0 8px 30px rgba(22,24,29,.25);max-width:80vw}
+  #busytext{font-variant-numeric:tabular-nums}
+  .spin{flex:0 0 22px;width:22px;height:22px;border:3px solid var(--primary-tint);
+    border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  #lb{position:fixed;inset:0;z-index:100;background:rgba(22,24,29,.94);display:none;padding:20px}
+  #lb.open{display:block}
+  .lbwrap{display:flex;gap:18px;height:100%;align-items:stretch}
+  .lbmain{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;
+          justify-content:center;gap:14px}
+  #lbimg{max-width:100%;max-height:calc(100vh - 150px);object-fit:contain;
+    border-radius:var(--r-sm);background:#fff}
+  #lbinfo{color:#E4E7EC;font-size:14px;text-align:center;max-width:100%}
+  #lbinfo b{color:#fff}
+  .lbnav{display:flex;gap:10px}
+  .lbnav .btn{background:rgba(255,255,255,.14)}
+  .lbnav .btn:hover{background:var(--primary)}
+
+  /* 피드백 패널 */
+  .lbside{width:340px;flex:0 0 340px;background:#fff;border-radius:var(--r-lg);
+    padding:18px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
+  .side-hd{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .side-hd b{font-size:16px}
+  #author{border:1px solid var(--line);border-radius:6px;padding:4px 9px;font-size:12.5px;
+    width:130px;color:var(--text)}
+  #author:focus{outline:2px solid var(--primary);outline-offset:-1px}
+  .fld{display:flex;flex-direction:column;gap:8px}
+  .fld label{font-size:13px;font-weight:500;color:var(--text)}
+  .hint{font-weight:400;color:var(--text-dim);font-size:12px}
+  .memorow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .memo{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px;font-size:14px;
+    resize:vertical;line-height:1.5;font-family:inherit;color:var(--text);width:100%;
+    box-sizing:border-box}
+  .memo:focus{outline:2px solid var(--primary);outline-offset:-1px}
+  /* 메모 3분할 — 다 채울 필요는 없다. 나중에 컴포넌트 층위별로 모으려고 나눠 둔 것 */
+  .mgrp{display:flex;flex-direction:column;gap:4px}
+  .mgrp label{font-size:12.5px;font-weight:500;color:var(--text)}
+  .mgrp .hint{display:block;font-size:11.5px}
+  .side-ft{display:flex;align-items:center;gap:10px}
+  .side-ft .btn{flex:1}
+  .kbd{opacity:.75;font-size:11px;margin-left:4px}
+  .savemsg{font-size:12.5px;color:var(--primary-dark);font-weight:500;white-space:nowrap}
+  .savemsg.err{color:#B42318}
+  .saved{border-top:1px solid var(--line);padding-top:12px;font-size:12.5px;
+    color:var(--text-dim);line-height:1.6;display:none}
+  .saved.show{display:block}
+  .saved .row{display:flex;gap:6px;align-items:baseline}
+  .saved .row b{color:var(--primary-dark);font-weight:500}
+  /* 피드백 남긴 페이지 표시 */
+  figcaption.done{background:var(--primary)}
+  @media (max-width:900px){
+    .lbwrap{flex-direction:column}
+    .lbside{width:auto;flex:0 0 auto;max-height:42vh}
+  }
+</style>
+</head>
+<body>
+
+<!-- ── 업로드 ─────────────────────────────────── -->
+<section id="intro">
+  <h1>디자인 평가 뷰어</h1>
+  <p class="lead">AI가 만든 결과물을 <b>전 페이지 썸네일 + 맥락(원래 요청·만족도·코멘트)</b>과 함께 보고,
+     그 자리에서 <b>페이지 단위로</b> 평가를 남기는 화면입니다.</p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="no">1</span>
+      <div>
+        <b>샘플 데이터로 바로 보기</b>
+        <div class="copyrow"><button class="btn sm" id="demo">샘플 불러오기</button></div>
+        <p class="note">가짜 데이터 12건입니다. 필터·검색·라이트박스·평가 작성이 전부 동작합니다.
+           썸네일은 placeholder 이미지입니다.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="no">2</span>
+      <div>
+        <b>내 CSV로 보기</b>
+        <p class="note">아래에 CSV(또는 <code>.csv.gz</code>)를 끌어다 놓으세요.
+           필수 컬럼은 <code>design_id</code>·<code>page_url</code> 둘뿐이고,
+           나머지는 <b>값 종류를 보고 필터를 자동 생성</b>합니다.
+           계약은 <code>demo/sample.csv</code>에 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사내판에는 데이터 볼륨에서 받아오는 경로(①)와 쿼리 안내(②)가 있었다.
+       공개판에서는 지웠고, 그 자리를 참조하는 스크립트가 죽지 않게 빈 자리만 남긴다. -->
+  <div hidden><div id="ready"></div><div id="noready"></div>
+    <a id="vollink"></a><pre id="clisnip"></pre><pre id="clisnip-all"></pre>
+    <button id="peek"></button><pre id="sqltext"></pre></div>
+
+  <div id="drop">
+    <div class="ico">📄</div>
+    <b>CSV 파일 올리기</b>
+    <span>여기에 끌어다 놓거나 클릭해서 선택 — <b>여러 개 한꺼번에</b> 가능, <code>.csv.gz</code>도 그대로</span>
+  </div>
+  <input type="file" id="file" accept=".csv,.gz,text/csv" multiple hidden>
+  <div id="progress"></div>
+  <div id="error"></div>
+</section>
+
+<!-- ── 갤러리 ─────────────────────────────────── -->
+<div id="app">
+  <div id="apperr"></div>
+  <header>
+    <div class="htop">
+      <h1>디자인 평가 뷰어</h1>
+      <span class="stat" id="stat"></span>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="reload">다른 CSV 올리기</button>
+    </div>
+    <div class="bar" id="filters"></div>
+  </header>
+  <main>
+    <div id="list" style="display:flex;flex-direction:column;gap:16px"></div>
+  </main>
+</div>
+
+<!-- CSV 읽는 동안 화면을 덮는 진행 표시 -->
+<div id="busy" hidden>
+  <div class="busycard">
+    <div class="spin" aria-hidden="true"></div>
+    <div id="busytext">읽는 중…</div>
+  </div>
+</div>
+
+<div id="lb">
+  <div class="lbwrap">
+    <div class="lbmain">
+      <img id="lbimg" alt="">
+      <div id="lbinfo"></div>
+      <div class="lbnav">
+        <button class="btn" id="prev">← 이전</button>
+        <button class="btn" id="next">다음 →</button>
+        <button class="btn" id="close">닫기 (Esc)</button>
+      </div>
+    </div>
+
+    <!-- 이 페이지에 대한 피드백 -->
+    <aside class="lbside">
+      <div class="side-hd">
+        <b>이 페이지 피드백</b>
+      </div>
+
+      <div class="fld">
+        <div class="memorow">
+          <label>메모 <span class="hint">해당하는 칸만 채우면 됩니다</span></label>
+          <input id="author" placeholder="이름 (처음 한 번만)" maxlength="20"
+                 autocomplete="off" title="한 번 입력하면 이 브라우저에서 계속 기억합니다">
+        </div>
+
+        <div class="mgrp">
+          <label for="memo-body">바디 컴포넌트</label>
+          <textarea id="memo-body" class="memo" rows="3"
+                    placeholder="예: 아이콘 색상대치"></textarea>
+        </div>
+
+        <div class="mgrp">
+          <label for="memo-master">마스터 컴포넌트</label>
+          <textarea id="memo-master" class="memo" rows="3"
+                    placeholder="예: 소제목 줄바꿈"></textarea>
+        </div>
+
+        <div class="mgrp">
+          <label for="memo-etc">그 외</label>
+          <textarea id="memo-etc" class="memo" rows="3"
+                    placeholder="예: 텅 비어 보임"></textarea>
+        </div>
+      </div>
+
+      <div class="side-ft">
+        <button class="btn" id="save">저장 <span class="kbd">⌘↵</span></button>
+        <span id="savemsg" class="savemsg"></span>
+      </div>
+
+      <div id="saved" class="saved"></div>
+    </aside>
+  </div>
+  <!-- form 전송의 응답을 흘려버리는 싱크. 구글이 X-Frame-Options 로 자기 페이지의
+       iframe 표시를 막아서 응답을 보여줄 수는 없다(빈 칸/깨진 아이콘만 뜸 — 실측).
+       요청 자체는 정상 도착한다. -->
+  <iframe name="sinkFrame" id="sinkFrame" style="display:none"></iframe>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// 필수 2개 + 특별 취급 컬럼. 나머지는 값 종류 수를 보고 필터/검색으로 자동 분류한다.
+const REQUIRED = ['design_id', 'page_url'];
+const PAGE_COL = '페이지순서';
+const LONG_COLS = ['프롬프트', '코멘트'];      // 카드에 본문으로 표시. 필터 만들지 않음
+// 필터로 만들지 않을 컬럼: 검증용 중복(AIP모드원본) · 고유값이 사실상 무한(레이아웃키·생성시각·
+// 캔버스·페이지수) → 드롭다운이 쓸모없고 바가 지저분해진다. 검색으로 찾으면 된다.
+// 입력유형(원본 request_type)은 숨긴다: 7/14 업데이트 이후 분류(150자 INSTRUCTION·
+// 파일 타입)가 기록되지 않아 사실상 전부 TOPIC — 백엔드 확인 중. 실제 입력 수단은 입력방식이 담당.
+const NO_FILTER = ['생성모드원본', '레이아웃키', '생성시각', '캔버스', '페이지수', '순서정확도', '생성일', '입력유형'];  // 생성일은 달력 기간으로
+
+// 값이 수천 개여도 드롭다운을 만드는 컬럼. 값 종류 수 제한(MAX_FILTER_VALUES)을 면제하고,
+// 대신 팝업 안에 검색칸을 넣어 좁혀 고르게 한다. account_id 는 '이 유저 것만' 과
+// '여러 유저를 나란히' 둘 다 필요해서 검색만으로는 부족하다.
+const BIG_FILTER_COLS = ['account_id'];
+const MS_RENDER_MAX = 300;             // 한 번에 그리는 옵션 상한 (그 이상은 검색으로)
+
+// 읽을 때 컬럼명·값을 새 워딩으로 정규화한다.
+// SQL 도 같은 값을 내지만, 볼륨에 이미 올라간 옛 CSV(함/안함·개요없음·요청타입)를
+// 다시 만들지 않고도 화면이 같아지게 앱에서도 맞춘다.
+const COL_RENAME = { '요청타입': '입력유형' };
+const VAL_RENAME = {
+  '다운로드여부': { '함': '다운로드O', '안함': '다운로드X' },
+  '입력방식':  { '개요없음': '매칭안됨' },
+};
+// AIP모드는 원본 값 변형이 많다(TEMPLATE_BASED · AI_PRESENTATION_TEMPLATE_BASED ·
+// BASIC_LAYOUT_PAGE_BASED …). 정확 일치로 지도를 관리하면 새 변형이 나올 때마다
+// 드롭다운이 갈라지므로 부분 일치로 세 갈래에 합친다.
+const normMode = v => /TEMPLATE/i.test(v) ? '템플릿'
+                    : /LAYOUT/i.test(v)   ? '레이아웃'
+                    : /COMPONENT/i.test(v) ? '컴포넌트' : v;
+const NPS_COL = 'NPS', NPS_BAND = 'NPS구간', DL_COL = '다운로드';
+// 값 종류 상한. 전량(6.4만 디자인)에서 국가가 61개국이라 40이면 국가 필터가 사라진다.
+// 노이즈 컬럼은 개수가 아니라 NO_FILTER 로 이름을 지정해 막는다.
+const MAX_FILTER_VALUES = 120;
+const PAGE_SIZE = 60;
+
+// ══════════════════════════════════════════════════════════════════════════
+// ▼▼▼ 설정 ▼▼▼
+// ══════════════════════════════════════════════════════════════════════════
+
+// Apps Script 웹 앱 URL. 구글 시트 → 확장 프로그램 → Apps Script 에
+// docs/apps-script.gs 를 붙여넣고 "배포 → 웹 앱"(액세스: 미리디 내 모든 사용자)한 뒤
+// 나오는 /exec 주소를 넣으세요. 비워두면 저장 대신 클립보드 복사로 동작합니다.
+const SHEET_ENDPOINT = '';   // 비우면 시트로 보내지 않고 클립보드에 TSV 한 줄을 복사한다
+
+// ══════════════════════════════════════════════════════════════════════════
+// ▲▲▲ 여기까지 ▲▲▲
+// ══════════════════════════════════════════════════════════════════════════
+
+// 저장한 피드백을 (design_id, 페이지번호) 로 기억한다.
+// 새로고침해도 남도록 localStorage 에 둔다 — 어디까지 봤는지 잃지 않게.
+const FB_STORE = 'aip-eval-feedback';
+const AUTHOR_KEY = 'aip-eval-author';   // 이름은 한 번 입력하면 이 브라우저에서 계속 기억
+let myFeedback = {};
+try { myFeedback = JSON.parse(localStorage.getItem(FB_STORE) || '{}'); } catch {}
+const fbKey = (id, p) => `${id}#${p}`;
+
+let DESIGNS = [], VIEW = [], COLS = [], FILTER_COLS = [], shown = 0, EXPANDED = false;
+
+// 고른 필터 값의 원천은 DOM 이 아니라 이 객체다(컬럼 → 값 Set).
+// buildFilters 는 이어 읽는 동안 여러 번 불리고, 값이 많은 컬럼은 일부만 그리므로
+// 화면에 없는 체크박스에서 선택을 되살릴 수 없다. 초기화는 '다른 CSV 올리기'(새로고침)뿐.
+let SELECTED = {};
+const selOf = c => (SELECTED[c] ||= new Set());
+// 한 화면에 이미지가 700장까지 들어간다. 첫 EAGER_N 장은 즉시 받아 첫 화면이 바로 채워지게 하고
+// 나머지는 lazy 로 둔다 (lazy 만 쓰면 스크롤·가시성 판정 전까지 빈 화면이 보인다).
+const EAGER_N = 24;
+let imgSeq = 0;
+let LOADED = null;   // design_id → 디자인. 날짜별로 이어 읽을 때 병합에 쓴다
+let lbD = null, lbP = 0;
+
+// ── CSV 파싱 ────────────────────────────────────
+/** RFC4180 파서. 큰 따옴표 안의 쉼표·줄바꿈을 보존한다(프롬프트에 줄바꿈이 들어있음).
+ *  문자 단위 연결(cell += ch)은 수십 MB에서 급격히 느려지므로, 구분자를 찾아
+ *  slice 로 잘라내는 방식을 쓴다 — 26MB 기준 8.5초 → 1초 미만. */
+function* parseCsv(text) {
+  const n = text.length;
+  const COMMA = 44, LF = 10, CR = 13, QUOTE = 34;
+  let i = 0;
+  while (i < n) {
+    const row = [];
+    for (;;) {
+      if (text.charCodeAt(i) === QUOTE) {          // 인용 셀
+        i++;
+        let out = '', from = i;
+        for (;;) {
+          const q = text.indexOf('"', from);
+          if (q < 0) { out += text.slice(from); i = n; break; }
+          if (text.charCodeAt(q + 1) === QUOTE) {  // "" → 리터럴 "
+            out += text.slice(from, q + 1); from = q + 2; continue;
+          }
+          out += text.slice(from, q); i = q + 1; break;
+        }
+        row.push(out);
+      } else {                                     // 비인용 셀
+        let j = i;
+        while (j < n) { const c = text.charCodeAt(j); if (c === COMMA || c === LF) break; j++; }
+        let e = j;
+        if (e > i && text.charCodeAt(e - 1) === CR) e--;
+        row.push(text.slice(i, e));
+        i = j;
+      }
+      if (i < n && text.charCodeAt(i) === COMMA) { i++; continue; }   // 다음 셀
+      if (i < n && text.charCodeAt(i) === CR) i++;
+      if (i < n && text.charCodeAt(i) === LF) i++;
+      break;                                                          // 행 종료
+    }
+    if (row.length > 1 || row[0] !== '') yield row;
+  }
+}
+
+/** 행을 디자인 단위로 묶는다. 디자인 속성은 값이 있는 첫 행에서 취한다
+ *  (프롬프트처럼 첫 페이지 행에만 채워진 컬럼이 있으므로 빈 값은 덮어쓰지 않는다). */
+/** CSV 텍스트를 읽어 DESIGNS 를 만든다.
+ *  append=true 면 기존 DESIGNS 에 이어 붙인다 — 날짜별 파일을 순서대로 읽을 때 쓴다.
+ *  같은 design_id 가 두 파일에 걸치는 일은 없다(생성일이 디자인 단위라 날짜별로 안 쪼개진다).
+ *  그래도 안전하게 id 맵을 들고 병합한다. */
+async function load(text, append) {
+  const it = parseCsv(text);
+  const header = it.next().value;
+  if (!header) throw new Error('빈 파일입니다.');
+  const cols = header.map(h => COL_RENAME[h.replace(/^﻿/, '').trim()] || h.replace(/^﻿/, '').trim());
+  for (const req of REQUIRED) {
+    if (!cols.includes(req)) {
+      throw new Error(`필수 컬럼 '${req}'이 없습니다. 현재 1·2번째 컬럼: ${cols.slice(0,2).join(' · ') || '(없음)'}`);
+    }
+  }
+  const iId = cols.indexOf('design_id'), iUrl = cols.indexOf('page_url');
+  const iPage = cols.indexOf(PAGE_COL);
+  const attrIdx = cols.map((c, k) => (k === iId || k === iUrl || k === iPage) ? -1 : k)
+                      .filter(k => k >= 0);
+
+  const map = append && LOADED ? LOADED : new Map();
+  LOADED = map;
+  let rows = 0, t = performance.now();
+  for (const r of it) {
+    const id = r[iId];
+    if (!id) continue;
+    if (id === 'design_id') continue;   // 여러 export를 이어붙이면 헤더가 중간에 섞인다
+    let d = map.get(id);
+    if (!d) { d = { id, attrs: {}, pages: [] }; map.set(id, d); }
+    const url = r[iUrl];
+    if (url) d.pages.push({ url, no: iPage >= 0 ? +r[iPage] || 0 : d.pages.length + 1 });
+    for (const k of attrIdx) {
+      let v = r[k];
+      if (v === undefined || v === '' || d.attrs[cols[k]]) continue;
+      if (cols[k] === 'AIP모드') v = normMode(v);
+      else {
+        const m = VAL_RENAME[cols[k]];
+        if (m && m[v]) v = m[v];
+      }
+      d.attrs[cols[k]] = v;
+    }
+    if (++rows % 50000 === 0) {                      // UI가 얼지 않게 양보 + 진행 표시
+      busy.set(`읽는 중… ${rows.toLocaleString()}행 · 디자인 ${map.size.toLocaleString()}개`);
+      await nextTick();
+    }
+  }
+  DESIGNS = [...map.values()];
+  DESIGNS.forEach(d => d.pages.sort((a, b) => a.no - b.no));
+  COLS = cols;
+
+  // 필터로 쓸 컬럼 결정: 값 종류가 적고 긴 텍스트가 아닌 것
+  FILTER_COLS = [];
+  for (const c of cols) {
+    if (REQUIRED.includes(c) || c === PAGE_COL || LONG_COLS.includes(c) || NO_FILTER.includes(c)) continue;
+    if (BIG_FILTER_COLS.includes(c)) { FILTER_COLS.push(c); continue; }   // 값 종류 수 제한 면제
+    const vals = new Set();
+    for (const d of DESIGNS) { const v = d.attrs[c]; if (v) vals.add(v); if (vals.size > MAX_FILTER_VALUES) break; }
+    if (vals.size >= 2 && vals.size <= MAX_FILTER_VALUES) FILTER_COLS.push(c);
+  }
+  console.log(`${rows}행 → 디자인 ${DESIGNS.length}개, ${((performance.now()-t)/1000).toFixed(1)}s`);
+  return rows;
+}
+
+// ── 화면 ────────────────────────────────────────
+/** 필터 막대를 다시 만든다.
+ *  날짜별로 이어 읽는 동안 값 종류가 늘어나므로 여러 번 불린다.
+ *  그래서 사용자가 고른 값·검색어·정렬을 반드시 되살려야 한다. */
+function buildFilters() {
+  const bar = $('#filters');
+  const keep = {
+    q: $('#q')?.value || '',
+    sort: $('#sort')?.value || '',
+    from: $('#d-from')?.value || '', to: $('#d-to')?.value || '',
+    sels: Object.fromEntries([...bar.querySelectorAll('.ms')]
+      .map(b => [b.dataset.col,
+                 [...b.querySelectorAll('input:checked')].map(i => i.value)])
+      .filter(([, v]) => v.length)),
+  };
+  bar.innerHTML = `<input type="search" id="q" placeholder="검색 — 코멘트 · 프롬프트 · account_id">`;
+
+  // 생성일은 값이 날짜라 목록보다 달력 기간이 맞다. 값 형식이 YYYY-MM-DD 라
+  // date input 값과 문자열 비교가 그대로 성립한다.
+  if (COLS.includes('생성일')) {
+    let lo = '', hi = '';
+    for (const d of DESIGNS) {
+      const v = d.attrs['생성일'];
+      if (!v) continue;
+      if (!lo || v < lo) lo = v;
+      if (!hi || v > hi) hi = v;
+    }
+    bar.insertAdjacentHTML('beforeend',
+      `<span class="dr" title="생성일 ${esc(lo)} ~ ${esc(hi)}">
+         <input type="date" id="d-from" min="${esc(lo)}" max="${esc(hi)}" aria-label="생성일 시작">
+         <span class="tilde">~</span>
+         <input type="date" id="d-to" min="${esc(lo)}" max="${esc(hi)}" aria-label="생성일 끝">
+       </span>`);
+  }
+  for (const c of FILTER_COLS) {
+    const counts = new Map();
+    for (const d of DESIGNS) { const v = d.attrs[c] || '(빈값)'; counts.set(v, (counts.get(v) || 0) + 1); }
+    // 체크박스 팝업 — 같은 컬럼 안에서 여러 값을 동시에 고를 수 있다(OR)
+    const big = BIG_FILTER_COLS.includes(c);
+    bar.insertAdjacentHTML('beforeend',
+      `<div class="ms${big ? ' big' : ''}" data-col="${esc(c)}">
+         <button type="button" class="ms-btn">${esc(c)} 전체</button>
+         <div class="ms-pop" hidden>
+           ${big ? `<input type="search" class="ms-find" placeholder="${esc(c)} 검색"
+                      aria-label="${esc(c)} 검색">` : ''}
+           <div class="ms-head">
+             <button type="button" class="ms-all">전체 선택</button>
+             <button type="button" class="ms-clear">선택 해제</button>
+           </div>
+           <div class="ms-list"></div>
+         </div>
+       </div>`);
+    const box = bar.lastElementChild;
+    box._entries = [...counts.entries()].sort((a, b) => b[1] - a[1]);   // 건수 많은 값 먼저
+    drawOpts(box);
+  }
+  bar.insertAdjacentHTML('beforeend',
+    `<select id="sort">
+       <option value="new">최근 생성순</option>
+       <option value="nps">NPS 낮은순</option>
+     </select>
+     <button class="btn ghost" id="mode"></button>
+     <span class="spacer"></span><span class="stat" id="count"></span>`);
+
+  // 검색어·정렬·기간 되살리기. 고른 필터 값은 SELECTED 에 있으므로 되살릴 필요가 없다.
+  $('#mode').textContent = EXPANDED ? '필름스트립' : '전체 펼치기';   // 재구성 후에도 상태와 일치
+  $('#q').value = keep.q;
+  if ($('#d-from')) { $('#d-from').value = keep.from; $('#d-to').value = keep.to; }
+  if (keep.sort) $('#sort').value = keep.sort;
+
+  // 리스너는 한 번만 단다 — buildFilters 는 이어 읽는 동안 여러 번 불린다
+  if (!bar._init) {
+    bar._init = true;
+    bar.addEventListener('input', e => {
+      const box = e.target.closest('.ms');
+      // 팝업 안 검색칸: 목록만 좁힌다. 갤러리는 건드리지 않는다
+      if (box && e.target.classList.contains('ms-find')) { drawOpts(box); return; }
+      if (box && e.target.matches('.ms-opt input')) {
+        const sel = selOf(box.dataset.col);
+        e.target.checked ? sel.add(e.target.value) : sel.delete(e.target.value);
+        msLabel(box); render();
+        return;
+      }
+      render();
+    });
+    // 팝업 열고 닫기
+    bar.addEventListener('click', e => {
+      // 전체 선택 / 선택 해제 — 값이 많은 컬럼에서 '전체 켜고 몇 개만 빼기'가 되게 한다.
+      // 검색으로 좁힌 상태의 '전체 선택'은 **일치하는 값 전부**를 고른다(그려진 것만이 아니라).
+      const head = e.target.closest('.ms-all, .ms-clear');
+      if (head) {
+        const box = head.closest('.ms'), sel = selOf(box.dataset.col);
+        if (head.classList.contains('ms-all')) (box._filtered || box._entries).forEach(([v]) => sel.add(v));
+        else sel.clear();
+        drawOpts(box); render();
+        return;
+      }
+      const btn = e.target.closest('.ms-btn');
+      if (!btn) return;
+      const pop = btn.nextElementSibling;
+      const wasHidden = pop.hidden;
+      bar.querySelectorAll('.ms-pop').forEach(p => { p.hidden = true; });
+      pop.hidden = !wasHidden;
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.ms')) bar.querySelectorAll('.ms-pop').forEach(p => { p.hidden = true; });
+    });
+  }
+  $('#mode').onclick = () => {
+    EXPANDED = !EXPANDED;
+    $('#mode').textContent = EXPANDED ? '필름스트립' : '전체 펼치기';
+    render();
+  };
+}
+
+/** 팝업의 체크박스 목록을 다시 그린다. 검색칸이 있으면 그 값으로 좁히고,
+ *  값이 많으면 앞 MS_RENDER_MAX 개만 그린다(수천 개를 다 그리면 여는 데만 오래 걸린다).
+ *  체크 상태는 DOM 이 아니라 SELECTED 에서 읽으므로, 안 그려진 값의 선택도 유지된다. */
+function drawOpts(box) {
+  const c = box.dataset.col, sel = selOf(c);
+  const q = (box.querySelector('.ms-find')?.value || '').trim().toLowerCase();
+  const hits = q ? box._entries.filter(([v]) => v.toLowerCase().includes(q)) : box._entries;
+  box._filtered = hits;
+  const shown = hits.slice(0, MS_RENDER_MAX);
+  const rest = hits.length - shown.length;
+  box.querySelector('.ms-list').innerHTML =
+    shown.map(([v, n]) => `<label class="ms-opt"><input type="checkbox" value="${esc(v)}"${sel.has(v) ? ' checked' : ''}>
+                           <span>${esc(v)}</span><em>${n.toLocaleString()}</em></label>`).join('')
+    + (rest > 0 ? `<p class="ms-more">${rest.toLocaleString()}개 더 있습니다 — 검색으로 좁혀주세요</p>` : '')
+    + (!hits.length ? `<p class="ms-more">일치하는 값이 없습니다</p>` : '');
+  msLabel(box);
+}
+
+/** 다중 선택 버튼의 라벨: 전체 / 값 하나 / 'N개' */
+function msLabel(box) {
+  const c = box.dataset.col;
+  const vals = [...selOf(c)];
+  const btn = box.querySelector('.ms-btn');
+  btn.textContent = !vals.length ? `${c} 전체`
+    : vals.length === 1 ? `${c}: ${vals[0]}` : `${c} ${vals.length}개`;
+  btn.classList.toggle('on', vals.length > 0);
+}
+
+function render(keepShown) {
+  const q = ($('#q')?.value || '').trim().toLowerCase();
+  // 화면에 그려진 체크박스가 아니라 SELECTED 를 읽는다 — 값이 많은 컬럼은 일부만 그린다
+  const sels = FILTER_COLS.map(c => [c, selOf(c)]).filter(([, set]) => set.size);
+
+  const dFrom = $('#d-from')?.value || '', dTo = $('#d-to')?.value || '';
+
+  VIEW = DESIGNS.filter(d => {
+    if (dFrom || dTo) {
+      const g = d.attrs['생성일'] || '';
+      if (dFrom && g < dFrom) return false;
+      if (dTo && g > dTo) return false;
+    }
+    for (const [c, set] of sels) if (!set.has(d.attrs[c] || '(빈값)')) return false;
+    if (q) {
+      const hay = (d.attrs['코멘트'] || '') + ' ' + (d.attrs['프롬프트'] || '') + ' ' +
+                  (d.attrs['account_id'] || '') + ' ' + d.id;
+      if (!hay.toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
+
+  const sort = $('#sort').value;
+  const nps = d => { const v = d.attrs[NPS_COL]; return v === '' || v === undefined ? 999 : +v; };
+  if (sort === 'nps') VIEW.sort((a, b) => nps(a) - nps(b));
+  else VIEW.sort((a, b) => String(b.attrs['생성시각'] || '').localeCompare(String(a.attrs['생성시각'] || '')));
+
+  $('#count').textContent = `${VIEW.length.toLocaleString()} / ${DESIGNS.length.toLocaleString()} 디자인`;
+  // 이어 읽는 중이면 보고 있던 만큼은 그대로 다시 그린다(스크롤이 튀지 않게)
+  const want = keepShown ? Math.min(shown, VIEW.length) : 0;
+  const y = keepShown ? scrollY : 0;
+  shown = 0; imgSeq = 0; $('#list').innerHTML = '';
+  if (!VIEW.length) { $('#list').innerHTML = '<div class="empty">조건에 맞는 디자인이 없습니다.</div>'; return; }
+  do { appendMore(); } while (keepShown && shown < want);
+  if (keepShown) scrollTo(0, y);
+  markDone();
+}
+
+/** 화면에 보이는 만큼만 그린다. 디자인 수가 수만 개여도 필터 응답이 일정하게 유지된다. */
+function appendMore() {
+  const slice = VIEW.slice(shown, shown + PAGE_SIZE);
+  if (!slice.length) return;
+  document.querySelector('#more')?.remove();
+  $('#list').insertAdjacentHTML('beforeend', slice.map((d, i) => card(d, shown + i)).join(''));
+  shown += slice.length;
+  if (shown < VIEW.length) {
+    $('#list').insertAdjacentHTML('beforeend',
+      `<button id="more" type="button">${shown.toLocaleString()} / ${VIEW.length.toLocaleString()} — 더 보기 (+${Math.min(PAGE_SIZE, VIEW.length - shown)})</button>`);
+    $('#more').onclick = () => appendMore();
+  }
+  markDone();
+}
+addEventListener('scroll', () => {
+  if (!document.querySelector('#more')) return;
+  if (innerHeight + scrollY >= document.documentElement.scrollHeight - 800) appendMore();
+}, { passive: true });
+
+const npsCls = v => (v === '' || v === undefined) ? '' : (+v >= 9 ? 'nps-pro' : +v >= 7 ? 'nps-pas' : 'nps-det');
+
+function card(d, i) {
+  const a = d.attrs;
+  // 헤더 칩: AIP모드는 강조, 나머지 필터 컬럼은 일반 칩
+  const chips = FILTER_COLS.filter(c => a[c] && c !== NPS_COL && c !== NPS_BAND && c !== DL_COL)
+    .map(c => {
+      // 계정은 숫자만 있으면 무슨 값인지 모른다 — 'acc' 를 붙인다
+      const txt = c === 'account_id' ? `acc ${a[c]}` : a[c];
+      return `<span class="chip${/모드$/.test(c) ? ' key' : ''}${c === 'account_id' ? ' acc' : ''}${a[c] === '다운로드O' ? ' dlo' : a[c] === '다운로드X' ? ' dlx' : ''}">${esc(txt)}</span>`;
+    }).join('');
+  const npsChip = a[NPS_COL] ? `<span class="chip nps ${npsCls(a[NPS_COL])}">NPS ${esc(a[NPS_COL])}</span>` : '';
+  const dlChip = a[DL_COL] ? `<span class="chip dl">⬇ ${esc(a[DL_COL])}</span>` : '';
+  const pages = d.pages.map((p, n) => `
+    <figure data-id="${esc(d.id)}" data-p="${n}">
+      <img loading="${imgSeq++ < EAGER_N ? 'eager' : 'lazy'}" src="${esc(p.url)}" alt="p${n + 1}">
+      <figcaption>${n + 1}</figcaption>
+    </figure>`).join('');
+
+  return `
+  <section class="card">
+    <div class="chead">
+      <span class="idx">${(i + 1).toLocaleString()}</span>
+      <span class="chip">${esc(a['생성시각'] || a['생성일'] || '')}</span>
+      <span class="chip">${d.pages.length}p</span>
+      ${chips}${npsChip}${dlChip}
+    </div>
+    ${a['코멘트'] ? `<div class="voc">${esc(a['코멘트'])}</div>` : ''}
+    ${a['프롬프트'] ? `<details class="prompt"><summary>최초 프롬프트 (${a['프롬프트'].length.toLocaleString()}자)</summary><div class="body">${esc(a['프롬프트'])}</div></details>` : ''}
+    <div class="${EXPANDED ? 'grid' : 'strip'}">${pages}</div>
+  </section>`;
+}
+
+// ── 라이트박스 ──────────────────────────────────
+document.addEventListener('click', e => {
+  const f = e.target.closest('figure');
+  if (!f) return;
+  lbD = DESIGNS.find(x => x.id === f.dataset.id); lbP = +f.dataset.p; showLb();
+});
+function showLb() {
+  if (!lbD) return;
+  const p = lbD.pages[lbP], a = lbD.attrs;
+  $('#lbimg').src = p.url;
+  $('#lbinfo').innerHTML =
+    `<b>${lbP + 1} / ${lbD.pages.length}</b> · ${esc(a['생성시각'] || '')}` +
+    (a[NPS_COL] ? ` · NPS ${esc(a[NPS_COL])}` : '') +
+    ` · acc ${esc(a['account_id'] || '')} · <code>${esc(lbD.id.slice(0, 8))}</code>`;
+  $('#lb').classList.add('open');
+  loadPanel();
+}
+
+/** 라이트박스 우측 패널을 현재 페이지 상태로 다시 그린다 */
+function loadPanel() {
+  const prev = myFeedback[fbKey(lbD.id, lbP + 1)];
+  // 3분할 이전에 저장한 건은 memo 하나만 있다 — '그 외'로 되살린다
+  $('#memo-body').value = prev?.body || '';
+  $('#memo-master').value = prev?.master || '';
+  $('#memo-etc').value = prev ? (prev.etc ?? prev.memo ?? '') : '';
+  $('#savemsg').textContent = '';
+  $('#savemsg').classList.remove('err');
+  // 이 디자인에서 이미 남긴 페이지 목록
+  const mine = Object.entries(myFeedback)
+    .filter(([k]) => k.startsWith(lbD.id + '#'))
+    .map(([k, v]) => ({ p: +k.split('#')[1], v }))
+    .sort((x, y) => x.p - y.p);
+  const box = $('#saved');
+  if (mine.length) {
+    box.classList.add('show');
+    box.innerHTML = `<div style="margin-bottom:6px">이 디자인에 남긴 피드백 ${mine.length}건</div>` +
+      mine.map(m => `<div class="row"><b>p${m.p}</b> <span>${esc((m.v.memo || '').replace(/\n/g, ' / ').slice(0, 40)) || '—'}</span></div>`).join('');
+  } else { box.classList.remove('show'); box.innerHTML = ''; }
+}
+
+// 이름 복원·기억
+$('#author').value = localStorage.getItem(AUTHOR_KEY) || '';
+$('#author').addEventListener('change', () => {
+  try { localStorage.setItem(AUTHOR_KEY, $('#author').value.trim()); } catch {}
+});
+
+/** 저장 — Apps Script 로 form POST.
+ *  fetch 를 쓰지 않는 이유: Apps Script 를 "미리디 내 모든 사용자"로 배포하면
+ *  fetch 는 구글 로그인 페이지로 리다이렉트돼 CORS 에 막힌다.
+ *  form 전송은 일반 페이지 이동이라 브라우저가 구글 세션을 그대로 실어 보내
+ *  이미 로그인된 상태를 그대로 쓸 수 있다. 응답은 숨은 iframe 으로 흘려버린다.
+ *  작성자는 Apps Script 가 Session.getActiveUser() 로 알아내므로 위조할 수 없다. */
+function save() {
+  if (!lbD) return;
+  const body = $('#memo-body').value.trim();
+  const master = $('#memo-master').value.trim();
+  const etc = $('#memo-etc').value.trim();
+  // 시트의 '메모' 열에는 채운 칸만 이어 붙여 넣는다. 세 열을 따로도 넣지만,
+  // 한 열만 봐도 무슨 얘기였는지 알 수 있어야 한다(그리고 예전 행과 형태가 같다).
+  const memo = [body && `[바디] ${body}`, master && `[마스터] ${master}`, etc && `[그 외] ${etc}`]
+    .filter(Boolean).join('\n');
+  const author = $('#author').value.trim();
+  if (!author) {
+    $('#savemsg').textContent = '이름을 입력하세요 (처음 한 번만)';
+    $('#savemsg').classList.add('err');
+    $('#author').focus();
+    return;
+  }
+  if (!memo) {
+    $('#savemsg').textContent = '세 칸 중 하나는 채워주세요';
+    $('#savemsg').classList.add('err');
+    $('#memo-body').focus();
+    return;
+  }
+  try { localStorage.setItem(AUTHOR_KEY, author); } catch {}
+  const rec = {
+    designId: lbD.id,
+    pageNo: lbP + 1,
+    pageUrl: lbD.pages[lbP].url,
+    memo,
+    savedAt: new Date().toISOString(),
+  };
+
+  let msg;
+  if (!SHEET_ENDPOINT) {
+    // 미설정 상태: 시트에 직접 붙여넣을 수 있는 TSV 한 줄을 클립보드에 넣는다.
+    const tsv = ['', author, '', rec.designId, rec.pageNo, rec.pageUrl,
+                 `=IMAGE("${rec.pageUrl}")`, '', memo.replace(/\n/g, ' / '),
+                 body, master, etc].join('\t');
+    const holder = document.createElement('pre');
+    holder.textContent = tsv;
+    holder.style.cssText = 'position:fixed;left:-9999px;white-space:pre';
+    document.body.appendChild(holder);
+    copyText(holder).then(() => holder.remove());
+    msg = '시트에 붙여넣을 한 줄을 복사했습니다';
+  } else {
+    const f = document.createElement('form');
+    f.method = 'POST'; f.action = SHEET_ENDPOINT; f.target = 'sinkFrame';
+    const add = (k, v) => {
+      const i = document.createElement('input');
+      i.type = 'hidden'; i.name = k; i.value = v; f.appendChild(i);
+    };
+    add('author', author);
+    add('designId', rec.designId);
+    add('pageNo', rec.pageNo);
+    add('pageUrl', rec.pageUrl);
+    add('memo', memo);          // 합친 것 (예전 Apps Script 배포에서도 내용이 남는다)
+    add('body', body);          // 바디 컴포넌트
+    add('master', master);      // 마스터 컴포넌트
+    add('etc', etc);            // 그 외
+    document.body.appendChild(f); f.submit(); f.remove();
+    msg = '저장했습니다 ✓';
+  }
+
+  myFeedback[fbKey(lbD.id, rec.pageNo)] = { memo, body, master, etc, savedAt: rec.savedAt };
+  try { localStorage.setItem(FB_STORE, JSON.stringify(myFeedback)); } catch {}
+  markDone();
+  loadPanel();               // 저장 목록을 다시 그린 뒤에
+  $('#savemsg').textContent = msg;   // 안내를 남긴다 (loadPanel 이 지우므로 순서 중요)
+}
+
+/** 피드백 남긴 페이지의 번호 배지를 강조 */
+function markDone() {
+  document.querySelectorAll('figure').forEach(f => {
+    const done = !!myFeedback[fbKey(f.dataset.id, +f.dataset.p + 1)];
+    f.querySelector('figcaption')?.classList.toggle('done', done);
+  });
+}
+
+const step = n => { if (lbD) { lbP = (lbP + n + lbD.pages.length) % lbD.pages.length; showLb(); } };
+$('#prev').onclick = e => { e.stopPropagation(); step(-1); };
+$('#next').onclick = e => { e.stopPropagation(); step(1); };
+$('#close').onclick = () => $('#lb').classList.remove('open');
+$('#save').onclick = save;
+$('#lb').onclick = e => { if (e.target.id === 'lb') $('#lb').classList.remove('open'); };
+document.addEventListener('keydown', e => {
+  if (!$('#lb').classList.contains('open')) return;
+  // 입력 중에는 화살표로 페이지가 넘어가지 않게 한다 (메모·이름 모두)
+  const typing = e.target.classList?.contains('memo') || e.target.id === 'author';
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { save(); return; }
+  if (e.key === 'Escape') { $('#lb').classList.remove('open'); return; }
+  if (typing) return;
+  if (e.key === 'ArrowLeft') step(-1);
+  if (e.key === 'ArrowRight') step(1);
+});
+
+// ── 첫 화면 두 모드 ─────────────────────────────
+// ① 준비된 파일을 버튼 한 번으로 불러온다(기본) / ② 직접 쿼리.
+//
+// ① 은 앱과 같은 서버에 놓인 파일을 앱이 직접 가져온다.
+// 데이터브릭스 볼륨에서 바로 가져올 수는 없다 — 브라우저에 토큰을 넣어야 하기 때문.
+// 그래서 갱신 담당(n8n)이 볼륨 → 이 서버의 data/ 로 옮겨주고, manifest.json 에 적는다.
+const MANIFEST = 'data/manifest.json';   // 공개판에는 없다(404 → 샘플/업로드)
+const RECENT_DAYS = 7;   // '최근 N일' 버튼의 N. 다운로드 실측상 7일이면 99.1% 가 확정된다
+let MANI = null;
+const VOLUME_DIR = '/Volumes/<CATALOG>/<SCHEMA>/exports/design-eval';
+// 월 전체를 gz 한 파일로 둔 곳. 압축본이라 받기 편하고, 앱이 브라우저에서 직접 푼다.
+// VOLUME_DIR 안이 아니라 옆이다 — n8n 이 VOLUME_DIR 를 매일 덮어쓰며 하위를 지우기 때문.
+const GZ_DIR = VOLUME_DIR + '-gz';
+
+// 준비된 파일이 없을 때: 볼륨 경로 + 데이터브릭스 딥링크 + CLI 한 줄
+const DBX_HOST = 'https://<YOUR_WAREHOUSE_HOST>';
+(() => {
+  // '어제' 기준 달 — 새 달 첫날에는 이번 달 폴더가 아직 없다(14시 갱신 + 적재 지연).
+  // CLI 안내에만 쓴다.
+  const d = new Date(Date.now() - 86400000);
+  const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  // Catalog Explorer 는 ?volumePath= 로 폴더 안까지 딥링크가 된다 (실측 확인).
+  // 끝의 / 까지 포함해야 한다.
+  //
+  // 달 폴더가 아니라 -gz 폴더를 연다. 달을 계산해 딥링크하면 (a) 새 달 첫날에 링크와
+  // 라벨이 어긋나고(어제 기준이라 지난달이 열린다), (b) 다른 달을 보려면 위로 올라가야
+  // 한다. 목록을 보여주고 고르게 하는 편이 클릭 한 번 늘어도 안 헷갈린다.
+  const [, , cat, sch, vol] = GZ_DIR.split('/');
+  $('#vollink').href = `${DBX_HOST}/explore/data/volumes/${cat}/${sch}/${vol}`
+    + `?volumePath=${encodeURIComponent(GZ_DIR + '/')}`;
+  $('#clisnip').textContent =
+    `databricks fs cp -r dbfs:${GZ_DIR}/${ym} ./${ym} --profile DEFAULT`;
+  // 위 한 줄은 이번 달 폴더만 받는다. 여러 달을 보려면 -gz 폴더째로 받아야 한다
+  // (폴더 안에 YYYY-MM 이 수집 시작월부터 쌓인다 — 오래된 달도 지우지 않는다).
+  const gzName = GZ_DIR.split('/').pop();
+  $('#clisnip-all').textContent =
+    `databricks fs cp -r dbfs:${GZ_DIR} ./${gzName} --profile DEFAULT`;
+})();
+
+// 작은 파일에서 '0MB' 로 보이지 않게 단위를 바꾼다
+/** 브라우저가 화면을 그릴 틈을 준다.
+ *  requestAnimationFrame 을 쓰면 안 된다 — 탭이 숨겨지면 아예 발화하지 않아
+ *  이어 읽기가 그 자리에서 멈춘다(실측). setTimeout 도 숨겨진 탭에서 1초까지 눌린다.
+ *  MessageChannel 은 눌리지 않으므로 탭을 옮겨도 계속 읽는다. */
+const nextTick = () => new Promise(r => {
+  if (typeof MessageChannel === 'function') {
+    const ch = new MessageChannel();
+    ch.port1.onmessage = () => r();
+    ch.port2.postMessage(0);
+  } else setTimeout(r);
+});
+
+// CSV 읽는 동안의 전체 화면 진행 표시
+const busy = {
+  show(t) { $('#busytext').textContent = t || '읽는 중…'; $('#busy').hidden = false; },
+  set(t) { $('#busytext').textContent = t; },
+  hide() { $('#busy').hidden = true; },
+};
+
+const mb = b => b >= 1073741824 ? (b / 1073741824).toFixed(1) + 'GB'
+              : b >= 10485760   ? (b / 1048576).toFixed(0) + 'MB'
+              : b >= 1048576    ? (b / 1048576).toFixed(1) + 'MB'
+              :                   Math.max(1, Math.round(b / 1024)) + 'KB';
+
+/** manifest 를 읽어 ① 화면을 채운다. 없으면 직접 받는 안내로 넘어간다. */
+(async () => {
+  let m = null;
+  try {
+    const r = await fetch(MANIFEST, { cache: 'no-cache' });
+    if (r.ok) m = await r.json();
+  } catch {}
+  // 파일을 아직 안 올렸으면 조용히 안내로 대체한다(에러로 겁주지 않는다)
+  if (!m || !m.files || !m.files.length) { $('#noready').hidden = false; return; }
+
+  MANI = m;
+  $('#ready').innerHTML = m.files.map((f, i) => {
+    const ps = f.parts || [];
+    const recent = ps.slice(-RECENT_DAYS);
+    const sum = a => a.reduce((s, p) => s + (p.gzBytes || p.bytes || 0), 0);
+    const meta = [
+      f.designs ? `디자인 ${(+f.designs).toLocaleString()}개` : '',
+      f.rows ? `페이지 ${(+f.rows).toLocaleString()}장` : '',
+      mb(f.gzBytes || f.bytes || 0),
+      ps.length ? `${ps.length}일` : '',
+    ].filter(Boolean).join(' · ');
+    return `
+    <div class="rdy" data-i="${i}">
+      <div class="meta">
+        <div class="ym">${esc(f.label || f.ym || f.path)}</div>
+        <div class="sub">${meta}</div>
+        <div class="prog" hidden><i></i></div>
+      </div>
+      ${recent.length && recent.length < ps.length ? `<button class="btn ghost" data-recent="1"
+         title="${esc(recent[0].date)} ~ ${esc(recent[recent.length - 1].date)}"
+         >최근 ${recent.length}일 (${mb(sum(recent))})</button>` : ''}
+      <button class="btn" data-all="1">전체 불러오기</button>
+    </div>`;
+  }).join('') +
+    `<p class="foot">버튼을 누르면 앱이 알아서 가져옵니다 — 데이터브릭스에 들어갈 일이 없습니다.
+      전체가 무거우면 <b>최근 며칠만</b> 먼저 보세요.</p>`;
+
+  $('#ready').querySelectorAll('.rdy').forEach(card => {
+    const f = m.files[+card.dataset.i];
+    card.querySelectorAll('button').forEach(b => {
+      b.onclick = () => openRemote(f, card, b.dataset.recent ? RECENT_DAYS : 0);
+    });
+  });
+})();
+
+/** 서버에 놓인 데이터를 받아 앱에 올린다.
+ *
+ *  날짜별로 쪼갠 .csv.gz 여러 개를 이어 읽는다. 왜 쪼개나:
+ *  월 한 파일은 너무 커서 매일 다시 올릴 수 없다. 날짜별이면
+ *  새로 만들 파일이 '어제 것' 하나뿐이다.
+ *
+ *  진행률 분모는 manifest 의 gzBytes(압축된 크기)다. 받는 바이트를 압축 해제
+ *  '전에' 세기 때문에 서버 압축 설정과 무관하게 정확하다.
+ *
+ *  recentDays > 0 이면 마지막 N일만 가져온다. */
+async function openRemote(f, card, recentDays) {
+  const btns = [...card.querySelectorAll('button')];
+  const bar = card.querySelector('.prog'), fill = bar.firstElementChild;
+  const setSub = t => { card.querySelector('.sub').textContent = t; };
+  const pressed = btns.find(b => (!!b.dataset.recent) === (recentDays > 0)) || btns[0];
+
+  let list = f.parts && f.parts.length
+    ? (recentDays ? f.parts.slice(-recentDays) : f.parts)
+    : [{ path: f.path, gzBytes: f.bytes, date: f.ym }];
+
+  // 최근 날짜부터 읽는다. 기본 정렬이 '최근 생성순'이라 먼저 읽은 것이 곧 화면 위쪽이다.
+  list = [...list].reverse();
+
+  if (list.some(p => p.path.endsWith('.gz')) && typeof DecompressionStream === 'undefined') {
+    $('#error').innerHTML = '<div class="err"><b>이 브라우저는 압축 파일을 열 수 없습니다.</b><br>' +
+      '크롬(또는 사파리 16.4 이상)에서 열어 주세요.</div>';
+    return;
+  }
+
+  btns.forEach(b => { b.disabled = true; });
+  pressed.textContent = '불러오는 중…';
+  card.classList.add('busy'); bar.hidden = false; fill.style.width = '0%';
+  $('#error').innerHTML = '';
+
+  const total = list.reduce((s, p) => s + (p.gzBytes || p.bytes || 0), 0);
+  const label = f.label || f.ym || '';
+  let got = 0;
+  LOADED = null;   // 새로 불러오는 것이므로 이전 누적을 버린다
+
+  try {
+    for (let i = 0; i < list.length; i++) {
+      const p = list[i];
+      const res = await fetch(p.path);
+      if (!res.ok) throw new Error(`${p.path} 을 찾을 수 없습니다 (HTTP ${res.status})`);
+
+      // 압축 해제 전에 바이트를 세야 진행률이 manifest 의 gzBytes 와 맞는다
+      let stream = res.body.pipeThrough(new TransformStream({
+        transform(c, ctrl) {
+          got += c.length; ctrl.enqueue(c);
+          if (total) fill.style.width = Math.min(100, got / total * 100) + '%';
+        },
+      }));
+      if (p.path.endsWith('.gz')) stream = stream.pipeThrough(new DecompressionStream('gzip'));
+
+      const dec = new TextDecoder('utf-8');
+      const rd = stream.getReader();
+      const chunks = [];
+      for (;;) {
+        const { done, value } = await rd.read();
+        if (done) break;
+        chunks.push(dec.decode(value, { stream: true }));
+      }
+      chunks.push(dec.decode());
+
+      // 한 날짜를 읽는 즉시 화면에 붙인다. 전부 기다리지 않는다.
+      //   첫 파일: 갤러리를 띄운다  /  이후: 이어 붙이고 보고 있던 위치를 지킨다
+      await load(chunks.join(''), i > 0);
+      buildFilters();
+      if (i === 0) { $('#intro').style.display = 'none'; $('#app').style.display = 'block'; }
+      render(i > 0);
+
+      const left = list.length - i - 1;
+      $('#stat').textContent =
+        `디자인 ${DESIGNS.length.toLocaleString()}개 · 페이지 ` +
+        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}장 · ${label}` +
+        (left ? ` · 이어서 읽는 중 ${left}일 남음` : '');
+      await nextTick();   // 화면을 실제로 그리게 양보
+    }
+    $('#loading')?.remove();
+  } catch (err) {
+    if (DESIGNS.length) {
+      // 이미 보고 있는 게 있으면 화면을 뒤엎지 않고 알려만 준다
+      $('#stat').textContent += ' · 나머지를 읽지 못했습니다';
+      console.error(err);
+      return;
+    }
+    card.classList.remove('busy'); bar.hidden = true;
+    btns.forEach(b => { b.disabled = false; });
+    pressed.textContent = '다시 시도';
+    $('#error').innerHTML = `<div class="err"><b>불러오지 못했습니다.</b><br>${esc(err.message)}</div>`;
+    console.error(err);
+  }
+}
+
+$('#peek').onclick = () => {
+  const b = $('#sqlbox'); b.open = true; b.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+document.querySelectorAll('.mode').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.mode').forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.pane').forEach(p =>
+      p.classList.toggle('on', p.id === 'pane-' + b.dataset.mode));
+  };
+});
+
+/** 텍스트를 클립보드에 넣는다. 세 단계로 내려간다.
+ *  ① navigator.clipboard — 가장 깔끔하지만 창이 포커스를 잃었거나 브라우저 정책에
+ *     따라 거부된다(실측: 미리보기 창에서 permission 이 granted 여도 거부됨).
+ *  ② execCommand('copy') — 구식이지만 위가 막힌 데서 대체로 통한다.
+ *  ③ 둘 다 실패하면 텍스트를 선택된 상태로 남긴다 — 사용자가 ⌘C 만 누르면 된다.
+ *  ①만 믿으면 안 되는 실제 이유: Clipboard API 는 secure context 전용이라
+ *  사내 hub 를 http:// 로 서비스하면 navigator.clipboard 가 아예 없다. */
+async function copyText(el) {
+  const text = el.textContent;
+  try { await navigator.clipboard.writeText(text); return '복사됨'; } catch {}
+
+  const sel = getSelection(), range = document.createRange();
+  range.selectNodeContents(el);
+  sel.removeAllRanges(); sel.addRange(range);
+  try { if (document.execCommand('copy')) { sel.removeAllRanges(); return '복사됨'; } } catch {}
+  return '⌘C 를 누르세요';   // 선택은 남겨둔다
+}
+
+document.querySelectorAll('[data-copy]').forEach(b => {
+  b.onclick = async () => {
+    const t = b.textContent;
+    b.textContent = await copyText($(b.dataset.copy));
+    setTimeout(() => { b.textContent = t; }, 2000);
+  };
+});
+
+// ── 업로드 처리 ─────────────────────────────────
+const drop = $('#drop'), fileEl = $('#file');
+drop.onclick = () => fileEl.click();
+drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = e => {
+  e.preventDefault(); drop.classList.remove('over');
+  if (e.dataTransfer.files.length) handle([...e.dataTransfer.files]);
+};
+fileEl.onchange = () => {
+  if (fileEl.files.length) handle([...fileEl.files]);
+  fileEl.value = '';   // 같은 파일을 다시 골라도 change 가 뜨게
+};
+$('#reload').onclick = () => location.reload();
+
+// 공개판 전용: 샘플 CSV 를 파일 업로드와 같은 경로로 흘려보낸다
+$('#demo')?.addEventListener('click', async () => {
+  try {
+    const r = await fetch('demo/sample.csv', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('sample.csv 를 찾을 수 없습니다 (' + r.status + ')');
+    await handle([new File([await r.blob()], 'sample.csv', { type: 'text/csv' })]);
+  } catch (e) {
+    $('#error').innerHTML = `<div class="err">${e.message}</div>`;
+  }
+});
+
+/** 파일 하나를 텍스트로 읽는다. .gz 면 브라우저에서 바로 압축을 푼다.
+ *  하루치 gz 는 작아서, 월 전체를 받는 대신 필요한 날짜만 받아 올릴 수 있다. */
+async function readFile(file) {
+  if (!/\.gz$/i.test(file.name)) return file.text();
+  if (typeof DecompressionStream === 'undefined') {
+    throw new Error(`${file.name} — 이 브라우저는 압축 파일을 열 수 없습니다. 크롬(또는 사파리 16.4 이상)에서 열어 주세요.`);
+  }
+  const rd = file.stream().pipeThrough(new DecompressionStream('gzip')).getReader();
+  const dec = new TextDecoder('utf-8'), out = [];
+  for (;;) {
+    const { done, value } = await rd.read();
+    if (done) break;
+    out.push(dec.decode(value, { stream: true }));
+  }
+  out.push(dec.decode());
+  return out.join('');
+}
+
+/** 파일을 받아 읽는다. 한 개도 되고 여러 개도 된다.
+ *  헤더는 load() 가 파일마다 알아서 처리하므로 여기서 자르지 않는다 —
+ *  직접 잘라내면 첫 데이터 행이 헤더로 오해되어 'design_id 없음'으로 실패한다(실측).
+ *  이름 역순(최신 먼저)으로 읽어서, 기본 정렬(최근 생성순)과 화면 순서를 맞춘다. */
+async function handle(files) {
+  $('#error').innerHTML = '';
+  const list = [...files].sort((a, b) => b.name.localeCompare(a.name));
+  const totalMB = (list.reduce((s, f) => s + f.size, 0) / 1048576).toFixed(1);
+  LOADED = null;
+  busy.show(`파일 읽는 중… (${totalMB}MB)`);
+
+  try {
+    for (let i = 0; i < list.length; i++) {
+      const f = list[i];
+      busy.set(list.length > 1
+        ? `읽는 중… ${i + 1}/${list.length}개 · ${f.name}`
+        : `파일 읽는 중… (${totalMB}MB)`);
+      await nextTick();
+      await load(await readFile(f), i > 0);
+      buildFilters();
+      if (i === 0) { $('#intro').style.display = 'none'; $('#app').style.display = 'block'; }
+      render(i > 0);
+      $('#stat').textContent =
+        `디자인 ${DESIGNS.length.toLocaleString()}개 · 페이지 ` +
+        `${DESIGNS.reduce((s, d) => s + d.pages.length, 0).toLocaleString()}장 · ` +
+        (list.length > 1 ? `파일 ${i + 1}/${list.length}개` : f.name);
+      await nextTick();
+    }
+  } catch (err) {
+    // 첫 파일 이후에는 intro(와 그 안의 #error)가 숨겨져 있다 —
+    // 갤러리 위 알림 바(#apperr)에도 같이 써서 어느 화면에서든 보이게 한다.
+    const html = `<div class="err"><b>불러오지 못했습니다.</b><br>${esc(err.message)}</div>`;
+    $('#error').innerHTML = html;
+    if (getComputedStyle($('#app')).display === 'block') {
+      $('#apperr').innerHTML = html +
+        `<div class="err" style="border-top:0"><button class="btn ghost" onclick="this.closest('#apperr').innerHTML=''">닫기</button></div>`;
+    }
+    console.error(err);
+  } finally {
+    busy.hide();
+  }
+}
+</script>
+</body>
+</html>
