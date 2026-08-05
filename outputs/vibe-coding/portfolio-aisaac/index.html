@@ -257,7 +257,7 @@
         <div class="blocks">
           <div class="blk"><div class="k">Background / 背景</div><div class="v">ユーザーの声(VoC)を追う中で、「AIスライド生成の最初の入力でAIが応答を生成できず、そのまま離脱する」ユーザーが一定数いることを確認。初回体験が定着に直結していた。</div></div>
           <div class="blk"><div class="k">Hypothesis / 仮説</div><div class="v"><span class="hl">失敗率を下げれば → 満足度が上がり → retentionが向上する</span>はずだ。</div></div>
-          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">約3万件を分析し、失敗原因を3つのroute（聞き返し／不適切な拒否／空応答）に分類。優先度を共有し、緊急バグはエンジニアへ、残りは企画メンバーと議論。<span class="hl">分析基盤はAIで自作。</span></div></div>
+          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">約3万件を分析し、失敗原因を3つのroute（聞き返し／不適切な拒否／空応答）に分類。優先度を共有し、緊急バグはエンジニアへ、残りは企画メンバーと議論。<span class="hl">分析基盤はAIとのペア開発で構築。</span></div></div>
           <div class="blk"><div class="k">Result / 結果</div><div class="v">初回失敗を 13.4% → 5.1%（route別すべて改善）。定性的にも失敗入力の大半が正常処理へ。retention改善の土台をつくった（満足度・retentionへの影響は継続trackingが次の対象）。</div></div>
           <div class="blk"><div class="k">Learning / 学び</div><div class="v">分析要件の定義から改善後の検証までを主導した経験。</div></div>
         </div>
@@ -304,7 +304,7 @@
         <div class="blocks">
           <div class="blk"><div class="k">Background / 背景</div><div class="v">LLMプロダクトは出力が確率的なため、毎回結果が変わる。手動QAでは、幻覚や文脈忘れの再現率把握・優先度づけに限界があった。</div></div>
           <div class="blk"><div class="k">Hypothesis / 仮説</div><div class="v"><span class="hl">API経由の自動化 + LLM評価を入れれば、間欠的な問題を“再現確率(%)”として数値化し、検証を大量・反復で回せる。</span></div></div>
-          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">Pythonで自社プロダクトのAPIを直接呼び出してスライドを自動生成し（必要に応じて「25枚に修正」などのマルチターン要求も自動化）、生成物(JSON)を外部LLMに渡してPASS/FAILを判定。判定は2層で設計——構造・数値はルールで（Rule-based）、幻覚・言語混在などの中身はLLMが読んで（LLM-based）チェックする。<span class="hl">これらをすべてAIで自作した。</span></div></div>
+          <div class="blk"><div class="k">Approach / アプローチ</div><div class="v">Pythonで自社プロダクトのAPIを直接呼び出してスライドを自動生成し（必要に応じて「25枚に修正」などのマルチターン要求も自動化）、生成物(JSON)を外部LLMに渡してPASS/FAILを判定。判定は2層で設計——構造・数値はルールで（Rule-based）、幻覚・言語混在などの中身はLLMが読んで（LLM-based）チェックする。<span class="hl">AIとペアで実装し、問題定義・要件設計・検証は自ら担った。</span></div></div>
           <div class="blk"><div class="k">Result / 結果</div><div class="v">パイプラインは構築できたが、<span class="hl">実運用までは至らなかった</span>。理由は「LLMでLLMを評価する」判定精度を十分に担保できなかったこと。判定のブレが自動QAの信頼性の壁になった。</div></div>
           <div class="blk"><div class="k">Learning / 学び</div><div class="v">①企画者でもAIで検証ツールを自作できる実行力を得た。②「自動化・LLM評価は万能ではなく、どこまで信頼できるかを見極めることが重要」だと身をもって学んだ。この“LLM-as-judgeの限界”の実感は、AIプロダクトに関わる上で大きな財産。</div></div>
         </div>
