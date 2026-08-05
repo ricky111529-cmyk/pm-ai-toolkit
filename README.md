@@ -46,10 +46,6 @@ LLM品質評価パイプラインをPythonで自作しました（[コードと�
 |---|---|
 | [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer) | AIの生成物を全ページのサムネイル + 文脈と一緒に見て、**ページ単位で**評価を残す単一HTMLアプリ。大きなgzをブラウザでストリーミング解凍 · 逐次レンダリング · カラム自動分類。[**デモを開く ↗**](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) |
 | [`llm-qa-pipeline`](outputs/vibe-coding/llm-qa-pipeline) | AIチャット応答の品質を自動検証するパイプライン。2層判定 · マルチターン自動化 · Flask UI。**実運用には至りませんでした** — [振り返り](outputs/vibe-coding/llm-qa-pipeline/PORTFOLIO.md) |
-| [`band-jam-feedback`](outputs/vibe-coding/band-jam-feedback) | バンドの合奏録音からパート別のタイミングを分析するツール。Python · demucsで音源分離 · librosaでオンセット検出 |
-| [`between-us`](outputs/vibe-coding/between-us) | 2人がセッションコードで入室し、それぞれの答えを好きなタイミングで公開する対話ウェブアプリ。Next.js |
-| [`habit-app-retention-analysis`](outputs/vibe-coding/habit-app-retention-analysis) | 習慣形成アプリのリテンション分析 |
-| [`travel-stamp-diary`](outputs/vibe-coding/travel-stamp-diary) | 旅のスタンプ記録。依存なしの単一HTML |
 | [`portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac) | ポートフォリオサイト |
 
 ---
