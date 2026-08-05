@@ -36,7 +36,7 @@ AIスライド生成の初回失敗を3万件分析し、3つのroute（聞き�
 企画が通らない理由を掘ると、チームがユーザーを深く理解できていないことが根本でした。1on1で問題を提起し、UXリサーチを自ら立ち上げました。現在進行中です。
 
 **自分でつくる** — 企画だけでなく検証ツールを自作する。
-LLM品質評価パイプラインをPythonで自作しました（[コードと振り返り](outputs/vibe-coding/llm-qa-pipeline)）。自社APIでスライドを自動生成し、外部LLMがPASS/FAILを判定する2層構造（Rule-based + LLM-based）です。**実運用までは至りませんでした** — 「LLMでLLMを評価する」判定精度を担保できなかったのが壁でした。この振り返りが次のツールの設計になりました → [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer)：自動判定を先につくらず、**人が実物を見て判断を残す環境**を先につくりました。
+LLM品質評価パイプラインをAIとペアで自作しました（コードはAI、設計・検証は自分）（[コードと振り返り](outputs/vibe-coding/llm-qa-pipeline)）。自社APIでスライドを自動生成し、外部LLMがPASS/FAILを判定する2層構造（Rule-based + LLM-based）です。**実運用までは至りませんでした** — 「LLMでLLMを評価する」判定精度を担保できなかったのが壁でした。この振り返りが次のツールの設計になりました → [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer)：自動判定を先につくらず、**人が実物を見て判断を残す環境**を先につくりました。
 
 ---
 
@@ -58,7 +58,7 @@ LLM品質評価パイプラインをPythonで自作しました（[コードと�
 |---|---|
 | 企画・リサーチ | PRD・機能仕様の作成、インタビュー設計、定性分析、VoC分類体系 |
 | データ | SQL（Databricks）。記述統計・ファネル・コホート・A/B結果の解釈は自分で / **仮説検定・回帰は概念レベルで、AIの補助を使います** / モデリングはまだできません |
-| つくる | Python（音声分析・LLMパイプライン）、単一HTMLアプリ、Next.js基礎 |
+| つくる | **自分ではコードを書けません。** ツールはすべてAIとのペア（vibe coding）でつくりました — 問題定義・要件・検証（QA・実測）は自分、コードはAI。このリポジトリのビューアやパイプラインがその成果物です |
 | 言語 | 韓国語（母語）· 日本語（JLPT N1） |
 | 学習中 | [ADsP](projects/adsp-study) · [Google Data Analytics Certificate](projects/google-data-analytics) |
 

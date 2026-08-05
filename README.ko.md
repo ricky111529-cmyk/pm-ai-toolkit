@@ -36,7 +36,7 @@ AI 슬라이드 생성의 초기 실패를 3만 건 분석해 세 갈래(되묻�
 기획이 통하지 않는 이유를 파보니 팀이 유저를 깊이 이해하지 못하는 게 근본이었습니다. 1on1에서 문제를 제기해 UX 리서치를 직접 시작했습니다. 현재 진행 중입니다.
 
 **직접 만든다** — 기획만 하지 않고 검증 도구를 만듭니다.
-LLM 품질 평가 파이프라인을 Python으로 자작했습니다([코드와 회고](outputs/vibe-coding/llm-qa-pipeline)). 자사 API로 슬라이드를 자동 생성하고 외부 LLM이 PASS/FAIL을 판정하는 2층 구조(규칙 기반 + LLM 기반)였습니다. **실운용까지는 가지 못했습니다** — "LLM으로 LLM을 평가하는" 판정 정확도를 담보하지 못한 게 벽이었습니다. 이 회고가 다음 도구의 설계가 됐습니다 → [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer): 자동 판정을 먼저 만들지 않고, **사람이 실물을 보고 판단을 남기는 환경**을 먼저 만들었습니다.
+LLM 품질 평가 파이프라인을 AI와 페어로 자작했습니다(코드는 AI, 설계·검증은 제가)([코드와 회고](outputs/vibe-coding/llm-qa-pipeline)). 자사 API로 슬라이드를 자동 생성하고 외부 LLM이 PASS/FAIL을 판정하는 2층 구조(규칙 기반 + LLM 기반)였습니다. **실운용까지는 가지 못했습니다** — "LLM으로 LLM을 평가하는" 판정 정확도를 담보하지 못한 게 벽이었습니다. 이 회고가 다음 도구의 설계가 됐습니다 → [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer): 자동 판정을 먼저 만들지 않고, **사람이 실물을 보고 판단을 남기는 환경**을 먼저 만들었습니다.
 
 ---
 
@@ -58,7 +58,7 @@ LLM 품질 평가 파이프라인을 Python으로 자작했습니다([코드와 
 |---|---|
 | 기획·리서치 | PRD·기능 스펙 작성, 인터뷰 설계, 정성 분석, VoC 분류 체계 |
 | 데이터 | SQL(Databricks). 기술통계·퍼널·코호트·A/B 결과 해석은 스스로 / **가설검정·회귀는 개념 수준이며 AI 보조로 씁니다** / 모델링은 아직 못 합니다 |
-| 만들기 | Python(오디오 분석·LLM 파이프라인), 단일 HTML 앱, Next.js 기초 |
+| 만들기 | **코드는 직접 못 씁니다.** 도구는 전부 AI와 페어(바이브코딩)로 만들었습니다 — 문제 정의·요구사항·검증(QA·실측)은 제가, 코드는 AI가. 이 저장소의 뷰어·파이프라인이 그 결과물입니다 |
 | 언어 | 한국어 · 일본어 (JLPT N1) |
 | 학습 중 | [ADsP](projects/adsp-study) · [Google Data Analytics Certificate](projects/google-data-analytics) |
 
