@@ -60,13 +60,15 @@ LLM 품질 평가 파이프라인을 AI와 페어로 자작했습니다(코드�
 | 데이터 | SQL(Databricks). 기술통계·퍼널·코호트·A/B 결과 해석은 스스로 / **가설검정·회귀는 개념 수준이며 AI 보조로 씁니다** / 모델링은 아직 못 합니다 |
 | 만들기 | **코드는 직접 못 씁니다.** 도구는 전부 AI와 페어(바이브코딩)로 만들었습니다 — 문제 정의·요구사항·검증(QA·실측)은 제가, 코드는 AI가. 이 저장소의 뷰어·파이프라인이 그 결과물입니다 |
 | 언어 | 한국어 · 일본어 (JLPT N1) |
-| 학습 중 | [ADsP](projects/adsp-study) · [Google Data Analytics Certificate](projects/google-data-analytics) |
 
 ---
 
 ## 담지 않은 것
 
 회사 업무 산출물(기획서·리서치 보고서·고객 데이터·사내 인프라 설정)은 들어 있지 않습니다. 재사용 가능한 **방법**만 옮겼고, 사내 스키마·호스트·경로는 플레이스홀더로 치환했습니다.
+
+다만 일의 전체 윤곽이 보이도록, 사내 산출물은 **폴더 이름과 개요(README)만** 남겼습니다 — 내용물은 없습니다.
+[`outputs/research/`](outputs/research)(VoC 분석 · NPS 분석 · 유저 인터뷰 · 입력 로그 분석 · 경쟁사 리서치 · 프롬프트 실험) · [`outputs/specs/`](outputs/specs)(기획서·스펙) · [`projects/ux-research/`](projects/ux-research)(진행 중 UX 리서치)
 
 ## 연락
 

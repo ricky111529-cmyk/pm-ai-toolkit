@@ -60,13 +60,15 @@ LLM品質評価パイプラインをAIとペアで自作しました（コード
 | データ | SQL（Databricks）。記述統計・ファネル・コホート・A/B結果の解釈は自分で / **仮説検定・回帰は概念レベルで、AIの補助を使います** / モデリングはまだできません |
 | つくる | **自分ではコードを書けません。** ツールはすべてAIとのペア（vibe coding）でつくりました — 問題定義・要件・検証（QA・実測）は自分、コードはAI。このリポジトリのビューアやパイプラインがその成果物です |
 | 言語 | 韓国語（母語）· 日本語（JLPT N1） |
-| 学習中 | [ADsP](projects/adsp-study) · [Google Data Analytics Certificate](projects/google-data-analytics) |
 
 ---
 
 ## 入れていないもの
 
 会社の業務成果物（企画書・リサーチレポート・顧客データ・社内インフラ設定）は入っていません。再利用できる**方法**だけを移し、社内スキーマ・ホスト・パスはプレースホルダに置き換えています。
+
+ただし仕事の全体像が分かるよう、社内成果物は**フォルダ名と概要（README）だけ**残しています — 中身は空です。
+[`outputs/research/`](outputs/research)（VoC分析 · NPS分析 · ユーザーインタビュー · 入力ログ分析 · 競合リサーチ · プロンプト実験）· [`outputs/specs/`](outputs/specs)（企画書・スペック）· [`projects/ux-research/`](projects/ux-research)（進行中のUXリサーチ）
 
 ## 連絡先
 
