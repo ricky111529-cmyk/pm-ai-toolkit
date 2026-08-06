@@ -46,7 +46,7 @@ LLM 품질 평가 파이프라인을 AI와 페어로 자작했습니다(코드�
 |---|---|
 | [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer) | AI 결과물을 전 페이지 썸네일 + 맥락과 함께 보고 **페이지 단위로** 평가를 남기는 단일 HTML 앱. 큰 gz 를 브라우저에서 스트리밍 해제 · 점진 렌더링 · 컬럼 자동 분류. [**데모 열기 ↗**](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) |
 | [`llm-qa-pipeline`](outputs/vibe-coding/llm-qa-pipeline) | AI 채팅 응답 품질을 자동 검증하는 파이프라인. 2층 판정(규칙 + LLM) · 멀티턴 자동화 · Flask UI. **실운용까지는 가지 못했습니다** — [회고](outputs/vibe-coding/llm-qa-pipeline/PORTFOLIO.md) |
-| [`portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac) | 포트폴리오 사이트 |
+| [`portfolio-site`](outputs/vibe-coding/portfolio-aisaac) | 채용용 포트폴리오 사이트. [공개 사이트 보기 ↗](https://minsup-portfolio.vercel.app/) |
 
 ---
 

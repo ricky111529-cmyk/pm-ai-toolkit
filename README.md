@@ -46,7 +46,7 @@ LLM品質評価パイプラインをAIとペアで自作しました（コード
 |---|---|
 | [`design-eval-viewer`](outputs/vibe-coding/design-eval-viewer) | AIの生成物を全ページのサムネイル + 文脈と一緒に見て、**ページ単位で**評価を残す単一HTMLアプリ。大きなgzをブラウザでストリーミング解凍 · 逐次レンダリング · カラム自動分類。[**デモを開く ↗**](https://ricky111529-cmyk.github.io/pm-ai-toolkit/outputs/vibe-coding/design-eval-viewer/) |
 | [`llm-qa-pipeline`](outputs/vibe-coding/llm-qa-pipeline) | AIチャット応答の品質を自動検証するパイプライン。2層判定 · マルチターン自動化 · Flask UI。**実運用には至りませんでした** — [振り返り](outputs/vibe-coding/llm-qa-pipeline/PORTFOLIO.md) |
-| [`portfolio-aisaac`](outputs/vibe-coding/portfolio-aisaac) | ポートフォリオサイト |
+| [`portfolio-site`](outputs/vibe-coding/portfolio-aisaac) | 採用向けポートフォリオサイト。[公開版を見る ↗](https://minsup-portfolio.vercel.app/) |
 
 ---
 
